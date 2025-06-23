@@ -1,8 +1,8 @@
 import Hero from "./components/Hero";
 import TodayPickCard from "./components/TodayPickCard";
-import ViviBot from "./components/ViviBot";
 import ArticleCard from "./components/ArticleCard";
 import RecipeCard from "./components/RecipeCard";
+import BubbleChat from "./components/BubbleChat";
 import { getTips, getArticles, getRecipes } from "@/lib/sanityApi";
 import { Tip, Article, Recipe } from "@/types";
 
@@ -57,7 +57,7 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
-      <ViviBot />
+      <BubbleChat />
     </main>
   );
 }
