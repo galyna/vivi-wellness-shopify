@@ -1,7 +1,8 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { getRecipeBySlug } from "@/lib/sanityApi";
+import { getRecipeBySlug, getRecipes } from "@/lib/sanityApi";
 import { PortableText } from "@portabletext/react";
+import type { Recipe } from "@/types";
 
 export default async function RecipePage({ params }: { params: { slug: string } }) {
   const recipe = await getRecipeBySlug(params.slug);
@@ -27,4 +28,11 @@ export default async function RecipePage({ params }: { params: { slug: string } 
       </div>
     </main>
   );
+}
+
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const recipes: Recipe[] = await getRecipes();
+  return recipes.map((recipe: Recipe) => ({ slug: recipe.slug }));
 } 

@@ -1,19 +1,23 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { getArticleBySlug } from "@/lib/sanityApi";
+import { getArticleBySlug, getArticles } from "@/lib/sanityApi";
 import { PortableText } from "@portabletext/react";
-import Image from "next/image";
 import { Article } from "@/types";
+import imageUrlBuilder from '@sanity/image-url'
+import Image from 'next/image'
+import { client } from '@/lib/sanityApi'
+import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
 
 export default async function ArticlePage({ params }: { params: { slug: string } }) {
   const article: Article | null = await getArticleBySlug(params.slug);
   if (!article) return notFound();
+  const urlFor = (src: SanityImageSource) => imageUrlBuilder(client).image(src)
   return (
     <main className="max-w-2xl mx-auto px-4 py-12">
       <div className="mb-6">
-        {article.mainImage?.asset?.url && (
+        {article.mainImage && (
           <Image
-            src={article.mainImage.asset.url}
+            src={urlFor(article.mainImage).width(800).height(400).auto('format').url()}
             alt={article.mainImage.alt || article.title}
             width={800}
             height={400}
@@ -32,4 +36,11 @@ export default async function ArticlePage({ params }: { params: { slug: string }
       </div>
     </main>
   );
+}
+
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const articles: Article[] = await getArticles();
+  return articles.map((article: Article) => ({ slug: article.slug }));
 } 

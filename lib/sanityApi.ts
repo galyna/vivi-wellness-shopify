@@ -1,4 +1,5 @@
 import client from './sanity';
+export { client };
 
 export async function getArticles() {
   return client.fetch(`*[_type == "article"] | order(publishedAt desc){

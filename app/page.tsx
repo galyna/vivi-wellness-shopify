@@ -6,6 +6,8 @@ import RecipeCard from "./components/RecipeCard";
 import { getTips, getArticles, getRecipes } from "@/lib/sanityApi";
 import { Tip, Article, Recipe } from "@/types";
 
+export const revalidate = 3600;
+
 export default async function HomePage() {
   const tips = await getTips();
   const articles = await getArticles();
