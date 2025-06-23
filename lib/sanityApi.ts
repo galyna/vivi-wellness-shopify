@@ -6,7 +6,11 @@ export async function getArticles() {
     title,
     "slug": slug.current,
     publishedAt,
-    body
+    body,
+    mainImage {
+      asset->{url},
+      alt
+    }
   }`);
 }
 
@@ -16,7 +20,11 @@ export async function getArticleBySlug(slug: string) {
     title,
     "slug": slug.current,
     publishedAt,
-    body
+    body,
+    mainImage {
+      asset->{url},
+      alt
+    }
   }`, { slug });
 }
 
@@ -46,4 +54,5 @@ export async function getTips() {
     text,
     icon
   }`);
-} 
+}
+

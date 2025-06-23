@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { getRecipeBySlug } from "@/lib/sanityApi";
 import { PortableText } from "@portabletext/react";
 
-export default async function RecipePage({ params }: { params: { id: string } }) {
-  const recipe = await getRecipeBySlug(params.id);
+export default async function RecipePage({ params }: { params: { slug: string } }) {
+  const recipe = await getRecipeBySlug(params.slug);
   if (!recipe) return notFound();
   return (
     <main className="max-w-2xl mx-auto px-4 py-12">
