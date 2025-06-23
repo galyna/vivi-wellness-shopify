@@ -10,7 +10,11 @@ interface TodayPickCardProps {
 const TodayPickCard = ({ title, description, category, image }: TodayPickCardProps) => (
   <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center gap-2 w-full max-w-xs hover:shadow-lg transition">
     <div className="w-16 h-16 bg-mint rounded-full flex items-center justify-center mb-2">
-      {image ? <img src={image} alt={title} className="w-10 h-10 object-contain" /> : <span className="text-3xl">✨</span>}
+      {image ? (
+        <span className="text-3xl">{image}</span>
+      ) : (
+        <span className="text-3xl">✨</span>
+      )}
     </div>
     <div className="text-lg font-bold text-charcoal text-center">{title}</div>
     <div className="text-sm text-charcoal/70 text-center">{description}</div>
