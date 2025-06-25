@@ -1,8 +1,8 @@
-import Hero from "./components/Hero";
-import TodayPickCard from "./components/TodayPickCard";
-import ArticleCard from "./components/ArticleCard";
-import RecipeCard from "./components/RecipeCard";
-import BubbleChat from "./components/BubbleChat";
+import Hero from "./components/layout/Hero";
+import TodayPickCard from "./components/content/TodayPickCard";
+import ArticleCard from "./components/content/ArticleCard";
+import RecipeCard from "./components/content/RecipeCard";
+import BubbleChat from "./components/chat";
 import { getTips, getArticles, getRecipes } from "@/lib/sanityApi";
 import { Tip, Article, Recipe } from "@/types";
 
