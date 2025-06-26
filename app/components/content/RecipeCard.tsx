@@ -5,31 +5,52 @@ import Image from "next/image";
 interface RecipeCardProps {
   slug: string;
   title: string;
-  ingredients: string[];
-  category: string;
   image?: string;
+  category: string;
+  date?: string;
+  ingredients?: string[];
+  intro?: string;
+  duration?: string;
+  difficulty?: string;
+  servings?: number;
 }
 
-const RecipeCard = ({ slug, title, ingredients, category, image }: RecipeCardProps) => (
-  <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center gap-2 w-full max-w-xs hover:shadow-lg transition">
-    <div className="w-16 h-16 bg-mint rounded-full flex items-center justify-center mb-2">
-      {image ? (
+const RecipeCard = ({ slug, title, image, category, date, ingredients, intro, duration, difficulty, servings }: RecipeCardProps) => {
+  const img = image || "/placeholder.jpg";
+  return (
+    <div className="bg-softgray  rounded-2xl shadow-md overflow-hidden flex flex-col h-full">
+      <div className="relative">
         <Image
-          src={image}
+          src={img}
           alt={title}
-          width={40}
-          height={40}
-          className="w-10 h-10 object-contain"
+          width={400}
+          height={320}
+          className="w-full h-80 object-cover"
         />
-      ) : (
-        <span className="text-3xl">🥗</span>
-      )}
+        <span className="absolute top-3 left-3  bg-mint text-charcoal text-xs font-bold px-3 py-1 rounded">{category}</span>
+      </div>
+      <div className="p-5 flex-1 flex flex-col">
+        {date && <div className="text-xs text-gray-400 mb-2">{date}</div>}
+        <div className="font-bold text-lg text-charcoal mb-2">{title}</div>
+        {intro && <div className="text-xs text-gray-500 mb-2 line-clamp-2">{intro}</div>}
+        <div className="flex flex-wrap gap-2 text-xs text-gray-500 mb-2">
+          {duration && <span>⏱ {duration}</span>}
+          {difficulty && <span>• {difficulty}</span>}
+          {servings !== undefined && <span>• {servings} servings</span>}
+        </div>
+        {ingredients && ingredients.length > 0 && (
+          <div className="text-xs text-gray-500 mb-2 line-clamp-1">
+            {ingredients.slice(0, 3).join(", ")}
+          </div>
+        )}
+        <div className="mt-auto">
+          <Link href={`/recipes/${slug}`} className="text-coral font-semibold hover:underline">
+            View Recipe
+          </Link>
+        </div>
+      </div>
     </div>
-    <div className="text-lg font-bold text-charcoal text-center">{title}</div>
-    <div className="text-xs text-charcoal/70 text-center mb-1">Ingredients: {ingredients.slice(0,2).join(", ")}...</div>
-    <div className="mt-2 text-xs px-3 py-1 rounded-full bg-lemon text-charcoal font-accent">{category}</div>
-    <Link href={`/recipes/${slug}`} className="mt-3 px-4 py-2 rounded-full bg-coral text-white font-bold shadow hover:bg-neon transition text-sm">View Recipe</Link>
-  </div>
-);
+  );
+};
 
 export default RecipeCard; 

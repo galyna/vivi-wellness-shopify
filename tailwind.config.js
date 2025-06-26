@@ -13,6 +13,7 @@ module.exports = {
         charcoal: '#323232',
         softgray: '#F6F6F6',
         neon: '#7CFFCB',
+        linen: '#e6e6b7',
       },
       fontFamily: {
         sans: ['Inter', 'Manrope', 'sans-serif'],

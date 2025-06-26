@@ -12,6 +12,14 @@ export default async function ArticlePage({ params }: { params: { slug: string }
   const article: Article | null = await getArticleBySlug(params.slug);
   if (!article) return notFound();
   const urlFor = (src: SanityImageSource) => imageUrlBuilder(client).image(src)
+  function isBlock(block: unknown): block is import("@portabletext/types").PortableTextBlock {
+    return typeof block === 'object' && block !== null && '_type' in block && (block as { _type?: string })._type === 'block';
+  }
+  // Оставляем только блоки текста для PortableText
+  const body = article.body as (import("@portabletext/types").PortableTextBlock | { asset?: { url: string }; alt?: string })[];
+  const bodyBlocks = Array.isArray(body)
+    ? body.filter(isBlock)
+    : [];
   return (
     <main className="max-w-2xl mx-auto px-4 py-12">
       <div className="mb-6">
@@ -26,14 +34,14 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           />
         )}
         <div className="text-3xl font-bold text-charcoal mb-2">{article.title}</div>
-        <div className="text-md text-charcoal/70 mb-4">{article.publishedAt && new Date(article.publishedAt).toLocaleDateString()}</div>
       </div>
       <article className="prose prose-lg text-charcoal bg-white rounded-2xl shadow-md p-6">
-        <PortableText value={article.body} />
+        <PortableText value={bodyBlocks} />
       </article>
       <div className="mt-8 flex justify-end">
         <button className="px-5 py-2 rounded-full bg-coral text-white font-bold shadow hover:bg-neon transition">Ask Vivi</button>
       </div>
+      
     </main>
   );
 }
