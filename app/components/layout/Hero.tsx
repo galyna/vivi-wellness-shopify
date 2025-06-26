@@ -43,7 +43,7 @@ const Hero = async () => {
           <p className="text-base md:text-lg text-charcoal/80 mb-6">{hero?.subtitle || "Find balance, joy, and healthy habits every day — with a little help from Vivi."}</p>
           <a
             href={hero?.ctaUrl || "#"}
-            className="px-6 py-3 rounded-full border border-green-700 text-green-700 font-bold bg-white hover:bg-green-50 transition"
+            className="px-6 py-3 rounded-full border border-green-700 text-green-700 font-bold bg-white hover:bg-mint transition"
           >
             {hero?.ctaText || "Join the ritual"}
           </a>
