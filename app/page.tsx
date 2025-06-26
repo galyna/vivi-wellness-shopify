@@ -8,6 +8,7 @@ import { getArticles, getRecipes, getProducts } from "@/lib/sanityApi";
 import { Article, Recipe, Product } from "@/types";
 import Image from "next/image";
 
+
 export const revalidate = 3600;
 
 export default async function HomePage() {
@@ -18,11 +19,11 @@ export default async function HomePage() {
     <main>
       <Hero />
       <div className="relative">
-        <Image
+      <Image
           src="/bg2.jpg"
           alt="Background"
           fill
-          className="object-cover object-center opacity-20 blur-lg pointer-events-none select-none z-0"
+          className="object-cover object-center opacity-10 blur-lg pointer-events-none select-none z-0"
           priority={false}
         />
         <div className="relative z-10">
