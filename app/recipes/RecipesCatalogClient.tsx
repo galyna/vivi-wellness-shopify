@@ -28,7 +28,7 @@ export default function RecipesCatalogClient({
         className="object-cover object-center opacity-15 blur-lg pointer-events-none select-none z-0"
         priority={false}
       />
-      <section className=" mx-auto px-8 py-8 lg:px-16 relative z-10 space-y-8">
+      <section className=" mx-auto px-8 py-8 lg:px-16 relative z-10 space-y-10 lg:space-y-12">
         <h1 className="text-3xl font-bold mb-6 text-charcoal text-center">
           Recipes Catalog
         </h1>

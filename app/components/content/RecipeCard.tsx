@@ -26,7 +26,7 @@ const RecipeCard = ({ slug, title, image, category, date, ingredients, intro, du
             alt={title}
             width={400}
             height={320}
-            className="w-full h-80 object-cover"
+            className="w-full h-60 md:h-80 object-cover"
           />
           <span className="absolute top-3 left-3 bg-mint text-green-900 text-xs font-bold px-3 py-1 rounded">{category}</span>
         </div>

@@ -10,14 +10,14 @@ const InspireHero = async ({ id, reverse = false }: InspireHeroProps) => {
   const data = await getCatalogHeroData(id);
   if (!data) return null;
   return (
-    <section className="w-full  py-12 md:py-20">
+    <section className="w-full  py-8  px-8 md:px-16">
       <div
-        className={`max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-20 px-4 md:px-8 ${reverse ? "md:flex-row-reverse" : ""}`}
+        className={` flex flex-col md:flex-row items-center justify-between gap-20  ${reverse ? "md:flex-row-reverse" : ""}`}
       >
         {/* Картинка */}
-        <div className="w-full md:w-1/2 flex-shrink-0">
+        <div className="w-full md:w-2/3 flex-shrink-0">
           {data.image && (
-            <div className="relative aspect-[4/3] md:aspect-square w-full h-64 md:h-auto rounded-lg overflow-hidden">
+            <div className="relative h-[60vh] md:h-[70vh]  w-full h-min-150  rounded-lg overflow-hidden shadow-lg">
               <Image
                 src={data.image}
                 alt={data.title || "Inspire Hero"}
@@ -29,7 +29,7 @@ const InspireHero = async ({ id, reverse = false }: InspireHeroProps) => {
           )}
         </div>
         {/* Текст */}
-        <div className="w-full md:w-1/2 flex flex-col items-start justify-center">
+        <div className="w-full md:w-1/3 flex flex-col items-start justify-center">
           {data.smallTitle && (
             <span className="text-sm text-gray-500 mb-2 font-medium tracking-wide uppercase">{data.smallTitle}</span>
           )}

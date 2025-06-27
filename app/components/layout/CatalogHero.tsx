@@ -11,7 +11,7 @@ const CatalogHero = async ({ id }: CatalogHeroProps) => {
   const data = await getCatalogHeroData(id);
   if (!data) return null;
   return (
-    <section className="relative w-full h-[40vh] md:h-[50vh] text-white">
+    <section className="relative w-full h-[60vh] md:h-[70vh] text-white">
       {/* Фоновое изображение */}
       {data.image && (
         <Image

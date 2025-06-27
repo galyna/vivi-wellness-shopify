@@ -13,8 +13,8 @@ function CardsSection<T extends object>({ title, items, CardComponent, showMoreH
   return (
     <section className="mb-4 relative">
        
-      <div className=" px-8 lg:px-16 py-8 flex flex-col min-h-[600px] space-y-8">
-        <h2 className="text-2xl font-bold mb-4 text-charcoal tracking-wide letter-spacing text-center">{title}</h2>
+      <div className=" px-8 lg:px-16 py-12 lg:py-16 flex flex-col min-h-[600px] gap-12 lg:gap-16">
+        <h2 className="text-2xl lg:text-3xl font-bold  text-charcoal tracking-wide capitalize letter-spacing text-center font-serif ">{title}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-16 flex-1 items-stretch">
           {items.slice(0, 3).map((item, idx) => (
             <div key={item._id ?? idx} className={`h-full ${idx === 2 ? 'block md:hidden xl:block' : 'block'}`}>
@@ -22,7 +22,7 @@ function CardsSection<T extends object>({ title, items, CardComponent, showMoreH
             </div>
           ))}
         </div>
-        <div className="flex justify-center mt-12">
+        <div className="flex justify-center ">
           <a
             href={showMoreHref}
             className="px-6 py-3 rounded-full bg-charcoal text-white font-bold hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 flex items-center gap-2 group"
