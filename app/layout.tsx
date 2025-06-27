@@ -46,6 +46,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     type: "website"
   },
+  icons: {
+    icon: "/favicon.ico",
+  },
   themeColor: "#b5f5e6"
 };
 
