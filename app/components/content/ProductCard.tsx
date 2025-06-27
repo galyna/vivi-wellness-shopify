@@ -14,14 +14,13 @@ const ProductCard = ({ slug, title, image, category, price, description }: Produ
   const img = image || "/placeholder.jpg";
   return (
     <Link href={`/products/${slug}`} className="block h-full group cursor-pointer">
-      <div className="bg-softgray rounded-2xl shadow-md overflow-hidden flex flex-col h-full group-hover:shadow-lg transition">
-        <div className="relative">
+      <div className="bg-softgray rounded-2xl shadow-md overflow-hidden flex flex-col h-full min-h-[420px] max-w-[370px] w-full group-hover:shadow-lg transition">
+        <div className="relative h-60 w-full">
           <Image
             src={img}
             alt={title}
-            width={400}
-            height={320}
-            className="w-full h-80 object-cover"
+            fill
+            className="object-cover object-center"
           />
           <span className="absolute top-3 left-3  bg-mint text-green-900 text-xs font-bold px-3 py-1 rounded">{category}</span>
         </div>

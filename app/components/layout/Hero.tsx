@@ -1,27 +1,18 @@
 import React from "react";
 import Image from "next/image";
-import { client } from "@/lib/sanityApi";
+import { getCatalogHeroData } from "@/lib/sanityApi";
 
-// Грубо: получаем первый hero-документ (можно доработать под slug/id)
-async function fetchHero() {
-  const [hero] = await client.fetch(`*[_type == "hero"][0...1]{
-    title,
-    subtitle,
-    ctaText,
-    ctaUrl,
-    mainImage { asset->{url}, alt },
-  }`);
-  return hero;
-}
+// Пример: Hero получает id через пропсы или хардкод
+const HERO_ID = "hero-1"; // или другой id из Sanity
 
 const Hero = async () => {
-  const hero = await fetchHero();
+  const hero = await getCatalogHeroData(HERO_ID);
   return (
     <section className="relative w-full h-[60vh] md:h-[70vh] text-white">
-      {hero?.mainImage?.asset?.url && (
+      {hero?.image && (
         <Image
-          src={hero.mainImage.asset.url}
-          alt={hero.mainImage.alt || "Hero"}
+          src={hero.image}
+          alt={hero.title || "Hero"}
           fill
           className="object-cover object-center"
           priority

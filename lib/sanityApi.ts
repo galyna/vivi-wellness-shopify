@@ -143,3 +143,15 @@ export async function getTips() {
   }`);
 }
 
+// Универсальный GROQ-запрос для hero блока каталога
+export async function getCatalogHeroData(id: string) {
+  const query = `*[_type == "hero" && _id == $id][0]{
+    title,
+    subtitle,
+    "image": mainImage.asset->url,
+    ctaText,
+    ctaUrl
+  }`;
+  return client.fetch(query, { id });
+}
+

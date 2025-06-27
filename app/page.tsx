@@ -2,11 +2,12 @@ import Hero from "./components/layout/Hero";
 import ArticleCard from "./components/content/ArticleCard";
 import RecipeCard from "./components/content/RecipeCard";
 import ProductCard from "./components/content/ProductCard";
-import CardsSection from "./components/content/CardsSection";
+import CardsSection from "./components/layout/CardsSection";
 import BubbleChat from "./components/chat";
 import { getArticles, getRecipes, getProducts } from "@/lib/sanityApi";
 import { Article, Recipe, Product } from "@/types";
 import Image from "next/image";
+import InspireHero from "./components/layout/InspireHero";
 
 
 export const revalidate = 3600;
@@ -34,6 +35,7 @@ export default async function HomePage() {
             showMoreHref="/products"
             showMoreText="See Full Catalog"
           />
+          <InspireHero id="hero-inspire-1" />
           <CardsSection
             title="Featured Recipes"
             items={recipes.map((r: Recipe) => ({ ...r, image: r.cardImage?.asset?.url, category: r.category || 'Uncategorized' }))}
@@ -41,6 +43,7 @@ export default async function HomePage() {
             showMoreHref="/recipes"
             showMoreText="Explore Recipes"
           />
+           <InspireHero id="hero-inspire-2" reverse={true} />
           <CardsSection
             title="Latest Articles"
             items={articles.map((a: Article) => ({ ...a, image: a.cardImage?.asset?.url, category: a.category || 'Uncategorized' }))}

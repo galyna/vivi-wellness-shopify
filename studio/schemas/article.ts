@@ -1,13 +1,13 @@
 export default {
-  name: 'article',
-  title: 'Article',
-  type: 'document',
-  fields: [
-    { name: 'title', type: 'string', title: 'Title' },
-    { name: 'slug', type: 'slug', title: 'Slug', options: { source: 'title' } },
+    name: 'article',
+    title: 'Article',
+    type: 'document',
+    fields: [
+      { name: 'title', type: 'string', title: 'Title' },
+      { name: 'slug', type: 'slug', title: 'Slug', options: { source: 'title' } },
     { name: 'intro', type: 'text', title: 'Short Introduction' },
-    {
-      name: 'mainImage',
+      {
+        name: 'mainImage',
       type: 'image',
       title: 'Hero Image',
       options: { hotspot: true },
@@ -15,7 +15,7 @@ export default {
     },
     {
       name: 'cardImage',
-      type: 'image',
+        type: 'image',
       title: 'Card Image',
       options: { hotspot: true },
       fields: [{ name: 'alt', type: 'string', title: 'Alt text' }]
@@ -35,5 +35,5 @@ export default {
       title: 'Recipes'
     },
     { name: 'mainImagePrompt', type: 'string', title: 'Main Image Prompt' }
-  ]
-}
+    ]
+  }

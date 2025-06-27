@@ -13,26 +13,28 @@ export default function RecipesCatalogClient({ recipes, categories, selectedCate
   const router = useRouter();
   const filtered = selectedCategory ? recipes.filter((r) => r.category === selectedCategory) : recipes;
   return (
-    <main className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-charcoal">Recipes Catalog</h1>
-      <form className="mb-6 flex gap-4 items-center">
-        <label htmlFor="category" className="font-bold">Category:</label>
-        <select
-          id="category"
-          name="category"
-          className="border rounded px-3 py-2"
-          value={selectedCategory}
-          onChange={e => {
-            router.push(e.target.value ? `?category=${e.target.value}` : "");
-          }}
+    <main className="max-w-6xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6 text-charcoal text-center">Recipes Catalog</h1>
+      <div className="mb-6 flex gap-2 items-center flex-wrap justify-center">
+        <button
+          type="button"
+          className={`px-4 py-2 rounded-full font-bold border transition-colors ${!selectedCategory ? 'bg-charcoal text-white' : 'bg-white text-charcoal border-charcoal hover:bg-charcoal/10'}`}
+          onClick={() => router.push(window.location.pathname)}
         >
-          <option value="">All</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
-      </form>
-      <div className="flex flex-wrap gap-6 justify-center">
+          All
+        </button>
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            type="button"
+            className={`px-4 py-2 rounded-full font-bold border transition-colors ${selectedCategory === cat ? 'bg-charcoal text-white' : 'bg-white text-charcoal border-charcoal hover:bg-charcoal/10'}`}
+            onClick={() => router.push(`?category=${cat}`)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
         {filtered.map((recipe) => (
           <RecipeCard
             key={recipe._id}
