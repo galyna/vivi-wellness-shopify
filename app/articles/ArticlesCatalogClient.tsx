@@ -1,8 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
-import ArticleCard from "../components/content/ArticleCard";
 import { Article } from "@/types";
 import Image from "next/image";
+import UniversalCard from "../components/content/UniversalCard";
 
 interface Props {
   articles: Article[];
@@ -59,17 +59,12 @@ export default function ArticlesCatalogClient({
             </button>
           ))}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-8 lg:gap-12">
           {filtered.map((article) => (
-            <ArticleCard
+            <UniversalCard
               key={article._id}
-              slug={article.slug}
-              title={article.title}
-              description={
-                typeof article.body === "string" ? article.body : "Read more..."
-              }
-              category={article.category || "Uncategorized"}
-              image={article.mainImage?.asset?.url || "/placeholder.jpg"}
+              type="article"
+              data={article}
             />
           ))}
         </div>

@@ -1,26 +1,22 @@
 import Hero from "./components/layout/Hero";
-import ArticleCard from "./components/content/ArticleCard";
-import RecipeCard from "./components/content/RecipeCard";
-import ProductCard from "./components/content/ProductCard";
-import CardsSection from "./components/layout/CardsSection";
 import BubbleChat from "./components/chat";
-import { getArticles, getRecipes, getProducts } from "@/lib/sanityApi";
-import { Article, Recipe, Product } from "@/types";
 import Image from "next/image";
-import InspireHero from "./components/layout/InspireHero";
+import { Suspense } from "react";
+import ProductsSection from "./components/sections/ProductsSection";
+import RecipesSection from "./components/sections/RecipesSection";
+import ArticlesSection from "./components/sections/ArticlesSection";
+import InspireHero from "./components/content/InspireHero";
 
+function SkeletonSection({ title }: { title: string }) {
+  return <div className="min-h-[300px] flex items-center justify-center text-gray-400">{title} loading...</div>;
+}
 
-export const revalidate = 3600;
-
-export default async function HomePage() {
-  const articles = await getArticles();
-  const recipes = await getRecipes();
-  const products = await getProducts();
+export default function HomePage() {
   return (
     <main>
       <Hero />
       <div className="relative">
-      <Image
+        <Image
           src="/bg2.jpg"
           alt="Background"
           fill
@@ -28,29 +24,21 @@ export default async function HomePage() {
           priority={false}
         />
         <div className="relative z-10">
-          <CardsSection
-            title="Featured Products"
-            items={products.map((p: Product) => ({ ...p, image: p.cardImage?.asset?.url, category: p.category || 'Uncategorized' }))}
-            CardComponent={ProductCard}
-            showMoreHref="/products"
-            showMoreText="See Full Catalog"
-          />
-          <InspireHero id="hero-inspire-1" />
-          <CardsSection
-            title="Featured Recipes"
-            items={recipes.map((r: Recipe) => ({ ...r, image: r.cardImage?.asset?.url, category: r.category || 'Uncategorized' }))}
-            CardComponent={RecipeCard}
-            showMoreHref="/recipes"
-            showMoreText="Explore Recipes"
-          />
-           <InspireHero id="hero-inspire-2" reverse={true} />
-          <CardsSection
-            title="Latest Articles"
-            items={articles.map((a: Article) => ({ ...a, image: a.cardImage?.asset?.url, category: a.category || 'Uncategorized' }))}
-            CardComponent={ArticleCard}
-            showMoreHref="/articles"
-            showMoreText="Read More"
-          />
+          <Suspense fallback={<SkeletonSection title="Products" />}>
+            <ProductsSection />
+          </Suspense>
+          <Suspense fallback={<SkeletonSection title="Inspire" />}>
+            <InspireHero id="hero-inspire-1" />
+          </Suspense>
+          <Suspense fallback={<SkeletonSection title="Recipes" />}>
+            <RecipesSection />
+          </Suspense>
+          <Suspense fallback={<SkeletonSection title="Inspire" />}>
+            <InspireHero id="hero-inspire-2" reverse />
+          </Suspense>
+          <Suspense fallback={<SkeletonSection title="Articles" />}>
+            <ArticlesSection />
+          </Suspense>
         </div>
       </div>
       <BubbleChat />

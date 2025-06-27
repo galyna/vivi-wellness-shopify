@@ -1,8 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
-import RecipeCard from "../components/content/RecipeCard";
 import { Recipe } from "@/types";
 import Image from "next/image";
+import UniversalCard from "../components/content/UniversalCard";
 
 interface Props {
   recipes: Recipe[];
@@ -59,14 +59,12 @@ export default function RecipesCatalogClient({
             </button>
           ))}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-8 lg:gap-12">
           {filtered.map((recipe) => (
-            <RecipeCard
+            <UniversalCard
               key={recipe._id}
-              slug={recipe.slug}
-              title={recipe.title}
-              ingredients={recipe.ingredients}
-              category={recipe.category || "Uncategorized"}
+              type="recipe"
+              data={recipe}
             />
           ))}
         </div>

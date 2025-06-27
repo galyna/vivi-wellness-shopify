@@ -48,8 +48,7 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/favicon.ico",
-  },
-  themeColor: "#b5f5e6"
+  }
 };
 
 
@@ -60,7 +59,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-softgray`}>
+      <body 
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-softgray`}
+        suppressHydrationWarning={true}
+      >
         <Header />
         <main className="flex-1">
           {children}

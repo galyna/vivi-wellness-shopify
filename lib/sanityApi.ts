@@ -1,8 +1,8 @@
 import client from './sanity';
 export { client };
 
-export async function getArticles() {
-  return client.fetch(`*[_type == "article"] | order(_createdAt desc){
+export async function getArticles(limit?: number) {
+  return client.fetch(`*[_type == "article"] | order(_createdAt desc)${limit ? ` [0...${limit}]` : ''}{
     _id,
     title,
     "slug": slug.current,
@@ -43,8 +43,8 @@ export async function getArticleBySlug(slug: string) {
   }`, { slug });
 }
 
-export async function getRecipes() {
-  return client.fetch(`*[_type == "recipe"] | order(_createdAt desc){
+export async function getRecipes(limit?: number) {
+  return client.fetch(`*[_type == "recipe"] | order(_createdAt desc)${limit ? ` [0...${limit}]` : ''}{
     _id,
     title,
     "slug": slug.current,
@@ -93,8 +93,8 @@ export async function getRecipeBySlug(slug: string) {
   }`, { slug });
 }
 
-export async function getProducts() {
-  return client.fetch(`*[_type == "product"] | order(_createdAt desc){
+export async function getProducts(limit?: number) {
+  return client.fetch(`*[_type == "product"] | order(_createdAt desc)${limit ? ` [0...${limit}]` : ''}{
     _id,
     title,
     "slug": slug.current,

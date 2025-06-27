@@ -1,8 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
-import ProductCard from "../components/content/ProductCard";
 import { Product } from "@/types";
 import Image from "next/image";
+import UniversalCard from "../components/content/UniversalCard";
 
 interface Props {
   products: Product[];
@@ -59,16 +59,12 @@ export default function ProductsCatalogClient({
             </button>
           ))}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-8 lg:gap-12">
           {filtered.map((product) => (
-            <ProductCard
+            <UniversalCard
               key={product._id}
-              slug={product.slug}
-              title={product.title}
-              description={product.description}
-              price={product.price}
-              category={product.category}
-              image={product.mainImage?.asset?.url || "/placeholder.jpg"}
+              type="product"
+              data={product}
             />
           ))}
         </div>
