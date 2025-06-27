@@ -13,8 +13,8 @@ function CardsSection<T extends object>({ title, items, CardComponent, showMoreH
   return (
     <section className="mb-4 relative">
        
-      <div className="max-w-7xl mx-auto px-8 py-8 flex flex-col min-h-[600px]">
-        <h2 className="text-2xl font-bold mb-4 text-charcoal font-bold, tracking-wide, letter-spacing">{title}</h2>
+      <div className=" px-8 lg:px-16 py-8 flex flex-col min-h-[600px] space-y-8">
+        <h2 className="text-2xl font-bold mb-4 text-charcoal tracking-wide letter-spacing text-center">{title}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-16 flex-1 items-stretch">
           {items.slice(0, 3).map((item, idx) => (
             <div key={item._id ?? idx} className={`h-full ${idx === 2 ? 'block md:hidden xl:block' : 'block'}`}>

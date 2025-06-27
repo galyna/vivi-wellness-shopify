@@ -14,7 +14,7 @@ const ProductCard = ({ slug, title, image, category, price, description }: Produ
   const img = image || "/placeholder.jpg";
   return (
     <Link href={`/products/${slug}`} className="block h-full group cursor-pointer">
-      <div className="bg-softgray rounded-2xl shadow-md overflow-hidden flex flex-col h-full min-h-[420px] max-w-[370px] w-full group-hover:shadow-lg transition">
+      <div className="bg-softgray rounded-2xl shadow-md overflow-hidden flex flex-col h-full group-hover:shadow-lg transition">
         <div className="relative h-60 w-full">
           <Image
             src={img}

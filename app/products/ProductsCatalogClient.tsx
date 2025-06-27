@@ -22,13 +22,13 @@ export default function ProductsCatalogClient({
   return (
     <main className=" relative">
       <Image
-        src="/bg.jpg"
+        src="/bg2.jpg"
         alt="Background"
         fill
         className="object-cover object-center opacity-15 blur-lg pointer-events-none select-none z-0"
         priority={false}
       />
-      <section className="max-w-6xl mx-auto px-4 py-8 relative z-10">
+      <section className="mx-auto px-8 py-8 lg:px-16 relative z-10 space-y-8">
         <h1 className="text-3xl font-bold mb-6 text-charcoal text-center">
           Products Catalog
         </h1>
@@ -59,7 +59,7 @@ export default function ProductsCatalogClient({
             </button>
           ))}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-10">
           {filtered.map((product) => (
             <ProductCard
               key={product._id}

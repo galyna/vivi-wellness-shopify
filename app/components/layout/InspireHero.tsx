@@ -12,7 +12,7 @@ const InspireHero = async ({ id, reverse = false }: InspireHeroProps) => {
   return (
     <section className="w-full  py-12 md:py-20">
       <div
-        className={`max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-20 px-4 md:px-8 ${reverse ? "md:flex-row-reverse" : ""}`}
+        className={`max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-20 px-4 md:px-8 ${reverse ? "md:flex-row-reverse" : ""}`}
       >
         {/* Картинка */}
         <div className="w-full md:w-1/2 flex-shrink-0">
