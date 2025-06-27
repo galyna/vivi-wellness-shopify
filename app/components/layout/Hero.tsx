@@ -8,7 +8,7 @@ const HERO_ID = "hero-1"; // или другой id из Sanity
 const Hero = async () => {
   const hero = await getCatalogHeroData(HERO_ID);
   return (
-    <section className="relative w-full h-[60vh] md:h-[70vh] text-white">
+    <section className="relative w-full h-min-[500px] h-[90vh] lg:h-[70vh] text-white pt-20">
       {hero?.image && (
         <Image
           src={hero.image}

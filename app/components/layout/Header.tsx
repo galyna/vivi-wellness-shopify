@@ -32,8 +32,8 @@ const Header = () => {
     <header
       className={`fixed top-0 left-0 w-full z-30 transition-all duration-500 
         ${show ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
-        ${scrolled ? "backdrop-blur-md bg-white/70 border-b border-gray-200" : "bg-transparent border-none"}
-        ${scrolled ? "shadow-md" : "shadow-none"}
+        backdrop-blur-md bg-mint/60
+        ${scrolled ? "border-b border-gray-200 shadow-md" : "border-none shadow-none"}
       `}
       style={{
         // smooth fade in/out

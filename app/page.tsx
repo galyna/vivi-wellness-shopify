@@ -24,7 +24,7 @@ export default async function HomePage() {
           src="/bg2.jpg"
           alt="Background"
           fill
-          className="object-cover object-center opacity-10 blur-lg pointer-events-none select-none z-0"
+          className="object-cover object-center opacity-15 blur-lg pointer-events-none select-none z-0"
           priority={false}
         />
         <div className="relative z-10">

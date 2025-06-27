@@ -23,7 +23,7 @@ const CatalogHero = async ({ id }: CatalogHeroProps) => {
         />
       )}
       {/* Тёмный градиент как в Hero */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
       {/* Контент снизу слева */}
       <div className="relative z-10 h-full flex flex-col justify-end items-start p-8 md:p-16">
         <h1 className="text-4xl md:text-6xl font-bold mb-4">
