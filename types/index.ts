@@ -37,6 +37,8 @@ export interface Article {
   category?: string;
   productsIds?: string[];
   recipesIds?: string[];
+  publishedAt?: string;
+  _createdAt?: string;
 }
 
 export interface Recipe {

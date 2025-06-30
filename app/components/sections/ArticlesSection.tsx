@@ -3,7 +3,7 @@ import { getArticles } from "@/lib/sanityApi";
 import { Article } from "@/types";
 
 export default async function ArticlesSection() {
-  const articles = await getArticles();
+  const articles = await getArticles(3);
   return (
     <CardsSection
       title="Latest Articles"

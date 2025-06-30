@@ -3,10 +3,11 @@ import { Product } from "@/types";
 import ProductsCatalogClient from "./ProductsCatalogClient";
 import CatalogHero from "../components/layout/CatalogHero";
 
-export default async function ProductsCatalogPage({ searchParams }: { searchParams?: { category?: string } }) {
+export default async function ProductsCatalogPage({ searchParams }: { searchParams?: Promise<{ category?: string }> }) {
   const products: Product[] = await getProducts();
   const categories: string[] = Array.from(new Set(products.map((p) => p.category).filter(Boolean))) as string[];
-  const selectedCategory = searchParams?.category || '';
+  const params = await searchParams;
+  const selectedCategory = params?.category || '';
   return (
     <>
       {/* Hero-блок каталога продуктов */}

@@ -3,10 +3,11 @@ import { Recipe } from "@/types";
 import RecipesCatalogClient from "./RecipesCatalogClient";
 import CatalogHero from "../components/layout/CatalogHero";
 
-export default async function RecipesCatalogPage({ searchParams }: { searchParams?: { category?: string } }) {
+export default async function RecipesCatalogPage({ searchParams }: { searchParams?: Promise<{ category?: string }> }) {
   const recipes: Recipe[] = await getRecipes();
   const categories: string[] = Array.from(new Set(recipes.map((r) => r.category).filter(Boolean))) as string[];
-  const selectedCategory = searchParams?.category || '';
+  const params = await searchParams;
+  const selectedCategory = params?.category || '';
   return (
     <>
       {/* Hero-блок каталога рецептов */}

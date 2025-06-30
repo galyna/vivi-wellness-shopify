@@ -1,18 +1,22 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { Article, Recipe, Product } from "@/types";
+import { FC, useState } from "react";
+import { useFavoritesStore, FavoriteType } from "@/app/store/favoritesStore";
+import { useCartStore } from "@/app/store/cartStore";
+import { useCartSidebarStore } from "@/app/store/cartSidebarStore";
 
-type CardType = "article" | "recipe" | "product";
-
-interface UniversalCardProps<T extends CardType = CardType> {
-  type: T;
-  data: T extends "article" ? Article : T extends "recipe" ? Recipe : Product;
+interface UniversalCardProps<T> {
+  type: "product" | "article" | "recipe";
+  data: T;
 }
 
-const UniversalCard = <T extends CardType>({
-  type,
-  data,
-}: UniversalCardProps<T>) => {
+const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({ type, data }) => {
+  const { addFavorite, removeFavorite, isFavorite } = useFavoritesStore();
+  const [showToast, setShowToast] = useState(false);
+  const { addToCart } = useCartStore();
+  const { openSidebar } = useCartSidebarStore();
   if (!data) return null;
   // Универсальные поля
   const slug = data.slug;
@@ -24,6 +28,7 @@ const UniversalCard = <T extends CardType>({
   else if ("mainImage" in data && data.mainImage?.asset?.url)
     image = data.mainImage.asset.url;
   const category = data.category || "Uncategorized";
+  const price = type === "product" ? (data as Product).price : undefined;
 
   // Ссылки
   const href =
@@ -33,80 +38,72 @@ const UniversalCard = <T extends CardType>({
       ? `/recipes/${slug}`
       : `/products/${slug}`;
 
+  const favType = type as FavoriteType;
+  const favId = data._id;
+  const favorite = isFavorite(favId, favType);
+
+  const handleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (favorite) {
+      removeFavorite(favId, favType);
+    } else {
+      addFavorite({ id: favId, type: favType });
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 1200);
+    }
+  };
+
   return (
     <Link href={href} className="block h-full group cursor-pointer">
-      <div className="bg-softgray rounded-2xl shadow-md overflow-hidden flex flex-col h-full group-hover:shadow-lg transition">
-        <div
-          className={`relative ${
-            type === "product" ? "h-60 md:h-80 w-full" : ""
-          }`}
-        >
+      <div className="relative overflow-hidden flex flex-col h-full">
+        {/* Фото + иконка лайка */}
+        <div className="relative w-full aspect-[4/3]">
           <Image
             src={image}
             alt={title}
-            width={type === "product" ? undefined : 400}
-            height={type === "product" ? undefined : 320}
-            fill={type === "product"}
-            className={`object-cover object-center w-full ${
-              type !== "product" ? "h-60 md:h-80" : ""
-            }`}
+            fill
+            className="object-cover object-center rounded-3xl"
+            priority={false}
           />
-          <span className="absolute top-3 left-3 bg-mint text-green-900 text-xs font-bold px-3 py-1 rounded">
-            {category}
-          </span>
+          {/* Сердце */}
+          <button
+            className={`absolute top-3 right-3 rounded-full p-2 shadow z-10 transition ${favorite ? "bg-coral/90" : "bg-white/80"}`}
+            tabIndex={-1}
+            aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
+            onClick={handleFavorite}
+          >
+            <svg width="22" height="22" fill={favorite ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor" className={favorite ? "text-white" : "text-gray-400 group-hover:text-coral transition"}>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z" />
+            </svg>
+          </button>
+          {showToast && (
+            <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-coral text-white text-xs px-3 py-1 rounded-full shadow animate-fade-in-out pointer-events-none z-20">
+              Додано до обраного!
+            </div>
+          )}
         </div>
-        <div className="p-5 flex-1 flex flex-col">
-          {/* Специфичные поля */}
-          {type === "product" && (
-            <div className="text-md text-coral font-bold mb-2">
-              ${(data as Product).price}
-            </div>
-          )}
-          <div className="font-bold text-lg text-charcoal mb-1">{title}</div>
-          {type === "article" && (data as Article).intro && (
-            <div className="text-xs text-gray-500 mb-2 line-clamp-2">
-              {(data as Article).intro}
-            </div>
-          )}
-          {type === "recipe" && (data as Recipe).intro && (
-            <div className="text-xs text-gray-500 mb-2 line-clamp-2">
-              {(data as Recipe).intro}
-            </div>
-          )}
-          {type === "recipe" && (
-            <div className="flex flex-wrap gap-2 text-xs text-gray-500 mb-2">
-              {(data as Recipe).duration && (
-                <span>⏱ {(data as Recipe).duration}</span>
-              )}
-              {(data as Recipe).difficulty && (
-                <span>• {(data as Recipe).difficulty}</span>
-              )}
-              {(data as Recipe).servings !== undefined && (
-                <span>• {(data as Recipe).servings} servings</span>
-              )}
-            </div>
-          )}
-          {type === "recipe" &&
-            (data as Recipe).ingredients &&
-            (data as Recipe).ingredients.length > 0 && (
-              <div className="text-xs text-gray-500 mb-2 line-clamp-1">
-                {(data as Recipe).ingredients.slice(0, 3).join(", ")}
-              </div>
-            )}
-          {type === "product" && (data as Product).description && (
-            <div className="text-sm text-gray-500 mb-2 line-clamp-2">
-              {(data as Product).description}
-            </div>
-          )}
-          <div className="mt-auto">
-            <span className="text-coral font-semibold hover:underline">
-              {type === "article"
-                ? "Read More"
-                : type === "recipe"
-                ? "View Recipe"
-                : "View Product"}
-            </span>
+        {/* Контент */}
+        <div className="p-4 flex-1 flex flex-col justify-between">
+          <div>
+            <div className="text-xs text-gray-400 mb-1 font-medium">{category}</div>
+            <div className="font-bold text-lg text-charcoal mb-1 line-clamp-2">{title}</div>
           </div>
+          {price && (
+            <div className="text-base font-bold text-coral mt-2">${price}</div>
+          )}
+          {/* Add to cart button */}
+          {type === "product" && (
+            <button
+              className="mt-3 w-2/5 py-2 rounded-full border-2 border-coral text-coral font-bold hover:text-white hover:bg-coral/50 transition"
+              onClick={e => {
+                e.preventDefault();
+                addToCart(favId, 1);
+                openSidebar();
+              }}
+            >
+              Додати в кошик
+            </button>
+          )}
         </div>
       </div>
     </Link>

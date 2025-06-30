@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
+import CartSidebarClient from "./components/cart/CartSidebarClient";
+import ReactQueryProvider from "@/app/providers/ReactQueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,7 +53,6 @@ export const metadata: Metadata = {
   }
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -64,9 +65,12 @@ export default function RootLayout({
         suppressHydrationWarning={true}
       >
         <Header />
-        <main className="flex-1">
-          {children}
-        </main>
+        <CartSidebarClient />
+        <ReactQueryProvider>
+          <main className="flex-1 pt-[72px]">
+            {children}
+          </main>
+        </ReactQueryProvider>
         <Footer />
       </body>
     </html>

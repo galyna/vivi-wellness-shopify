@@ -8,8 +8,9 @@ import Image from 'next/image'
 import { client } from '@/lib/sanityApi'
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
 
-export default async function ArticlePage({ params }: { params: { slug: string } }) {
-  const article: Article | null = await getArticleBySlug(params.slug);
+export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const article: Article | null = await getArticleBySlug(slug);
   if (!article) return notFound();
   const urlFor = (src: SanityImageSource) => imageUrlBuilder(client).image(src)
   function isBlock(block: unknown): block is import("@portabletext/types").PortableTextBlock {

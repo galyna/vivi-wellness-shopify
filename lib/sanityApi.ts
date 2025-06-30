@@ -18,7 +18,9 @@ export async function getArticles(limit?: number) {
     body,
     category,
     productsIds[]->{_id},
-    recipesIds[]->{_id}
+    recipesIds[]->{_id},
+    publishedAt,
+    _createdAt
   }`);
 }
 
@@ -39,7 +41,9 @@ export async function getArticleBySlug(slug: string) {
     body,
     category,
     productsIds[]->{_id},
-    recipesIds[]->{_id}
+    recipesIds[]->{_id},
+    publishedAt,
+    _createdAt
   }`, { slug });
 }
 
@@ -154,4 +158,5 @@ export async function getCatalogHeroData(id: string) {
   }`;
   return client.fetch(query, { id });
 }
+
 

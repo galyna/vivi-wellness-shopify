@@ -1,4 +1,3 @@
-// import { StreamingTextResponse } from 'ai';
 import { ChatCompletionRequestMessage } from 'openai-edge';
 import systemPrompt from "@/lib/system-promt";
 
@@ -13,7 +12,7 @@ export async function POST(req: Request) {
     headers: {
       'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
       'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://openrouter.ai', // обязательно!
+      'HTTP-Referer': process.env.HTTP_REFERER || 'https://openrouter.ai', // обязательно!
       'X-Title': 'Vivi AI Chat', // название приложения
     },
     body: JSON.stringify({
