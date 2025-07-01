@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function ConfirmStep() {
-  const { order, shipping, payment, setStep, setOrderId, reset } = useCheckoutStore();
+  const { order, shipping, payment, setStep, setOrderId } = useCheckoutStore();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -31,7 +31,7 @@ export default function ConfirmStep() {
     const orderId = Math.floor(Math.random() * 1000000).toString().padStart(6, "0");
     setOrderId(orderId);
     router.push("/checkout/confirmation");
-     reset(); // if you want to reset after submit
+     
   };
 
   return (
