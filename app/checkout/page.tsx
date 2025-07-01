@@ -8,20 +8,20 @@ import PaymentStep from "./steps/PaymentStep";
 import ConfirmStep from "./steps/ConfirmStep";
 
 const steps = [
-  { label: "Кошик" },
-  { label: "Доставка" },
-  { label: "Оплата" },
-  { label: "Підтвердження" },
+  { label: "Cart" },
+  { label: "Shipping" },
+  { label: "Payment" },
+  { label: "Confirmation" },
 ];
 
 export default function CheckoutPage() {
   const { step, setOrder} = useCheckoutStore();
   const { items } = useCartStore();
 
-  // При вході на сторінку — ініціалізуємо order з кошика
+  // On page enter — initialize order from cart
   useEffect(() => {
     setOrder(items);
-    // reset(); // якщо треба скидати flow при кожному вході
+    // reset(); // if you want to reset flow on every entry
   }, []);
 
   return (

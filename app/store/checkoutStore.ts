@@ -34,11 +34,11 @@ export interface CheckoutState {
 }
 
 const defaultShipping: ShippingData = {
-  fullName: "Іван Іванов",
+  fullName: "Petro Petrenko",
   phone: "+380991234567",
   email: "test@mail.com",
-  city: "Київ",
-  address: "вул. Демо, 1",
+  city: "Kyiv",
+  address: "Demo street, 1",
   delivery: "courier",
 };
 

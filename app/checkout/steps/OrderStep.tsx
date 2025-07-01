@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { getProducts } from "@/lib/sanityApi";
 import { useEffect, useState } from "react";
 import { Product } from "@/types";
+import Image from "next/image";
 
 export default function OrderStep() {
   const { order, setStep } = useCheckoutStore();
@@ -37,7 +38,13 @@ export default function OrderStep() {
           if (!prod) return null;
           return (
             <div key={item.productId} className="flex items-center gap-4 border-b pb-4">
-              <img src={prod.cardImage?.asset?.url || prod.mainImage?.asset?.url || "/placeholder.jpg"} alt={prod.title} className="w-16 h-16 object-cover rounded-xl" />
+              <Image
+                src={prod.cardImage?.asset?.url || prod.mainImage?.asset?.url || "/placeholder.jpg"}
+                alt={prod.title}
+                width={64}
+                height={64}
+                className="w-16 h-16 object-cover rounded-xl"
+              />
               <div className="flex-1">
                 <div className="font-bold text-charcoal">{prod.title}</div>
                 <div className="text-coral font-bold">${prod.price}</div>
