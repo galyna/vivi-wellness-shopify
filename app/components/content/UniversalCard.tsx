@@ -93,7 +93,7 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({ typ
           )}
           {showToast && (
             <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-coral text-white text-xs px-3 py-1 rounded-full shadow animate-fade-in-out pointer-events-none z-20">
-              Додано до обраного!
+              Added to favorites!
             </div>
           )}
         </div>
@@ -116,7 +116,7 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({ typ
                 openSidebar();
               }}
             >
-              Додати в кошик
+              Add to cart
             </button>
           )}
         </div>

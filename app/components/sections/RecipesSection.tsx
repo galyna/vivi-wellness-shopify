@@ -3,7 +3,7 @@ import { getRecipes } from "@/lib/sanityApi";
 import { Recipe } from "@/types";
 
 export default async function RecipesSection() {
-  const recipes = await getRecipes(3);
+  const recipes = await getRecipes(2);
   return (
     <CardsSection
       title="Featured Recipes"

@@ -30,11 +30,11 @@ export default function CartSidebar() {
       {/* Sidebar */}
       <aside className={`absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl p-6 flex flex-col transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold">Кошик</h2>
+          <h2 className="text-xl font-bold">Cart</h2>
           <button onClick={closeSidebar} className="text-2xl text-coral hover:text-charcoal">×</button>
         </div>
         {items.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-gray-400">Кошик порожній</div>
+          <div className="flex-1 flex flex-col items-center justify-center text-gray-400">Cart is empty</div>
         ) : (
           <div className="flex-1 overflow-y-auto">
             {items.map(item => {
@@ -61,15 +61,15 @@ export default function CartSidebar() {
         {/* Total & actions */}
         <div className="mt-6 border-t pt-4">
           <div className="flex justify-between items-center mb-4">
-            <span className="font-semibold text-lg">Всього:</span>
+            <span className="font-semibold text-lg">Total:</span>
             <span className="font-bold text-2xl text-coral">${total}</span>
           </div>
           <div className="flex gap-2">
-            <button onClick={closeSidebar} className="flex-1 py-2 rounded-full bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300">Продовжити покупки</button>
-            <Link href="/cart" className="flex-1 py-2 rounded-full bg-coral text-white font-bold text-center hover:bg-coral/90" onClick={closeSidebar}>Перейти до кошика</Link>
+            <button onClick={closeSidebar} className="flex-1 py-2 rounded-full bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300">Continue shopping</button>
+            <Link href="/cart" className="flex-1 py-2 rounded-full bg-coral text-white font-bold text-center hover:bg-coral/90" onClick={closeSidebar}>Go to cart</Link>
           </div>
           {items.length > 0 && (
-            <button onClick={clearCart} className="mt-3 w-full py-2 rounded-full bg-gray-100 text-gray-500 font-medium hover:bg-gray-200">Очистити кошик</button>
+            <button onClick={clearCart} className="mt-3 w-full py-2 rounded-full bg-gray-100 text-gray-500 font-medium hover:bg-gray-200">Clear cart</button>
           )}
         </div>
       </aside>

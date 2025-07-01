@@ -5,14 +5,15 @@ import { useEffect, useState } from "react";
 import { Product } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
+import { useCartStore } from "@/app/store/cartStore";
 
 export default function OrderConfirmationPage() {
-  const { orderId, order, shipping, payment, } = useCheckoutStore();
+  const { orderId, order, shipping, payment, reset } = useCheckoutStore();
+  const clearCart = useCartStore(state => state.clearCart);
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     getProducts().then(setProducts);
-    // reset(); // if you want to reset after confirmation
   }, []);
 
   const getProduct = (id: string) => products.find(p => p._id === id);
@@ -83,7 +84,16 @@ export default function OrderConfirmationPage() {
           )}
         </div>
       </div>
-      <Link href="/products" className="inline-block mt-6 px-6 py-3 rounded-full bg-coral text-white font-bold text-lg hover:bg-coral/90 transition">Continue shopping</Link>
+      <Link
+        href="/products"
+        className="inline-block mt-6 px-6 py-3 rounded-full bg-coral text-white font-bold text-lg hover:bg-coral/90 transition"
+        onClick={() => {
+          reset();
+          clearCart();
+        }}
+      >
+        Continue shopping
+      </Link>
     </div>
   );
 } 
