@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Article, Recipe, Product } from "@/types";
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { useFavoritesStore, FavoriteType } from "@/app/store/favoritesStore";
 import { useCartStore } from "@/app/store/cartStore";
 import { useCartSidebarStore } from "@/app/store/cartSidebarStore";
@@ -10,16 +10,29 @@ import { useCartSidebarStore } from "@/app/store/cartSidebarStore";
 interface UniversalCardProps<T> {
   type: "product" | "article" | "recipe";
   data: T;
+  hideFavoriteButton?: boolean;
 }
 
-const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({ type, data }) => {
+const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({ type, data, hideFavoriteButton }) => {
   const { addFavorite, removeFavorite, isFavorite } = useFavoritesStore();
   const [showToast, setShowToast] = useState(false);
   const { addToCart } = useCartStore();
   const { openSidebar } = useCartSidebarStore();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
   if (!data) return null;
   // Универсальные поля
-  const slug = data.slug;
+  let slug = '';
+  if (typeof data.slug === 'string') {
+    slug = data.slug;
+  } else if (
+    data.slug &&
+    typeof data.slug === 'object' &&
+    'current' in data.slug &&
+    typeof (data.slug as { current: string }).current === 'string'
+  ) {
+    slug = (data.slug as { current: string }).current;
+  }
   const title = data.title;
   let image = "/placeholder.jpg";
   if ("image" in data && typeof data.image === "string") image = data.image;
@@ -66,16 +79,18 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({ typ
             priority={false}
           />
           {/* Сердце */}
-          <button
-            className={`absolute top-3 right-3 rounded-full p-2 shadow z-10 transition ${favorite ? "bg-coral/90" : "bg-white/80"}`}
-            tabIndex={-1}
-            aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
-            onClick={handleFavorite}
-          >
-            <svg width="22" height="22" fill={favorite ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor" className={favorite ? "text-white" : "text-gray-400 group-hover:text-coral transition"}>
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z" />
-            </svg>
-          </button>
+          {mounted && !hideFavoriteButton && (
+            <button
+              className={`absolute top-3 right-3 rounded-full p-2 shadow z-10 transition ${favorite ? "bg-coral/90" : "bg-white/80"}`}
+              tabIndex={-1}
+              aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
+              onClick={handleFavorite}
+            >
+              <svg width="22" height="22" fill={favorite ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor" className={favorite ? "text-white" : "text-gray-400 group-hover:text-coral transition"}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z" />
+              </svg>
+            </button>
+          )}
           {showToast && (
             <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-coral text-white text-xs px-3 py-1 rounded-full shadow animate-fade-in-out pointer-events-none z-20">
               Додано до обраного!

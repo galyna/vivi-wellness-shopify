@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getProducts } from "@/lib/sanityApi";
 import { Product } from "@/types";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function CartPage() {
   const { items, removeFromCart, updateQty, clearCart } = useCartStore();
@@ -35,7 +36,13 @@ export default function CartPage() {
               if (!prod) return null;
               return (
                 <div key={item.productId} className="flex items-center gap-4 border-b pb-4">
-                  <img src={prod.cardImage?.asset?.url || prod.mainImage?.asset?.url || "/placeholder.jpg"} alt={prod.title} className="w-20 h-20 object-cover rounded-xl" />
+                  <Image
+                    src={prod.cardImage?.asset?.url || prod.mainImage?.asset?.url || "/placeholder.jpg"}
+                    alt={prod.title}
+                    width={80}
+                    height={80}
+                    className="w-20 h-20 object-cover rounded-xl"
+                  />
                   <div className="flex-1">
                     <div className="font-bold text-charcoal text-lg">{prod.title}</div>
                     <div className="text-coral font-bold">${prod.price}</div>

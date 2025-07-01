@@ -32,8 +32,7 @@ export const useFavoritesStore = create<FavoritesState>()(
       clearFavorites: () => set({ favorites: [] }),
     }),
     {
-      name: "vivi-favorites-zustand",
-      skipHydration: true,
+      name: "vivi-favorites-zustand"
     }
   )
 ); 
