@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Product } from "@/types";
 import UniversalCard from "../components/content/UniversalCard";
 import CatalogToolbar from "../components/content/CatalogToolbar";
@@ -18,6 +18,7 @@ export default function ProductsCatalogClient({ products, categories, selectedCa
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [showAll, setShowAll] = useState(false);
+  const [toolbarAtTop, setToolbarAtTop] = useState(false);
 
   const filtered = useMemo(() => {
     let arr = products;
@@ -32,20 +33,30 @@ export default function ProductsCatalogClient({ products, categories, selectedCa
     );
   }, [products, search, sort, activeFilters]);
 
+  useEffect(() => {
+    const onScroll = () => {
+      setToolbarAtTop(window.scrollY > 0);
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <div>
-      <CatalogToolbar
-        onSearch={setSearch}
-        onSort={v => setSort(v as "asc" | "desc")}
-        onFilter={() => setFilterOpen(true)}
-        filterCount={Object.keys(activeFilters).filter(k => activeFilters[k as keyof typeof activeFilters]).length}
-        sortValue={sort}
-        searchValue={search}
-      />
-      <main className=" relative">
-        <section className="mx-auto px-8 py-8 lg:px-16 relative z-10 space-y-10 lg:space-y-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-8 lg:gap-12">
-            {(showAll ? filtered : filtered.slice(0, 9)).map((product) => (
+      <div className={`sticky ${toolbarAtTop ? "top-0 z-[999]" : "top-[56px] z-30"} bg-white`}>
+        <CatalogToolbar
+          onSearch={setSearch}
+          onSort={v => setSort(v as "asc" | "desc")}
+          onFilter={() => setFilterOpen(true)}
+          filterCount={Object.keys(activeFilters).filter(k => activeFilters[k as keyof typeof activeFilters]).length}
+          sortValue={sort}
+          searchValue={search}
+        />
+      </div>
+      <main>
+        <section className="mx-auto max-w-7xl px-8 py-8 lg:px-16 relative space-y-10 lg:space-y-12">
+          <div className="grid grid-cols-1 md:grid-cols-2  gap-4 md:gap-8 lg:gap-12">
+            {(showAll ? filtered : filtered.slice(0, 8)).map((product) => (
               <UniversalCard
                 key={product._id}
                 type="product"

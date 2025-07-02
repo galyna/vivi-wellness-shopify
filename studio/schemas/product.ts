@@ -5,6 +5,7 @@ export default {
   fields: [
     {name: 'title', type: 'string', title: 'Title'},
     {name: 'slug', type: 'slug', title: 'Slug', options: {source: 'title'}},
+    { name: 'mainImagePrompt', type: 'string', title: 'Main Image Prompt' },
     {
       name: 'mainImage',
       type: 'image',
@@ -19,16 +20,18 @@ export default {
         },
       ],
     },
-    {
-      name: 'cardImage',
-      type: 'image',
-      title: 'Card Image',
-      options: { hotspot: true },
-      fields: [{ name: 'alt', type: 'string', title: 'Alt text' }]
-    },
+    {name: 'color', type: 'string', title: 'Color'},
+    {name: 'size', type: 'string', title: 'Size'},
+    {name: 'material', type: 'string', title: 'Material'},
     {name: 'description', type: 'text', title: 'Description'},
     {name: 'category', type: 'string', title: 'Category'},
     {name: 'price', type: 'number', title: 'Price'},
+    {
+      name: 'galleryImagePrompts',
+      type: 'array',
+      of: [{type: 'string'}],
+      title: 'Gallery Image Prompts',
+    },
     {
       name: 'articlesIds',
       type: 'array',
@@ -41,6 +44,6 @@ export default {
       of: [{type: 'reference', to: [{type: 'recipe'}]}],
       title: 'Recipes',
     },
-    { name: 'mainImagePrompt', type: 'string', title: 'Main Image Prompt' },
+  
   ],
 }

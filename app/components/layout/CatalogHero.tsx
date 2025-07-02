@@ -11,7 +11,7 @@ const CatalogHero = async ({ id }: CatalogHeroProps) => {
   const data = await getCatalogHeroData(id);
   if (!data) return null;
   return (
-    <section className="w-full flex flex-col md:flex-row items-center justify-between bg-[#222] rounded-3xl p-6 md:p-12 mb-12 max-w-5xl mx-auto shadow-lg">
+    <section className="w-full  flex flex-col md:flex-row items-center justify-between bg-[#222] rounded-3xl p-6 md:p-12 mb-12 shadow-lg">
       {/* Text block */}
       <div className="flex-1 flex flex-col justify-center items-start text-white mb-6 md:mb-0 md:mr-8">
         <h1 className="text-3xl md:text-4xl font-bold mb-4">{data.title}</h1>

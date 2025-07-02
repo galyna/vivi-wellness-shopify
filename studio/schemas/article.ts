@@ -1,39 +1,58 @@
 export default {
-    name: 'article',
-    title: 'Article',
-    type: 'document',
-    fields: [
-      { name: 'title', type: 'string', title: 'Title' },
-      { name: 'slug', type: 'slug', title: 'Slug', options: { source: 'title' } },
-    { name: 'intro', type: 'text', title: 'Short Introduction' },
-      {
-        name: 'mainImage',
+  name: 'article',
+  title: 'Article',
+  type: 'document',
+  fields: [
+    {name: 'title', type: 'string', title: 'Title'},
+    {name: 'slug', type: 'slug', title: 'Slug', options: {source: 'title'}},
+    {name: 'intro', type: 'text', title: 'Short Introduction'},
+    {name: 'mainImagePrompt', type: 'string', title: 'Main Image Prompt'},
+    {
+      name: 'mainImage',
       type: 'image',
       title: 'Hero Image',
-      options: { hotspot: true },
-      fields: [{ name: 'alt', type: 'string', title: 'Alt text' }]
+      options: {hotspot: true},
+      fields: [{name: 'alt', type: 'string', title: 'Alt text'}],
+    },
+    {name: 'length', type: 'string', title: 'Length'},
+    {name: 'tone', type: 'string', title: 'Tone'},
+    {name: 'author', type: 'string', title: 'Author'},
+    {name: 'date', type: 'date', title: 'Date'},
+    {
+      name: 'galleryImagePrompts',
+      type: 'array',
+      of: [{type: 'string'}],
+      title: 'Gallery Image Prompts',
     },
     {
-      name: 'cardImage',
-        type: 'image',
-      title: 'Card Image',
-      options: { hotspot: true },
-      fields: [{ name: 'alt', type: 'string', title: 'Alt text' }]
+      name: 'bodyAdditional',
+      title: 'ContentBodyAdditional',
+      type: 'array',
+      of: [
+        {type: 'block'}, // стандартный rich text блок Sanity
+        {
+          type: 'image',
+          fields: [
+            {name: 'alt', type: 'string', title: 'Alt text'},
+            {name: 'prompt', type: 'string', title: 'Prompt'},
+          ],
+        },
+      ],
     },
-    { name: 'body', type: 'array', of: [{ type: 'block' }, { type: 'image' }], title: 'Content' },
-    { name: 'category', type: 'string', title: 'Category' },
+    {name: 'body', type: 'array', of: [{type: 'string'}], title: 'Content'},
+    {name: 'category', type: 'string', title: 'Category'},
     {
       name: 'productsIds',
       type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'product' }] }],
-      title: 'Products'
+      of: [{type: 'reference', to: [{type: 'product'}]}],
+      title: 'Products',
     },
     {
       name: 'recipesIds',
       type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'recipe' }] }],
-      title: 'Recipes'
+      of: [{type: 'reference', to: [{type: 'recipe'}]}],
+      title: 'Recipes',
     },
-    { name: 'mainImagePrompt', type: 'string', title: 'Main Image Prompt' }
-    ]
-  }
+   
+  ],
+}

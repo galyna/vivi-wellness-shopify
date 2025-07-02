@@ -1,7 +1,7 @@
 'use client';
 import React from "react";
 import { Article, Recipe, Product } from "@/types";
-import UniversalCard from "./UniversalCard";
+import UniversalCard from "../content/UniversalCard";
 
 type CardType = "article" | "recipe" | "product";
 type CardData = (Article | Recipe | Product) & { type: CardType; _id: string };

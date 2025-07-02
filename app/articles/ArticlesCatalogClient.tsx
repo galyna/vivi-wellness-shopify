@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Article } from "@/types";
 import Image from "next/image";
 import UniversalCard from "../components/content/UniversalCard";
@@ -24,6 +24,7 @@ export default function ArticlesCatalogClient({
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [showAll, setShowAll] = useState(false);
+  const [toolbarAtTop, setToolbarAtTop] = useState(false);
 
   const filtered = useMemo(() => {
     let arr = articles;
@@ -38,16 +39,26 @@ export default function ArticlesCatalogClient({
     );
   }, [articles, search, sort, activeFilters]);
 
+  useEffect(() => {
+    const onScroll = () => {
+      setToolbarAtTop(window.scrollY > 0);
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <div>
-      <CatalogToolbar
-        onSearch={setSearch}
-        onSort={v => setSort(v as "asc" | "desc")}
-        onFilter={() => setFilterOpen(true)}
-        filterCount={Object.keys(activeFilters).filter(k => activeFilters[k as keyof typeof activeFilters]).length}
-        sortValue={sort}
-        searchValue={search}
-      />
+      <div className={`sticky ${toolbarAtTop ? "top-0 z-[999]" : "top-[64px] z-30"} bg-white min-h-[64px]`}>
+        <CatalogToolbar
+          onSearch={setSearch}
+          onSort={v => setSort(v as "asc" | "desc")}
+          onFilter={() => setFilterOpen(true)}
+          filterCount={Object.keys(activeFilters).filter(k => activeFilters[k as keyof typeof activeFilters]).length}
+          sortValue={sort}
+          searchValue={search}
+        />
+      </div>
       <main className=" relative">
         <Image
           src="/bg2.jpg"
@@ -56,9 +67,9 @@ export default function ArticlesCatalogClient({
           className="object-cover object-center opacity-15 blur-lg pointer-events-none select-none z-0"
           priority={false}
         />
-        <section className=" mx-auto px-8 py-8 lg:px-16 relative z-10 space-y-10 lg:space-y-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-8 lg:gap-12">
-            {(showAll ? filtered : filtered.slice(0, 9)).map((article) => (
+        <section className=" max-w-7xl mx-auto px-8 py-8 lg:px-16 relative z-10 space-y-10 lg:space-y-12">
+          <div className="grid grid-cols-1 md:grid-cols-2  gap-4 md:gap-8 lg:gap-12">
+            {(showAll ? filtered : filtered.slice(0, 8)).map((article) => (
               <UniversalCard
                 key={article._id}
                 type="article"

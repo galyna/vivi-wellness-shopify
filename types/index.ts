@@ -9,36 +9,34 @@ export interface Product {
     asset?: { url: string };
     alt?: string;
   };
-  cardImage?: {
-    asset?: { url: string };
-    alt?: string;
-  };
   description: string;
   category: string;
   price: number;
   articlesIds?: string[];
   recipesIds?: string[];
+  galleryImagePrompts?: string[];
+  mainImagePrompt?: string;
 }
 
 export interface Article {
   _id: string;
   title: string;
   slug: string;
+  body: (PortableTextBlock | { asset?: { url: string }; alt?: string; prompt?: string })[];
   intro?: string;
   mainImage?: {
     asset?: { url: string };
     alt?: string;
   };
-  cardImage?: {
-    asset?: { url: string };
-    alt?: string;
-  };
-  body: (PortableTextBlock | { asset?: { url: string }; alt?: string })[];
   category?: string;
   productsIds?: string[];
   recipesIds?: string[];
   publishedAt?: string;
-  _createdAt?: string;
+  length?: string;
+  tone?: string;
+  author?: string;
+  galleryImagePrompts?: string[];
+  mainImagePrompt?: string;
 }
 
 export interface Recipe {
@@ -46,20 +44,18 @@ export interface Recipe {
   title: string;
   slug: string;
   intro?: string;
-  duration?: string;
-  difficulty?: string;
-  servings?: number;
-  ingredients: string[];
-  steps: PortableTextBlock[];
-  category?: string;
-  productsIds?: string[];
-  articlesIds?: string[];
+  mainImagePrompt?: string;
   mainImage?: {
     asset?: { url: string };
     alt?: string;
   };
-  cardImage?: {
-    asset?: { url: string };
-    alt?: string;
-  };
+  stepImagePrompts?: string[];
+  steps: (PortableTextBlock | { asset?: { url: string }; alt?: string; prompt?: string })[];
+  time?: string;
+  difficulty?: string;
+  servings?: number;
+  ingredients: string[];
+  category?: string;
+  productsIds?: string[];
+  articlesIds?: string[];
 } 

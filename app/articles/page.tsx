@@ -11,7 +11,7 @@ export default async function ArticlesCatalogPage({ searchParams }: { searchPara
   return (
     <>
       {/* Hero-блок каталога статей */}
-      <CatalogHero id="hero-articles" />
+      <div className="max-w-7xl mx-auto  px-8 py-8 lg:px-16"> <CatalogHero id="hero-articles" /></div>
       <ArticlesCatalogClient articles={articles} categories={categories} selectedCategory={selectedCategory} />
     </>
   );

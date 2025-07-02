@@ -1,4 +1,4 @@
-import CardsSection from "../content/CardsSection";
+import CardsSection from "./CardsSection";
 import { getProducts } from "@/lib/sanityApi";
 import { Product } from "@/types";
 

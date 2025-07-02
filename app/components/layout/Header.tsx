@@ -30,7 +30,7 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-30 transition-all duration-500 
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 
         ${
           show
             ? "opacity-100 pointer-events-auto"

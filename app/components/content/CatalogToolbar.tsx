@@ -19,7 +19,8 @@ export default function CatalogToolbar({
   const [search, setSearch] = useState(searchValue);
 
   return (
-    <div className="flex items-center gap-2 px-2 py-2 bg-white sticky top-0 z-10">
+    <div className="flex items-center gap-2 px-8 py-2 bg-white sticky top-0 z-10 min-h-[64px]">
+      <div className="max-w-6xl mx-auto flex-1 flex items-center gap-2">
       {/* Sort */}
       <button
         className="px-3 py-1 rounded-full border text-sm font-medium flex items-center gap-1"
@@ -82,6 +83,7 @@ export default function CatalogToolbar({
             onSearch(e.target.value);
           }}
         />
+      </div>
       </div>
     </div>
   );

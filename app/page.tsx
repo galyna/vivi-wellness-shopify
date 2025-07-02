@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import ProductsSection from "./components/sections/ProductsSection";
 import RecipesSection from "./components/sections/RecipesSection";
 import ArticlesSection from "./components/sections/ArticlesSection";
-import InspireHero from "./components/content/InspireHero";
+import InspireHero from "./components/layout/InspireHero";
 
 function SkeletonSection({ title }: { title: string }) {
   return <div className="min-h-[300px] flex items-center justify-center text-gray-400">{title} loading...</div>;
