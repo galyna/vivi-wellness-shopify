@@ -10,9 +10,9 @@ export default {
     {
       name: 'mainImage',
       type: 'image',
-      title: 'Hero Image',
+      title: 'Article Image',
       options: {hotspot: true},
-      fields: [{name: 'alt', type: 'string', title: 'Alt text'}],
+      fields: [{name: 'alt', type: 'string', title: 'Alt text', options: {source: 'title'}}],
     },
     {name: 'length', type: 'string', title: 'Length'},
     {name: 'tone', type: 'string', title: 'Tone'},
@@ -25,19 +25,28 @@ export default {
       title: 'Gallery Image Prompts',
     },
     {
-      name: 'bodyAdditional',
-      title: 'ContentBodyAdditional',
+      name: 'paragraphs',
+      title: 'Paragraphs With Content',
       type: 'array',
       of: [
-        {type: 'block'}, // стандартный rich text блок Sanity
         {
-          type: 'image',
+          type: 'object',
+          name: 'paragraph',
+          title: 'Paragraph',
           fields: [
-            {name: 'alt', type: 'string', title: 'Alt text'},
-            {name: 'prompt', type: 'string', title: 'Prompt'},
-          ],
-        },
-      ],
+            { name: 'title', type: 'string', title: 'Title' },
+            { name: 'text', type: 'string', title: 'Text' },
+            {
+              name: 'image',
+              type: 'image',
+              title: 'Paragraph Image',
+              fields: [
+                { name: 'alt', type: 'string', title: 'Alt text', options: {source: 'title'} }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {name: 'body', type: 'array', of: [{type: 'string'}], title: 'Content'},
     {name: 'category', type: 'string', title: 'Category'},

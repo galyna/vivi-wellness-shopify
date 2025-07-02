@@ -10,28 +10,25 @@ export default {
     {
       name: 'mainImage',
       type: 'image',
-      options: {
-        hotspot: true,
-      },
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Recipe',
-        },
-      ],
+      title: 'Hero Image',
+      options: {hotspot: true},
     },
     {
-      name: 'stepsAdditional',
-      title: 'ContentStepsAdditional',
+      name: 'stepsWithContent',
+      title: 'stepsWithContent',
       type: 'array',
       of: [
-        { type: 'block' }, // стандартный rich text блок Sanity
         {
-          type: 'image',
+          type: 'object',
+          name: 'step',
+          title: 'Step',
           fields: [
-            { name: 'alt', type: 'string', title: 'Alt text' },
-            { name: 'prompt', type: 'string', title: 'Prompt' }
+            { name: 'text', type: 'string', title: 'Step Text' },
+            {
+              name: 'image',
+              type: 'image',
+              title: 'Step Image',
+            }
           ]
         }
       ]

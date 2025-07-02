@@ -9,16 +9,22 @@ export default {
     {
       name: 'mainImage',
       type: 'image',
-      options: {
-        hotspot: true,
-      },
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Product',
-        },
-      ],
+      title: 'Hero Image',
+    },
+    {
+      name: 'galleryImagePrompts',
+      type: 'array',
+      of: [{type: 'string'}],
+      title: 'Gallery Image Prompts',
+    },    {
+      name: 'galleryImages',
+      type: 'array',
+      of: [{
+        name: 'mainImage',
+        type: 'image',
+        title: 'Hero Image',
+      },],
+      title: 'Gallery Images',
     },
     {name: 'color', type: 'string', title: 'Color'},
     {name: 'size', type: 'string', title: 'Size'},
@@ -26,12 +32,6 @@ export default {
     {name: 'description', type: 'text', title: 'Description'},
     {name: 'category', type: 'string', title: 'Category'},
     {name: 'price', type: 'number', title: 'Price'},
-    {
-      name: 'galleryImagePrompts',
-      type: 'array',
-      of: [{type: 'string'}],
-      title: 'Gallery Image Prompts',
-    },
     {
       name: 'articlesIds',
       type: 'array',
