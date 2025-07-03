@@ -11,16 +11,17 @@ export async function getArticles(limit?: number) {
       asset->{url},
       alt
     },
-    cardImage {
-      asset->{url},
-      alt
-    },
-    body,
     category,
     productsIds[]->{_id},
     recipesIds[]->{_id},
-    publishedAt,
-    _createdAt
+    paragraphs[] {
+      title,
+      body,
+      image {
+        asset->{url},
+        alt
+      }
+    }
   }`);
 }
 
@@ -34,16 +35,19 @@ export async function getArticleBySlug(slug: string) {
       asset->{url},
       alt
     },
-    cardImage {
-      asset->{url},
-      alt
-    },
-    body,
     category,
     productsIds[]->{_id},
     recipesIds[]->{_id},
-    publishedAt,
-    _createdAt
+    date,
+    author,
+    paragraphs[] {
+      title,
+      body,
+      image {
+        asset->{url},
+        alt
+      }
+    }
   }`, { slug });
 }
 

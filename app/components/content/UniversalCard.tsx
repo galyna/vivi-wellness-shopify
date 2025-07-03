@@ -36,8 +36,6 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({ typ
   const title = data.title;
   let image = "/placeholder.jpg";
   if ("image" in data && typeof data.image === "string") image = data.image;
-  else if ("cardImage" in data && data.cardImage?.asset?.url)
-    image = data.cardImage.asset.url;
   else if ("mainImage" in data && data.mainImage?.asset?.url)
     image = data.mainImage.asset.url;
   const category = data.category || "Uncategorized";

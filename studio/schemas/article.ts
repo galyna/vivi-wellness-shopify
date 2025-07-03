@@ -35,13 +35,13 @@ export default {
           title: 'Paragraph',
           fields: [
             { name: 'title', type: 'string', title: 'Title' },
-            { name: 'text', type: 'string', title: 'Text' },
+            { name: 'body', type: 'array', of: [{ type: 'block' }], title: 'Body' },
             {
               name: 'image',
               type: 'image',
               title: 'Paragraph Image',
               fields: [
-                { name: 'alt', type: 'string', title: 'Alt text', options: {source: 'title'} }
+                { name: 'alt', type: 'string', title: 'Alt text', options: { source: 'title' } }
               ]
             }
           ]

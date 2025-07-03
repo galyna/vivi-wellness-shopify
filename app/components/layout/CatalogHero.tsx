@@ -11,9 +11,21 @@ const CatalogHero = async ({ id }: CatalogHeroProps) => {
   const data = await getCatalogHeroData(id);
   if (!data) return null;
   return (
-    <section className="w-full  flex flex-col md:flex-row items-center justify-between bg-[#222] rounded-3xl p-6 md:p-12 mb-12 shadow-lg">
+    <section className="w-full flex flex-col md:flex-row items-stretch justify-between bg-[#222] rounded-3xl mb-12 shadow-lg overflow-hidden">
+      {/* Image block — сверху на мобиле, справа на десктопе */}
+      <div className="w-full md:w-1/2 h-48 md:h-auto aspect-[4/3] md:aspect-auto overflow-hidden flex-shrink-0 relative">
+        {data.image && (
+          <Image
+            src={data.image}
+            alt={data.title || "Catalog Hero"}
+            fill
+            className="object-cover w-full h-full"
+            priority
+          />
+        )}
+      </div>
       {/* Text block */}
-      <div className="flex-1 flex flex-col justify-center items-start text-white mb-6 md:mb-0 md:mr-8">
+      <div className="flex-1 flex flex-col justify-center items-start text-white p-6 md:p-12">
         <h1 className="text-3xl md:text-4xl font-bold mb-4">{data.title}</h1>
         {data.subtitle && <p className="text-lg mb-6">{data.subtitle}</p>}
         {data.ctaText && data.ctaUrl && (
@@ -25,21 +37,6 @@ const CatalogHero = async ({ id }: CatalogHeroProps) => {
             <span className="ml-2 text-xl">→</span>
           </a>
         )}
-      </div>
-      {/* Image block */}
-      <div className="flex-1 flex items-center justify-center">
-        <div className="w-full max-w-md aspect-[4/3] rounded-2xl overflow-hidden">
-          {data.image && (
-            <Image
-              src={data.image}
-              alt={data.title || "Catalog Hero"}
-              width={600}
-              height={450}
-              className="object-cover w-full h-full"
-              priority
-            />
-          )}
-        </div>
       </div>
     </section>
   );
