@@ -40,11 +40,11 @@ export default function BubbleChat() {
     <>
       {/* Bubble button */}
       <button
-        className="fixed bottom-6 right-6 z-50 bg-gradient-to-br from-coral to-neon text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-white/30 group"
+        className="fixed bottom-6 right-6 z-50 bg-gradient-to-br from-coral to-neon text-white rounded-full w-14 h-14 md:w-16 md:h-16 lg:w-18 lg:h-18 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-white/30 group hover:scale-110"
         onClick={openChat}
         aria-label="Open chat"
         style={{
-          background: 'linear-gradient(45deg, #ff6b6b, #ffd93d, #ff6b6b)',
+          background: 'linear-gradient(45deg, #FFB6A0, #FFA07A, #FFB6A0)',
           backgroundSize: '200% 200%',
           animation: 'gradientShift 4s ease-in-out infinite'
         }}
@@ -54,7 +54,7 @@ export default function BubbleChat() {
           height="20" 
           viewBox="0 0 24 24" 
           fill="none"
-          className="transition-transform duration-300 group-hover:scale-110"
+          className="transition-transform duration-300 group-hover:scale-125 md:w-6 md:h-6 lg:w-7 lg:h-7"
         >
           <path 
             d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" 
