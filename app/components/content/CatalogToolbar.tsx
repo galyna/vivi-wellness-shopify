@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function CatalogToolbar({
   onSearch,
@@ -17,6 +17,26 @@ export default function CatalogToolbar({
   searchValue?: string;
 }) {
   const [search, setSearch] = useState(searchValue);
+  const [debouncedSearch, setDebouncedSearch] = useState(searchValue);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300); // 300ms delay
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // Call onSearch when debounced value changes
+  useEffect(() => {
+    onSearch(debouncedSearch);
+  }, [debouncedSearch, onSearch]);
+
+  // Update local state when searchValue prop changes
+  useEffect(() => {
+    setSearch(searchValue);
+  }, [searchValue]);
 
   return (
     <div className="flex items-center gap-2 px-8 py-2 bg-white sticky top-0 z-10 min-h-[64px]">
@@ -78,10 +98,7 @@ export default function CatalogToolbar({
           className="w-full px-3 py-1 rounded-full border text-sm"
           placeholder="Search…"
           value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            onSearch(e.target.value);
-          }}
+          onChange={(e) => setSearch(e.target.value)}
         />
       </div>
       </div>
