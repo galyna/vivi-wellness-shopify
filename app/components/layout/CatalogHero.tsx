@@ -11,35 +11,37 @@ const CatalogHero = async ({ id }: CatalogHeroProps) => {
   const data = await getCatalogHeroData(id);
   if (!data) return null;
   return (
-    <section className="w-full flex flex-col md:flex-row items-stretch justify-between  rounded-3xl  shadow-lg overflow-hidden">
-      {/* Image block — сверху на мобиле, справа на десктопе */}
-      <div className="w-full md:w-1/2 h-48 md:h-auto aspect-[4/3] md:aspect-auto overflow-hidden flex-shrink-0 relative">
-        {data.image && (
-          <Image
-            src={data.image}
-            alt={data.title || "Catalog Hero"}
-            fill
-            className="object-cover w-full h-full"
-            priority
-          />
-        )}
-      </div>
-      {/* Text block */}
-      <div className="flex-1 flex bg-[#222] flex-col justify-center items-start text-white p-6 md:p-12">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">{data.title}</h1>
-        {data.subtitle && <p className="text-lg mb-6">{data.subtitle}</p>}
-        {data.ctaText && data.ctaUrl && (
-          <a
-            href={data.ctaUrl}
-            className="inline-flex items-center px-8 py-3 rounded-full border-2 border-white text-white font-semibold text-lg hover:bg-white hover:text-[#222] transition"
-          >
-            Ask Vivi
-            <span className="ml-2 text-xl">→</span>
-          </a>
-        )}
-      </div>
-    </section>
+    <div className="max-w-7xl mx-auto  px-8 pt-14 pb-12 lg:px-16">
+      <section className="w-full flex flex-col md:flex-row items-stretch justify-between  rounded-3xl  shadow-lg overflow-hidden">
+        {/* Image block — сверху на мобиле, справа на десктопе */}
+        <div className="w-full md:w-1/2 h-48 md:h-auto aspect-[4/3] md:aspect-auto overflow-hidden flex-shrink-0 relative">
+          {data.image && (
+            <Image
+              src={data.image}
+              alt={data.title || "Catalog Hero"}
+              fill
+              className="object-cover w-full h-full"
+              priority
+            />
+          )}
+        </div>
+        {/* Text block */}
+        <div className="flex-1 flex bg-[#222] flex-col justify-center items-start text-white p-6 md:p-12">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{data.title}</h1>
+          {data.subtitle && <p className="text-lg mb-6">{data.subtitle}</p>}
+          {data.ctaText && data.ctaUrl && (
+            <a
+              href={data.ctaUrl}
+              className="inline-flex items-center px-8 py-3 rounded-full border-2 border-white text-white font-semibold text-lg hover:bg-white hover:text-[#222] transition"
+            >
+              Ask Vivi
+              <span className="ml-2 text-xl">→</span>
+            </a>
+          )}
+        </div>
+      </section>
+    </div>
   );
 };
 
-export default CatalogHero; 
+export default CatalogHero;

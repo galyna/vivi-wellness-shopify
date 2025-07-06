@@ -4,7 +4,11 @@ import { getRecipeBySlug, getRecipes } from "@/lib/sanityApi";
 import { Recipe } from "@/types";
 import Image from "next/image";
 
-export default async function RecipePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function RecipePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   const recipe: Recipe | null = await getRecipeBySlug(slug);
   if (!recipe) return notFound();
@@ -27,19 +31,23 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
         </div>
         {/* Text */}
         <div className="flex-1 flex bg-[#222] flex-col justify-center items-start text-white p-6 md:p-12">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">{recipe.title}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            {recipe.title}
+          </h1>
           {recipe.intro && <p className="text-lg mb-6">{recipe.intro}</p>}
-          
-           {/* Кнопка */}
-      <div className="mt-8 flex justify-end">
-      <a
-            href="/chat"
-            className="inline-flex items-center px-8 py-3 rounded-full border-2 border-white text-white font-semibold text-lg hover:bg-white hover:text-[#222] transition"
-          >
-            Ask Vivi
-            <span className="ml-2 text-xl">→</span>
-          </a>
-      </div>
+          <div className="text-sm text-white/70 mb-4">
+            {recipe.difficulty && <div>Difficulty: {recipe.difficulty}</div>}
+          </div>
+          {/* Кнопка */}
+          <div className="mt-8 flex justify-end">
+            <a
+              href="/chat"
+              className="inline-flex items-center px-8 py-3 rounded-full border-2 border-white text-white font-semibold text-lg hover:bg-white hover:text-[#222] transition"
+            >
+              Ask Vivi
+              <span className="ml-2 text-xl">→</span>
+            </a>
+          </div>
         </div>
       </section>
 
@@ -54,7 +62,6 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
             </li>
           ))}
         </ul>
-       
       </section>
 
       {/* Steps */}
@@ -90,8 +97,6 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
           ))}
         </ol>
       </section>
-
-     
     </main>
   );
 }
@@ -101,4 +106,4 @@ export const revalidate = 3600;
 export async function generateStaticParams() {
   const recipes: Recipe[] = await getRecipes();
   return recipes.map((recipe: Recipe) => ({ slug: recipe.slug }));
-} 
+}

@@ -3,6 +3,7 @@ import { useCartSidebarStore } from "@/app/store/cartSidebarStore";
 import { useCartStore } from "@/app/store/cartStore";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { getProducts } from "@/lib/sanityApi";
 import { Product } from "@/types";
 
@@ -42,7 +43,13 @@ export default function CartSidebar() {
               if (!prod) return null;
               return (
                 <div key={item.productId} className="flex items-center gap-3 mb-4 border-b pb-3">
-                  <img src={prod.cardImage?.asset?.url || prod.mainImage?.asset?.url || "/placeholder.jpg"} alt={prod.title} className="w-16 h-16 object-cover rounded-xl" />
+                  <Image 
+                    src={prod.mainImage?.asset?.url || "/placeholder.jpg"} 
+                    alt={prod.title} 
+                    width={64}
+                    height={64}
+                    className="w-16 h-16 object-cover rounded-xl" 
+                  />
                   <div className="flex-1">
                     <div className="font-bold text-charcoal">{prod.title}</div>
                     <div className="text-coral font-bold">${prod.price}</div>

@@ -13,23 +13,29 @@ interface UniversalCardProps<T> {
   hideFavoriteButton?: boolean;
 }
 
-const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({ type, data, hideFavoriteButton }) => {
+const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
+  type,
+  data,
+  hideFavoriteButton,
+}) => {
   const { addFavorite, removeFavorite, isFavorite } = useFavoritesStore();
   const [showToast, setShowToast] = useState(false);
   const { addToCart } = useCartStore();
   const { openSidebar } = useCartSidebarStore();
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   if (!data) return null;
   // Универсальные поля
-  let slug = '';
-  if (typeof data.slug === 'string') {
+  let slug = "";
+  if (typeof data.slug === "string") {
     slug = data.slug;
   } else if (
     data.slug &&
-    typeof data.slug === 'object' &&
-    'current' in data.slug &&
-    typeof (data.slug as { current: string }).current === 'string'
+    typeof data.slug === "object" &&
+    "current" in data.slug &&
+    typeof (data.slug as { current: string }).current === "string"
   ) {
     slug = (data.slug as { current: string }).current;
   }
@@ -74,16 +80,41 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({ typ
             className="object-cover object-center rounded-3xl"
             priority={false}
           />
+          {/* Категория */}
+          <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-xs font-medium text-gray-700 px-2 py-1 rounded-full shadow-sm">
+            {category}
+          </div>
+        
           {/* Сердце */}
           {mounted && !hideFavoriteButton && (
             <button
-              className={`absolute top-3 right-3 rounded-full p-2 shadow z-10 transition ${favorite ? "bg-coral/90" : "bg-white/80"}`}
+              className={`absolute top-3 right-3 rounded-full p-2 shadow z-10 transition ${
+                favorite ? "bg-coral/90" : "bg-white/80"
+              }`}
               tabIndex={-1}
-              aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
+              aria-label={
+                favorite ? "Remove from favorites" : "Add to favorites"
+              }
               onClick={handleFavorite}
             >
-              <svg width="22" height="22" fill={favorite ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor" className={favorite ? "text-white" : "text-gray-400 group-hover:text-coral transition"}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z" />
+              <svg
+                width="22"
+                height="22"
+                fill={favorite ? "currentColor" : "none"}
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className={
+                  favorite
+                    ? "text-white"
+                    : "text-gray-400 group-hover:text-coral transition"
+                }
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z"
+                />
               </svg>
             </button>
           )}
@@ -94,19 +125,25 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({ typ
           )}
         </div>
         {/* Контент */}
-        <div className="p-4 flex-1 flex flex-col justify-between">
-          <div>
-            <div className="text-xs text-gray-400 mb-1 font-medium">{category}</div>
-            <div className="font-bold text-lg text-charcoal mb-1 line-clamp-2">{title}</div>
-          </div>
-          {price && (
-            <div className="text-base font-bold text-coral mt-2">${price}</div>
-          )}
-          {/* Add to cart button */}
+        <div className="p-4 flex-1 flex flex-col justify-between w-full">
+    
+            {price && (
+              <div className="text-base font-bold text-coral flex items-center justify-center ">
+                ${price}
+              </div>
+            )}
+         
+            <div className="font-bold text-lg flex justify-center w-full text-charcoal mb-2 mt-2 line-clamp-2">
+              {title}
+            </div>
+           
+          
+          <div className="flex justify-center w-full">
+           {/* Add to cart button */}
           {type === "product" && (
             <button
-              className="mt-3 w-2/5 py-2 rounded-full border-2 border-coral text-coral font-bold hover:text-white hover:bg-coral/50 transition"
-              onClick={e => {
+              className="mt-3 w-full md:w-3/5 max-w-sm py-2 rounded-full border-2 border-coral text-coral font-bold hover:text-white hover:bg-coral/80 transition"
+              onClick={(e) => {
                 e.preventDefault();
                 addToCart(favId, 1);
                 openSidebar();
@@ -115,6 +152,7 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({ typ
               Add to cart
             </button>
           )}
+          </div>
         </div>
       </div>
     </Link>

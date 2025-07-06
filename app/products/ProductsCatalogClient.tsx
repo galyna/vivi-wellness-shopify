@@ -10,11 +10,19 @@ interface Props {
   selectedCategory: string;
 }
 
-export default function ProductsCatalogClient({ products, categories, selectedCategory }: Props) {
+export default function ProductsCatalogClient({
+  products,
+  categories,
+  selectedCategory,
+}: Props) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc">("asc");
   const [filterOpen, setFilterOpen] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<{ category?: string; minPrice?: number; maxPrice?: number }>({ category: selectedCategory });
+  const [activeFilters, setActiveFilters] = useState<{
+    category?: string;
+    minPrice?: number;
+    maxPrice?: number;
+  }>({ category: selectedCategory });
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [showAll, setShowAll] = useState(false);
@@ -22,10 +30,18 @@ export default function ProductsCatalogClient({ products, categories, selectedCa
 
   const filtered = useMemo(() => {
     let arr = products;
-    if (activeFilters.category) arr = arr.filter(p => p.category === activeFilters.category);
-    if (activeFilters.minPrice) arr = arr.filter(p => Number(p.price) >= (activeFilters.minPrice || 0));
-    if (activeFilters.maxPrice) arr = arr.filter(p => Number(p.price) <= (activeFilters.maxPrice || Infinity));
-    if (search) arr = arr.filter(p => p.title.toLowerCase().includes(search.toLowerCase()));
+    if (activeFilters.category)
+      arr = arr.filter((p) => p.category === activeFilters.category);
+    if (activeFilters.minPrice)
+      arr = arr.filter((p) => Number(p.price) >= (activeFilters.minPrice || 0));
+    if (activeFilters.maxPrice)
+      arr = arr.filter(
+        (p) => Number(p.price) <= (activeFilters.maxPrice || Infinity)
+      );
+    if (search)
+      arr = arr.filter((p) =>
+        p.title.toLowerCase().includes(search.toLowerCase())
+      );
     return arr.sort((a, b) =>
       sort === "asc"
         ? a.title.localeCompare(b.title)
@@ -43,34 +59,55 @@ export default function ProductsCatalogClient({ products, categories, selectedCa
 
   return (
     <div>
-      <div className={`sticky ${toolbarAtTop ? "top-0 z-[999]" : "top-[56px] z-30"} bg-white`}>
+      <div
+        className={`sticky ${
+          toolbarAtTop ? "top-0 z-[999]" : "top-[56px] z-30"
+        } bg-white`}
+      >
         <CatalogToolbar
           onSearch={setSearch}
-          onSort={v => setSort(v as "asc" | "desc")}
+          onSort={(v) => setSort(v as "asc" | "desc")}
           onFilter={() => setFilterOpen(true)}
-          filterCount={Object.keys(activeFilters).filter(k => activeFilters[k as keyof typeof activeFilters]).length}
+          filterCount={
+            Object.keys(activeFilters).filter(
+              (k) => activeFilters[k as keyof typeof activeFilters]
+            ).length
+          }
           sortValue={sort}
           searchValue={search}
         />
       </div>
       <main>
-        <section className="mx-auto max-w-7xl px-8 py-10 lg:px-16 relative space-y-10 lg:space-y-12">
+        <section className="mx-auto max-w-7xl px-8 py-12 lg:px-16 relative space-y-10 lg:space-y-12">
           <div className="grid grid-cols-1 md:grid-cols-2  gap-4 md:gap-8 lg:gap-12">
             {(showAll ? filtered : filtered.slice(0, 8)).map((product) => (
-              <UniversalCard
-                key={product._id}
-                type="product"
-                data={product}
-              />
+              <UniversalCard key={product._id} type="product" data={product} />
             ))}
           </div>
           {!showAll && filtered.length > 9 && (
             <div className="flex justify-center mt-6">
               <button
-                className="px-6 py-2 rounded-full bg-coral text-white font-bold shadow hover:bg-neon transition"
+                className="px-6 py-3 rounded-full bg-charcoal text-white font-bold hover:bg-gray-800
+             transition-all duration-200 transform hover:scale-105 flex items-center gap-2 group"
                 onClick={() => setShowAll(true)}
               >
-                Show more
+                Show more{" "}
+                <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">
+                  <svg
+                    width="20"
+                    height="20"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </span>
               </button>
             </div>
           )}
@@ -88,12 +125,12 @@ export default function ProductsCatalogClient({ products, categories, selectedCa
               ×
             </button>
             <div className="font-bold mb-2">Category</div>
-            {categories.map(cat => (
+            {categories.map((cat) => (
               <button
                 key={cat}
                 className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100"
                 onClick={() => {
-                  setActiveFilters(f => ({ ...f, category: cat }));
+                  setActiveFilters((f) => ({ ...f, category: cat }));
                   setFilterOpen(false);
                 }}
               >
@@ -107,19 +144,19 @@ export default function ProductsCatalogClient({ products, categories, selectedCa
                 placeholder="Min"
                 className="border rounded px-2 py-1 w-20"
                 value={minPrice}
-                onChange={e => setMinPrice(e.target.value)}
+                onChange={(e) => setMinPrice(e.target.value)}
               />
               <input
                 type="number"
                 placeholder="Max"
                 className="border rounded px-2 py-1 w-20"
                 value={maxPrice}
-                onChange={e => setMaxPrice(e.target.value)}
+                onChange={(e) => setMaxPrice(e.target.value)}
               />
               <button
                 className="px-3 py-1 bg-coral text-white rounded"
                 onClick={() => {
-                  setActiveFilters(f => ({
+                  setActiveFilters((f) => ({
                     ...f,
                     minPrice: minPrice ? Number(minPrice) : undefined,
                     maxPrice: maxPrice ? Number(maxPrice) : undefined,
@@ -145,7 +182,9 @@ export default function ProductsCatalogClient({ products, categories, selectedCa
         </div>
       )}
       {filtered.length === 0 && (
-        <div className="text-center text-gray-400 py-20">No products found.</div>
+        <div className="text-center text-gray-400 py-20">
+          No products found.
+        </div>
       )}
     </div>
   );
