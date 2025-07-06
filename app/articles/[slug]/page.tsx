@@ -24,6 +24,7 @@ export default async function ArticlePage({
               src={article.mainImage.asset.url}
               alt={article.mainImage.alt || article.title}
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover w-full h-full"
               priority
             />
@@ -64,6 +65,7 @@ export default async function ArticlePage({
               alt={p.image.alt || p.title || "Article image"}
               width={600}
               height={424}
+              sizes="(max-width: 768px) 100vw, 50vw"
               className={`w-full md:w-1/2 h-auto object-cover rounded-xl shadow-md mb-10 ${
                 i % 2 === 0 ? "md:float-right md:ml-12" : "md:float-left md:mr-12"
               } md:mb-8`}

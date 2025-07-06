@@ -11,12 +11,12 @@ export default function ProductPageClient({ product, gallery }: { product: { tit
       {/* Галерея */}
       <div className="flex-1 flex flex-col items-center">
         <div className="w-full aspect-[4/3] bg-gray-100 rounded-2xl overflow-hidden flex items-center justify-center mb-4">
-          <Image src={mainImg} alt={product.title} width={600} height={450} className="object-contain w-full h-full" />
+          <Image src={mainImg} alt={product.title} width={600} height={450} sizes="(max-width: 768px) 100vw, 50vw" className="object-contain w-full h-full" />
         </div>
         <div className="flex gap-2 mt-2">
           {gallery.map((img: string) => (
             <button key={img} onClick={() => setMainImg(img)} className={`w-20 h-16 rounded-xl overflow-hidden border ${mainImg === img ? "border-coral" : "border-gray-200"}`}>
-              <Image src={img} alt="thumb" width={80} height={64} className="object-cover w-full h-full" />
+              <Image src={img} alt="thumb" width={80} height={64} sizes="80px" className="object-cover w-full h-full" />
             </button>
           ))}
         </div>

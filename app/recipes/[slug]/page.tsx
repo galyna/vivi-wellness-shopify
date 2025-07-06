@@ -25,6 +25,7 @@ export default async function RecipePage({
                 src={recipe.mainImage.asset.url}
                 alt={recipe.mainImage.alt || recipe.title}
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover w-full h-full"
                 priority
               />
@@ -90,6 +91,7 @@ export default async function RecipePage({
                       src={step.image.asset.url}
                       alt={step.image.alt || `Step ${idx + 1}`}
                       fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover w-full h-full"
                     />
                   </div>
