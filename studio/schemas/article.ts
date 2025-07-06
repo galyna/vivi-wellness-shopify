@@ -4,6 +4,7 @@ export default {
   type: 'document',
   fields: [
     {name: 'title', type: 'string', title: 'Title'},
+    {name: 'category', type: 'string', title: 'Category'},
     {name: 'slug', type: 'slug', title: 'Slug', options: {source: 'title'}},
     {name: 'intro', type: 'text', title: 'Short Introduction'},
     {name: 'mainImagePrompt', type: 'string', title: 'Main Image Prompt'},
@@ -49,7 +50,7 @@ export default {
       ]
     },
     {name: 'body', type: 'array', of: [{type: 'string'}], title: 'Content'},
-    {name: 'category', type: 'string', title: 'Category'},
+    
     {
       name: 'productsIds',
       type: 'array',

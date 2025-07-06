@@ -29,8 +29,8 @@ export default function ArticlesCatalogClient({
   const filtered = useMemo(() => {
     let arr = articles;
     if (activeFilters.category) arr = arr.filter(a => a.category === activeFilters.category);
-    if (activeFilters.dateFrom) arr = arr.filter(a => new Date(a.publishedAt ?? a._createdAt ?? 0) >= new Date(activeFilters.dateFrom!));
-    if (activeFilters.dateTo) arr = arr.filter(a => new Date(a.publishedAt ?? a._createdAt ?? 0) <= new Date(activeFilters.dateTo!));
+    if (activeFilters.dateFrom) arr = arr.filter(a => new Date(a.date ?? 0) >= new Date(activeFilters.dateFrom!));
+    if (activeFilters.dateTo) arr = arr.filter(a => new Date(a.date?? 0) <= new Date(activeFilters.dateTo!));
     if (search) arr = arr.filter(a => a.title.toLowerCase().includes(search.toLowerCase()));
     return arr.sort((a, b) =>
       sort === "asc"

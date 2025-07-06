@@ -9,8 +9,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   if (!product) return notFound();
   const gallery: string[] = [
     product.mainImage?.asset?.url,
-    ...(product.galleryImages?.map((img: { asset?: { url?: string } }) => img.asset?.url) || []),
-    "/placeholder.jpg"
+    ...(product.galleryImages?.map((img: { asset?: { url?: string } }) => img.asset?.url) || [])
   ].filter(Boolean) as string[];
   return <ProductPageClient product={product} gallery={gallery} />;
 } 

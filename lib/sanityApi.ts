@@ -61,7 +61,6 @@ export async function getRecipes(limit?: number) {
     difficulty,
     servings,
     ingredients,
-    steps,
     category,
     productsIds[]->{_id},
     articlesIds[]->{_id},
@@ -69,10 +68,6 @@ export async function getRecipes(limit?: number) {
       asset->{url},
       alt
     },
-    cardImage {
-      asset->{url},
-      alt
-    }
   }`);
 }
 
@@ -86,7 +81,6 @@ export async function getRecipeBySlug(slug: string) {
     difficulty,
     servings,
     ingredients,
-    steps,
     category,
     productsIds[]->{_id},
     articlesIds[]->{_id},
@@ -94,9 +88,12 @@ export async function getRecipeBySlug(slug: string) {
       asset->{url},
       alt
     },
-    cardImage {
-      asset->{url},
-      alt
+    stepsWithContent[] {
+      text,
+      image {
+        asset->{url},
+        alt
+      }
     }
   }`, { slug });
 }
@@ -131,7 +128,7 @@ export async function getProductBySlug(slug: string) {
       asset->{url},
       alt
     },
-    cardImage {
+    galleryImages[] {
       asset->{url},
       alt
     },

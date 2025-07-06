@@ -15,8 +15,8 @@ export default async function ArticlePage({
   if (!article) return notFound();
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-12">
-      <section className="w-full flex flex-col md:flex-row items-stretch justify-between bg-black rounded-3xl mb-10 shadow-lg overflow-hidden">
+    <main className="max-w-7xl mx-auto  px-8 py-8 lg:px-16">
+      <section className="w-full flex flex-col md:flex-row items-stretch justify-between bg-[#222] rounded-3xl mb-10 shadow-lg overflow-hidden">
         {/* Image block — сверху на мобиле, справа на десктопе */}
         <div className="w-full md:w-1/2 h-48 md:h-auto aspect-[4/3] md:aspect-auto overflow-hidden flex-shrink-0 relative">
           {article.mainImage?.asset?.url && (
@@ -58,25 +58,25 @@ export default async function ArticlePage({
             key={i}
             className={`flex flex-col md:flex-row ${
               !isEven ? "md:flex-row-reverse" : ""
-            } items-center gap-8 mb-12`}
+            } items-center gap-8 md:gap-16 mb-16`}
           >
             {p.image?.asset?.url && (
               <Image
                 src={p.image.asset.url}
                 alt={p.image.alt || p.title || "Article image"}
                 width={400}
-                height={224}
-                className="w-full md:w-1/3 h-56 object-cover rounded-xl shadow-md mb-4 md:mb-0"
+                height={324}
+                className="w-full md:w-1/2 h-full object-cover rounded-xl shadow-md mb-4 md:mb-0"
               />
             )}
             <div className="flex-1 text-left">
               {p.title && (
-                <h2 className="text-2xl font-semibold mb-2 text-charcoal">
+                <h2 className="text-4xl font-semibold mb-4 text-charcoal">
                   {p.title}
                 </h2>
               )}
               {p.body && (
-                <div className="text-lg leading-relaxed text-gray-800 space-y-4">
+                <div className="text-xl leading-relaxed text-gray-800 space-y-6s">
                   {/* Строки */}
                   {Array.isArray(p.body) &&
                     p.body

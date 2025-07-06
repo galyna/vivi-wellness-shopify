@@ -3,9 +3,6 @@ export default {
   title: 'Recipe',
   type: 'document',
   fields: [
-    {name: 'title', type: 'string', title: 'Title'},
-    {name: 'slug', type: 'slug', title: 'Slug', options: {source: 'title'}},
-    {name: 'intro', type: 'text', title: 'Introduction'},
     { name: 'mainImagePrompt', type: 'string', title: 'Main Image Prompt' },
     {
       name: 'mainImage',
@@ -13,6 +10,11 @@ export default {
       title: 'Hero Image',
       options: {hotspot: true},
     },
+    {name: 'title', type: 'string', title: 'Title'},
+    {name: 'category', type: 'string', title: 'Category'},
+    {name: 'slug', type: 'slug', title: 'Slug', options: {source: 'title'}},
+    {name: 'intro', type: 'text', title: 'Introduction'},
+
     {
       name: 'stepsWithContent',
       title: 'stepsWithContent',
@@ -44,7 +46,6 @@ export default {
     {name: 'difficulty', type: 'string', title: 'Difficulty'},
     {name: 'servings', type: 'number', title: 'Servings'},
     {name: 'ingredients', type: 'array', of: [{type: 'string'}], title: 'Ingredients'},
-    {name: 'category', type: 'string', title: 'Category'},
     {name: 'productsIds', type: 'array', of: [{type: 'reference', to: [{type: 'product'}]}], title: 'Products'},
     {name: 'articlesIds', type: 'array', of: [{type: 'reference', to: [{type: 'article'}]}], title: 'Articles'},
   

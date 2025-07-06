@@ -3,14 +3,6 @@ export default {
   title: 'Product',
   type: 'document',
   fields: [
-    {name: 'title', type: 'string', title: 'Title'},
-    {name: 'slug', type: 'slug', title: 'Slug', options: {source: 'title'}},
-    { name: 'mainImagePrompt', type: 'string', title: 'Main Image Prompt' },
-    {
-      name: 'mainImage',
-      type: 'image',
-      title: 'Hero Image',
-    },
     {
       name: 'galleryImagePrompts',
       type: 'array',
@@ -26,11 +18,20 @@ export default {
       },],
       title: 'Gallery Images',
     },
+    {name: 'title', type: 'string', title: 'Title'},
+    {name: 'category', type: 'string', title: 'Category'},
+    {name: 'slug', type: 'slug', title: 'Slug', options: {source: 'title'}},
+    { name: 'mainImagePrompt', type: 'string', title: 'Main Image Prompt' },
+    {
+      name: 'mainImage',
+      type: 'image',
+      title: 'Hero Image',
+    },
+   
     {name: 'color', type: 'string', title: 'Color'},
     {name: 'size', type: 'string', title: 'Size'},
     {name: 'material', type: 'string', title: 'Material'},
     {name: 'description', type: 'text', title: 'Description'},
-    {name: 'category', type: 'string', title: 'Category'},
     {name: 'price', type: 'number', title: 'Price'},
     {
       name: 'articlesIds',
