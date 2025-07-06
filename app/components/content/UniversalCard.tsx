@@ -77,6 +77,7 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
             src={image}
             alt={title}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="object-cover object-center rounded-3xl"
             priority={false}
           />

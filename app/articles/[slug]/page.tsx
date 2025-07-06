@@ -15,8 +15,8 @@ export default async function ArticlePage({
   if (!article) return notFound();
 
   return (
-    <main className="max-w-7xl mx-auto  px-8 pt-12 lg:px-16">
-      <section className="w-full flex flex-col md:flex-row items-stretch justify-between rounded-3xl mb-10 shadow-lg overflow-hidden">
+    <main className="max-w-7xl mx-auto px-8 py-14 lg:px-16">
+      <section className="w-full flex flex-col md:flex-row items-stretch justify-between rounded-3xl mb-14 shadow-lg overflow-hidden">
         {/* Image block — сверху на мобиле, справа на десктопе */}
         <div className="w-full md:w-1/2 h-48 md:h-auto aspect-[4/3] md:aspect-auto overflow-hidden flex-shrink-0 relative">
           {article.mainImage?.asset?.url && (
@@ -30,7 +30,7 @@ export default async function ArticlePage({
           )}
         </div>
         {/* Text block */}
-        <div className="flex-1 flex flex-col justify-center items-start text-white p-6 md:p-12 bg-[#222]">
+        <div className="flex-1 flex flex-col justify-center items-start text-white p-14 bg-[#222]">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
             {article.title}
           </h1>
@@ -55,17 +55,18 @@ export default async function ArticlePage({
       </section>
 
       {/* Параграфы */}
+      <section className="space-y-16">
       {article.paragraphs?.map((p, i) => (
-        <div key={i} className="my-16 w-full">
+        <div key={i} className="w-full">
           {p.image?.asset?.url && (
             <Image
               src={p.image.asset.url}
               alt={p.image.alt || p.title || "Article image"}
               width={600}
               height={424}
-              className={`w-full md:w-1/2 h-auto object-cover rounded-xl shadow-md mb-4 ${
-                i % 2 === 0 ? "md:float-right md:ml-8" : "md:float-left md:mr-8"
-              } md:mb-4`}
+              className={`w-full md:w-1/2 h-auto object-cover rounded-xl shadow-md mb-10 ${
+                i % 2 === 0 ? "md:float-right md:ml-12" : "md:float-left md:mr-12"
+              } md:mb-8`}
              
             />
           )}
@@ -95,6 +96,7 @@ export default async function ArticlePage({
           <div className="clear-both" />
         </div>
       ))}
+      </section>
     </main>
   );
 }

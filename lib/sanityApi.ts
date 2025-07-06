@@ -12,6 +12,10 @@ export async function getArticles(limit?: number) {
       alt
     },
     category,
+    length,
+    tone,
+    author,
+    date,
     productsIds[]->{_id},
     recipesIds[]->{_id},
     paragraphs[] {
@@ -62,6 +66,7 @@ export async function getRecipes(limit?: number) {
     servings,
     ingredients,
     category,
+    time,
     productsIds[]->{_id},
     articlesIds[]->{_id},
     mainImage {
@@ -114,6 +119,9 @@ export async function getProducts(limit?: number) {
     description,
     category,
     price,
+    color,
+    size,
+    material,
     articlesIds[]->{_id},
     recipesIds[]->{_id}
   }`);

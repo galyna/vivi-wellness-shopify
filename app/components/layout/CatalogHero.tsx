@@ -20,6 +20,7 @@ const CatalogHero = async ({ id }: CatalogHeroProps) => {
               src={data.image}
               alt={data.title || "Catalog Hero"}
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover w-full h-full"
               priority
             />
