@@ -17,7 +17,7 @@ const InspireHero = async ({ id, reverse = false }: InspireHeroProps) => {
         {/* Картинка */}
         <div className="w-full md:w-2/3 flex-shrink-0">
           {data.image && (
-            <div className="relative h-[60vh] md:h-[70vh]  w-full h-min-150  rounded-lg overflow-hidden shadow-lg">
+            <div className="relative h-[60vh] md:h-[70vh]  w-full h-min-150  rounded-3xl overflow-hidden shadow-lg">
               <Image
                 src={data.image}
                 alt={data.title || "Inspire Hero"}
