@@ -67,7 +67,7 @@ export default function RootLayout({
         <Header />
         <CartSidebarClient />
         <ReactQueryProvider>
-          <main className="flex-1 pt-[72px]">
+          <main className="flex-1 pt-[48px]">
             {children}
           </main>
         </ReactQueryProvider>

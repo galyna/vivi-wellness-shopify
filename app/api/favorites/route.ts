@@ -10,19 +10,28 @@ export async function GET(req: NextRequest) {
 
   // Запрашиваем все типы одним промисом
   const [products, articles, recipes] = await Promise.all([
-    client.fetch(`*[_type == "product" && _id in $ids]{_id, title, description, price, category, mainImage {
+    client.fetch(
+      `*[_type == "product" && _id in $ids]{_id, title, slug, description, price, category, mainImage {
       asset->{url},
       alt
-    }}`, { ids }),
-    client.fetch(`*[_type == "article" && _id in $ids]{_id, title, description, body, category, mainImage {
+    }}`,
+      { ids }
+    ),
+    client.fetch(
+      `*[_type == "article" && _id in $ids]{_id, title, slug, description, body, category, mainImage {
       asset->{url},
       alt
-    }}`, { ids }),
-    client.fetch(`*[_type == "recipe" && _id in $ids]{_id, title, description, ingredients, steps, category, mainImage {
+    }}`,
+      { ids }
+    ),
+    client.fetch(
+      `*[_type == "recipe" && _id in $ids]{_id, title, slug, description, ingredients, steps, category, mainImage {
       asset->{url},
       alt
-    }}`, { ids }),
+    }}`,
+      { ids }
+    ),
   ]);
 
   return NextResponse.json({ products, articles, recipes });
-} 
+}

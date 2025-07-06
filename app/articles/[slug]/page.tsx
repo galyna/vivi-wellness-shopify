@@ -16,7 +16,7 @@ export default async function ArticlePage({
 
   return (
     <main className="max-w-7xl mx-auto  px-8 py-8 lg:px-16">
-      <section className="w-full flex flex-col md:flex-row items-stretch justify-between bg-[#222] rounded-3xl mb-10 shadow-lg overflow-hidden">
+      <section className="w-full flex flex-col md:flex-row items-stretch justify-between rounded-3xl mb-10 shadow-lg overflow-hidden">
         {/* Image block — сверху на мобиле, справа на десктопе */}
         <div className="w-full md:w-1/2 h-48 md:h-auto aspect-[4/3] md:aspect-auto overflow-hidden flex-shrink-0 relative">
           {article.mainImage?.asset?.url && (
@@ -30,7 +30,7 @@ export default async function ArticlePage({
           )}
         </div>
         {/* Text block */}
-        <div className="flex-1 flex flex-col justify-center items-start text-white p-6 md:p-12">
+        <div className="flex-1 flex flex-col justify-center items-start text-white p-6 md:p-12 bg-[#222]">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
             {article.title}
           </h1>
@@ -43,58 +43,58 @@ export default async function ArticlePage({
             )}
           </div>
           <div className="mt-8 flex justify-end">
-            <button className="px-5 py-2 rounded-full bg-coral text-white font-bold shadow hover:bg-neon transition">
-              Ask Vivi
-            </button>
+          <a
+            href="/chat"
+            className="inline-flex items-center px-8 py-3 rounded-full border-2 border-white text-white font-semibold text-lg hover:bg-white hover:text-[#222] transition"
+          >
+            Ask Vivi
+            <span className="ml-2 text-xl">→</span>
+          </a>
           </div>
         </div>
       </section>
 
       {/* Параграфы */}
-      {article.paragraphs?.map((p, i) => {
-        const isEven = i % 2 === 0;
-        return (
-          <div
-            key={i}
-            className={`flex flex-col md:flex-row ${
-              !isEven ? "md:flex-row-reverse" : ""
-            } items-center gap-8 md:gap-16 mb-16`}
-          >
-            {p.image?.asset?.url && (
-              <Image
-                src={p.image.asset.url}
-                alt={p.image.alt || p.title || "Article image"}
-                width={400}
-                height={324}
-                className="w-full md:w-1/2 h-full object-cover rounded-xl shadow-md mb-4 md:mb-0"
-              />
+      {article.paragraphs?.map((p, i) => (
+        <div key={i} className="my-16 w-full">
+          {p.image?.asset?.url && (
+            <Image
+              src={p.image.asset.url}
+              alt={p.image.alt || p.title || "Article image"}
+              width={600}
+              height={424}
+              className={`w-full md:w-1/2 h-auto object-cover rounded-xl shadow-md mb-4 ${
+                i % 2 === 0 ? "md:float-right md:ml-8" : "md:float-left md:mr-8"
+              } md:mb-4`}
+             
+            />
+          )}
+          <div className="text-left">
+            {p.title && (
+              <h2 className="text-4xl font-semibold mb-6 text-charcoal">
+                {p.title}
+              </h2>
             )}
-            <div className="flex-1 text-left">
-              {p.title && (
-                <h2 className="text-4xl font-semibold mb-4 text-charcoal">
-                  {p.title}
-                </h2>
-              )}
-              {p.body && (
-                <div className="text-xl leading-relaxed text-gray-800 space-y-6s">
-                  {/* Строки */}
-                  {Array.isArray(p.body) &&
-                    p.body
-                      .filter((x) => typeof x === "string")
-                      .map((str, idx) => <p key={"str-" + idx}>{str}</p>)}
-                  {/* PortableText-блоки */}
-                  {Array.isArray(p.body) &&
-                    p.body.some((x) => typeof x === "object") && (
-                      <PortableText
-                        value={p.body.filter((x) => typeof x === "object")}
-                      />
-                    )}
-                </div>
-              )}
-            </div>
+            {p.body && (
+              <div className="text-xl leading-relaxed text-gray-800 space-y-6">
+                {/* Строки */}
+                {Array.isArray(p.body) &&
+                  p.body
+                    .filter((x) => typeof x === "string")
+                    .map((str, idx) => <p key={"str-" + idx}>{str}</p>)}
+                {/* PortableText-блоки */}
+                {Array.isArray(p.body) &&
+                  p.body.some((x) => typeof x === "object") && (
+                    <PortableText
+                      value={p.body.filter((x) => typeof x === "object")}
+                    />
+                  )}
+              </div>
+            )}
           </div>
-        );
-      })}
+          <div className="clear-both" />
+        </div>
+      ))}
     </main>
   );
 }

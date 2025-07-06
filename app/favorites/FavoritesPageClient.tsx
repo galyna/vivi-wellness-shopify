@@ -107,6 +107,7 @@ export default function FavoritesPageClient() {
               <UniversalCard
                 type={item.type}
                 data={item.data}
+                key={item.data._id}
                 hideFavoriteButton
               />
               <button

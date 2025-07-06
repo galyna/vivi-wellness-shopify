@@ -42,12 +42,10 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({ typ
   const price = type === "product" ? (data as Product).price : undefined;
 
   // Ссылки
-  const href =
-    type === "article"
-      ? `/articles/${slug}`
-      : type === "recipe"
-      ? `/recipes/${slug}`
-      : `/products/${slug}`;
+  let href = "#";
+  if (type === "article") href = `/articles/${slug}`;
+  else if (type === "product") href = `/products/${slug}`;
+  else if (type === "recipe") href = `/recipes/${slug}`;
 
   const favType = type as FavoriteType;
   const favId = data._id;

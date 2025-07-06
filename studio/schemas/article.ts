@@ -3,22 +3,8 @@ export default {
   title: 'Article',
   type: 'document',
   fields: [
-    {name: 'title', type: 'string', title: 'Title'},
-    {name: 'category', type: 'string', title: 'Category'},
-    {name: 'slug', type: 'slug', title: 'Slug', options: {source: 'title'}},
-    {name: 'intro', type: 'text', title: 'Short Introduction'},
-    {name: 'mainImagePrompt', type: 'string', title: 'Main Image Prompt'},
-    {
-      name: 'mainImage',
-      type: 'image',
-      title: 'Article Image',
-      options: {hotspot: true},
-      fields: [{name: 'alt', type: 'string', title: 'Alt text', options: {source: 'title'}}],
-    },
-    {name: 'length', type: 'string', title: 'Length'},
-    {name: 'tone', type: 'string', title: 'Tone'},
     {name: 'author', type: 'string', title: 'Author'},
-    {name: 'date', type: 'date', title: 'Date'},
+    {name: 'date', type: 'date', title: 'Date', initialValue: new Date().toISOString()},
     {
       name: 'galleryImagePrompts',
       type: 'array',
@@ -50,6 +36,22 @@ export default {
       ]
     },
     {name: 'body', type: 'array', of: [{type: 'string'}], title: 'Content'},
+    {name: 'title', type: 'string', title: 'Title'},
+    {name: 'category', type: 'string', title: 'Category'},
+    {name: 'slug', type: 'slug', title: 'Slug', options: {source: 'title'}},
+    {name: 'intro', type: 'text', title: 'Short Introduction'},
+    {name: 'mainImagePrompt', type: 'string', title: 'Main Image Prompt'},
+    {
+      name: 'mainImage',
+      type: 'image',
+      title: 'Article Image',
+      options: {hotspot: true},
+      fields: [{name: 'alt', type: 'string', title: 'Alt text', options: {source: 'title'}}],
+    },
+    {name: 'length', type: 'string', title: 'Length'},
+    {name: 'tone', type: 'string', title: 'Tone'},
+
+
     
     {
       name: 'productsIds',
