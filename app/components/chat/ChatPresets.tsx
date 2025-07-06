@@ -7,9 +7,9 @@ interface ChatPresetsProps {
 }
 
 const PRESETS = [
-  "Как улучшить сон?",
-  "Придумай легкий ужин",
-  "Дай совет для энергии",
+  "How to improve sleep?",
+  "Suggest a light dinner",
+  "Give me energy advice",
 ];
 
 const ChatPresets: React.FC<ChatPresetsProps> = ({ onPreset, disabled, visible }) => {

@@ -17,7 +17,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ role, content }) => (
           : "bg-lemon text-charcoal"
       }`}
     >
-      <strong>{role === "user" ? "Вы" : "Vivi"}:</strong>{" "}
+      <strong>{role === "user" ? "You" : "Vivi"}:</strong>{" "}
       <ReactMarkdown
         components={{
           p: ({ children }) => <p className="my-0.5">{children}</p>,

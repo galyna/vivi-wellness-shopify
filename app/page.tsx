@@ -1,6 +1,5 @@
 import Hero from "./components/layout/Hero";
 import BubbleChat from "./components/chat";
-import Image from "next/image";
 import { Suspense } from "react";
 import ProductsSection from "./components/sections/ProductsSection";
 import RecipesSection from "./components/sections/RecipesSection";
@@ -16,13 +15,6 @@ export default function HomePage() {
     <main>
       <Hero />
       <div className="relative">
-        <Image
-          src="/bg2.jpg"
-          alt="Background"
-          fill
-          className="object-cover object-center opacity-15 blur-lg pointer-events-none select-none z-0"
-          priority={false}
-        />
         <div className="relative z-10">
           <Suspense fallback={<SkeletonSection title="Products" />}>
             <ProductsSection />

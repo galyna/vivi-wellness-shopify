@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { getCatalogHeroData } from "@/lib/sanityApi";
+import ShowMoreButton from "../content/ShowMoreButton";
 
 // Пример: Hero получает id через пропсы или хардкод
 const HERO_ID = "hero-1"; // или другой id из Sanity
@@ -26,12 +27,12 @@ const Hero = async () => {
         <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl">
           {hero?.subtitle || "Break through barriers and unlock a transformative experience of radical healing and unstoppable joy."}
         </p>
-        <a
-          href={hero?.ctaUrl || "#"}
-          className="px-8 py-3 rounded-full bg-charcoal text-white font-bold hover:bg-gray-800 transition-colors"
+        <ShowMoreButton
+          href={"/products"}
+          className="bg-charcoal hover:bg-gray-800"
         >
-          {hero?.ctaText || "Get a quote"}
-        </a>
+          {hero?.ctaText || "Show catalog"}
+        </ShowMoreButton>
       </div>
     </section>
   );

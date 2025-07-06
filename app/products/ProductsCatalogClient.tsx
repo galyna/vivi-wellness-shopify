@@ -4,8 +4,9 @@ import { useSearchParams } from "next/navigation";
 import UniversalCard from "../components/content/UniversalCard";
 import CatalogToolbar from "../components/content/CatalogToolbar";
 import FilterModal from "../components/content/FilterModal";
+import ShowMoreButton from "../components/content/ShowMoreButton";
 import { useProducts, useAllProducts } from "../hooks/useProducts";
-import { Skeleton } from "../components/content/Skeleton";
+import { Skeleton } from "../components/sections/Skeleton";
 
 type ProductFilterSettings = {
   categories?: string[];
@@ -117,7 +118,7 @@ export default function ProductsCatalogClient() {
           searchValue={search}
         />
       </div>
-      <main>
+      <main className="relative">
         <section className="mx-auto max-w-7xl px-8 py-12 lg:px-16 relative space-y-10 lg:space-y-12">
           <div className="grid grid-cols-1 md:grid-cols-2  gap-4 md:gap-8 lg:gap-12">
             {(showAll ? products : products.slice(0, 8)).map((product) => (
@@ -126,29 +127,9 @@ export default function ProductsCatalogClient() {
           </div>
           {!showAll && products.length > 9 && (
             <div className="flex justify-center mt-6">
-              <button
-                className="px-6 py-3 rounded-full bg-charcoal text-white font-bold hover:bg-gray-800
-             transition-all duration-200 transform hover:scale-105 flex items-center gap-2 group"
-                onClick={() => setShowAll(true)}
-              >
-                Show more{" "}
-                <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">
-                  <svg
-                    width="20"
-                    height="20"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </span>
-              </button>
+              <ShowMoreButton onClick={() => setShowAll(true)}>
+                Show more
+              </ShowMoreButton>
             </div>
           )}
         </section>

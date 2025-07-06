@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import CartSidebarClient from "./components/cart/CartSidebarClient";
+import BubbleChat from "./components/chat";
 import ReactQueryProvider from "@/app/providers/ReactQueryProvider";
 
 const geistSans = Geist({
@@ -71,6 +72,7 @@ export default function RootLayout({
             {children}
           </main>
         </ReactQueryProvider>
+        <BubbleChat />
         <Footer />
       </body>
     </html>

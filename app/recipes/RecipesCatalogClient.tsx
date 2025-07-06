@@ -5,8 +5,9 @@ import Image from "next/image";
 import UniversalCard from "../components/content/UniversalCard";
 import CatalogToolbar from "../components/content/CatalogToolbar";
 import FilterModal from "../components/content/FilterModal";
+import ShowMoreButton from "../components/content/ShowMoreButton";
 import { useRecipes, useAllRecipes } from "../hooks/useRecipes";
-import { Skeleton } from "../components/content/Skeleton";
+import { Skeleton } from "../components/sections/Skeleton";
 
 type RecipeFilterSettings = {
   categories?: string[];
@@ -63,13 +64,6 @@ export default function RecipesCatalogClient() {
           />
         </div>
         <main className="relative">
-          <Image
-            src="/bg.jpg"
-            alt="Background"
-            fill
-            className="object-cover object-center opacity-15 blur-lg pointer-events-none select-none z-0"
-            priority={false}
-          />
           <section className="mx-auto max-w-7xl px-8 py-12 lg:px-16 relative z-10 space-y-10 lg:space-y-12">
             <Skeleton />
           </section>
@@ -114,12 +108,9 @@ export default function RecipesCatalogClient() {
           </div>
           {!showAll && recipes.length > 9 && (
             <div className="flex justify-center mt-6">
-              <button
-                className="px-6 py-2 rounded-full bg-coral text-white font-bold shadow hover:bg-neon transition"
-                onClick={() => setShowAll(true)}
-              >
+              <ShowMoreButton onClick={() => setShowAll(true)}>
                 Show more
-              </button>
+              </ShowMoreButton>
             </div>
           )}
         </section>
@@ -136,6 +127,11 @@ export default function RecipesCatalogClient() {
         }}
         filterType="recipes"
       />
+      {recipes.length === 0 && (
+        <div className="text-center text-gray-400 py-20">
+          No recipes found.
+        </div>
+      )}
     </div>
   );
 }

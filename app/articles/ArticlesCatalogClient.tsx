@@ -5,8 +5,9 @@ import Image from "next/image";
 import UniversalCard from "../components/content/UniversalCard";
 import CatalogToolbar from "../components/content/CatalogToolbar";
 import FilterModal from "../components/content/FilterModal";
+import ShowMoreButton from "../components/content/ShowMoreButton";
 import { useArticles, useAllArticles } from "../hooks/useArticles";
-import { Skeleton } from "../components/content/Skeleton";
+import { Skeleton } from "../components/sections/Skeleton";
 
 type ArticleFilterSettings = {
   categories?: string[];
@@ -104,11 +105,7 @@ export default function ArticlesCatalogClient() {
 
   return (
     <div>
-      <div
-        className={`sticky ${
-          toolbarAtTop ? "top-0 z-[999]" : "top-[64px] z-30"
-        } bg-white min-h-[64px]`}
-      >
+      <div className={`sticky ${toolbarAtTop ? "top-0 z-[999]" : "top-[64px] z-30"} bg-white min-h-[64px]`}>
         <CatalogToolbar
           onSearch={setSearch}
           onSort={(v) => setSort(v as "asc" | "desc")}
@@ -126,13 +123,6 @@ export default function ArticlesCatalogClient() {
         />
       </div>
       <main className=" relative">
-        <Image
-          src="/bg2.jpg"
-          alt="Background"
-          fill
-          className="object-cover object-center opacity-15 blur-lg pointer-events-none select-none z-0"
-          priority={false}
-        />
         <section className=" max-w-7xl mx-auto px-8 py-12 lg:px-16 relative z-10 space-y-10 lg:space-y-12">
           <div className="grid grid-cols-1 md:grid-cols-2  gap-4 md:gap-8 lg:gap-12">
             {(showAll ? articles : articles.slice(0, 8)).map((article) => (
@@ -141,35 +131,37 @@ export default function ArticlesCatalogClient() {
           </div>
           {!showAll && articles.length > 9 && (
             <div className="flex justify-center mt-6">
-              <button
-                className="px-6 py-2 rounded-full bg-coral text-white font-bold shadow hover:bg-neon transition"
-                onClick={() => setShowAll(true)}
-              >
+              <ShowMoreButton onClick={() => setShowAll(true)}>
                 Show more
-              </button>
+              </ShowMoreButton>
             </div>
           )}
         </section>
       </main>
-              <FilterModal
-          isOpen={filterOpen}
-          onClose={() => setFilterOpen(false)}
-          data={allArticles}
-          settings={filterSettings}
-          onChange={(newSettings) => setFilterSettings(newSettings as ArticleFilterSettings)}
-          onClear={() => {
-            setFilterSettings({
-              categories: [],
-              lengths: [],
-              tones: [],
-              authors: [],
-              dateFrom: "",
-              dateTo: "",
-            });
-            setFilterOpen(false);
-          }}
-          filterType="articles"
-        />
+      <FilterModal
+        isOpen={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        data={allArticles}
+        settings={filterSettings}
+        onChange={(newSettings) => setFilterSettings(newSettings as ArticleFilterSettings)}
+        onClear={() => {
+          setFilterSettings({
+            categories: [],
+            lengths: [],
+            tones: [],
+            authors: [],
+            dateFrom: "",
+            dateTo: "",
+          });
+          setFilterOpen(false);
+        }}
+        filterType="articles"
+      />
+      {articles.length === 0 && (
+        <div className="text-center text-gray-400 py-20">
+          No articles found.
+        </div>
+      )}
     </div>
   );
 }

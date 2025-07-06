@@ -1,12 +1,13 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useChat } from "ai/react";
+import { useChatStore } from "@/app/store/chatStore";
 import ChatMessage from "./ChatMessage";
 import ChatPresets from "./ChatPresets";
 import TypingIndicator from "./TypingIndicator";
 
 export default function BubbleChat() {
-  const [open, setOpen] = useState(false);
+  const { isOpen, openChat, closeChat } = useChatStore();
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const [showPresets, setShowPresets] = useState(true);
 
@@ -20,7 +21,7 @@ export default function BubbleChat() {
     append,
   } = useChat({ api: "/api/chat" });
 
-  // Автопрокрутка вниз
+  // Auto-scroll to bottom
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -37,21 +38,21 @@ export default function BubbleChat() {
 
   return (
     <>
-      {/* Bubble-кнопка */}
+      {/* Bubble button */}
       <button
         className="fixed bottom-6 right-6 z-50 bg-coral text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg hover:bg-neon transition text-3xl border-4 border-white"
-        onClick={() => setOpen(true)}
-        aria-label="Открыть чат"
+        onClick={openChat}
+        aria-label="Open chat"
         style={{ boxShadow: "0 4px 24px 0 rgba(0,0,0,0.12)" }}
       >
         💬
       </button>
 
-      {/* Модалка (sheet) */}
-      {open && (
+      {/* Modal (sheet) */}
+      {isOpen && (
         <div
           className="fixed inset-0 bg-black/40 flex items-end justify-end z-50"
-          onClick={() => setOpen(false)}
+          onClick={closeChat}
         >
           <div
             className="bg-white rounded-t-3xl shadow-2xl p-6 w-full max-w-3xl mx-auto mb-0 flex flex-col gap-4 animate-fade-in"
@@ -59,11 +60,11 @@ export default function BubbleChat() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="font-bold text-lg text-charcoal mb-2 flex items-center justify-between">
-              <span>Чат-бот</span>
+              <span>Chat Bot</span>
               <button
                 className="text-coral text-2xl leading-none"
-                onClick={() => setOpen(false)}
-                aria-label="Закрыть"
+                onClick={closeChat}
+                aria-label="Close"
               >
                 ×
               </button>
@@ -75,7 +76,7 @@ export default function BubbleChat() {
             >
               {messages.length === 0 && (
                 <div className="text-charcoal/60 text-sm mb-2">
-                  <span><strong>Привет, я Vivi!</strong> 🌱<br/>Можешь выбрать один из примеров или написать свой вопрос:</span>
+                  <span><strong>Hi, I&apos;m Vivi!</strong> 🌱<br/>You can choose one of the examples or write your own question:</span>
                 </div>
               )}
 
@@ -93,7 +94,7 @@ export default function BubbleChat() {
 
               {error && (
                 <div className="text-red-500 text-xs mt-2">
-                  Ошибка: {error.message}
+                  Error: {error.message}
                 </div>
               )}
             </div>
@@ -107,7 +108,7 @@ export default function BubbleChat() {
             <form onSubmit={handleSubmit} className="flex gap-2">
               <input
                 className="px-3 py-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-coral"
-                placeholder="Спроси у Vivi…"
+                placeholder="Ask Vivi..."
                 value={input}
                 onChange={handleInputChange}
                 disabled={isLoading}

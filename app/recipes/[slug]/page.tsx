@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getRecipeBySlug, getRecipes } from "@/lib/sanityApi";
 import { Recipe } from "@/types";
 import Image from "next/image";
+import AskViviButton from "../../components/content/AskViviButton";
 
 export default async function RecipePage({
   params,
@@ -42,13 +43,7 @@ export default async function RecipePage({
             </div>
             {/* Кнопка */}
             <div className="mt-8 flex justify-end">
-              <a
-                href="/chat"
-                className="inline-flex items-center px-8 py-3 rounded-full border-2 border-white text-white font-semibold text-lg hover:bg-white hover:text-[#222] transition"
-              >
-                Ask Vivi
-                <span className="ml-2 text-xl">→</span>
-              </a>
+              <AskViviButton />
             </div>
           </div>
         </div>

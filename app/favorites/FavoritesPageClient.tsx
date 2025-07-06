@@ -5,7 +5,7 @@ import UniversalCard from "@/app/components/content/UniversalCard";
 import { useMemo, useState } from "react";
 import { Article, Product, Recipe } from "@/types";
 import { useFavoritesData } from "@/app/hooks/useFavoritesData";
-import { Skeleton } from "@/app/components/content/Skeleton";
+import { Skeleton } from "@/app/components/sections/Skeleton";
 
 const filters = [
   { key: "all", label: "All" },

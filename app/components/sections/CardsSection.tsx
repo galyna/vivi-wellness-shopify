@@ -2,6 +2,7 @@
 import React from "react";
 import { Article, Recipe, Product } from "@/types";
 import UniversalCard from "../content/UniversalCard";
+import ShowMoreButton from "../content/ShowMoreButton";
 
 type CardType = "article" | "recipe" | "product";
 type CardData = (Article | Recipe | Product) & { type: CardType; _id: string };
@@ -26,15 +27,9 @@ function CardsSection({ title, items, showMoreHref, showMoreText }: CardsSection
           ))}
         </div>
         <div className="flex justify-center ">
-          <a
-            href={showMoreHref}
-            className="px-6 py-3 rounded-full bg-charcoal text-white font-bold hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 flex items-center gap-2 group"
-          >
+          <ShowMoreButton href={showMoreHref}>
             {showMoreText}
-            <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">
-              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </span>
-          </a>
+          </ShowMoreButton>
         </div>
       </div>
     </section>

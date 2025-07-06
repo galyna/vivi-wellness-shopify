@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getCatalogHeroData } from "@/lib/sanityApi";
+import AskViviButton from "../content/AskViviButton";
 
 interface CatalogHeroProps {
   id: string;
@@ -12,6 +13,7 @@ const CatalogHero = async ({ id }: CatalogHeroProps) => {
   if (!data) return null;
   return (
     <div className="max-w-7xl mx-auto  px-8 pt-14 pb-12 lg:px-16">
+      
       <section className="w-full flex flex-col md:flex-row items-stretch justify-between  rounded-3xl  shadow-lg overflow-hidden">
         {/* Image block — сверху на мобиле, справа на десктопе */}
         <div className="w-full md:w-1/2 h-48 md:h-auto aspect-[4/3] md:aspect-auto overflow-hidden flex-shrink-0 relative">
@@ -31,13 +33,7 @@ const CatalogHero = async ({ id }: CatalogHeroProps) => {
           <h1 className="text-3xl md:text-4xl font-bold mb-4">{data.title}</h1>
           {data.subtitle && <p className="text-lg mb-6">{data.subtitle}</p>}
           {data.ctaText && data.ctaUrl && (
-            <a
-              href={data.ctaUrl}
-              className="inline-flex items-center px-8 py-3 rounded-full border-2 border-white text-white font-semibold text-lg hover:bg-white hover:text-[#222] transition"
-            >
-              Ask Vivi
-              <span className="ml-2 text-xl">→</span>
-            </a>
+            <AskViviButton />
           )}
         </div>
       </section>

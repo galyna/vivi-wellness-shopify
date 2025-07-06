@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { Skeleton } from "@/app/components/content/Skeleton";
+import { Skeleton } from "@/app/components/sections/Skeleton";
 
 const FavoritesPageClient = dynamic(() => import("./FavoritesPageClient"), {
   ssr: false,

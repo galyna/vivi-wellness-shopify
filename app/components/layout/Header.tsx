@@ -36,7 +36,7 @@ const Header = () => {
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }
-        backdrop-blur-md bg-mint/60
+        backdrop-blur-md bg-mint
         ${
           scrolled
             ? "border-b border-gray-200 shadow-md"
