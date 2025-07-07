@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import CartIcon from "./CartIcon";
+import Menu from "./Menu";
 
 const nav = [
   { href: "/", label: "Home" },
@@ -15,6 +16,7 @@ const Header = () => {
   const pathname = usePathname();
   const [show, setShow] = useState(true);
   const [scrolled, setScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const lastScroll = useRef(0);
 
   useEffect(() => {
@@ -85,6 +87,7 @@ const Header = () => {
           </Link>
           <CartIcon />
           <button
+            onClick={() => setIsMenuOpen(true)}
             className="md:hidden w-10 h-10 flex items-center justify-center rounded-full transition-colors duration-300 bg-gray-900 text-white"
             aria-label="Menu"
           >
@@ -105,6 +108,9 @@ const Header = () => {
           </button>
         </div>
       </div>
+      
+      {/* Mobile Menu */}
+      <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
     </header>
   );
 };

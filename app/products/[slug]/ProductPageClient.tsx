@@ -2,16 +2,16 @@
 import Image from "next/image";
 import { useState } from "react";
 
-export default function ProductPageClient({ product, gallery }: { product: { title: string; mainImage?: { asset?: { url?: string } }; galleryImages?: { asset?: { url?: string } }[]; category?: string; price: number; description?: string }, gallery: string[] }) {
+export default function ProductPageClient({ product, gallery }: { product: { title: string; mainImage?: { asset?: { url?: string } }; galleryImages?: { asset?: { url?: string } }[]; category?: string; price: number; description?: string; color?: string; size?: string; material?: string }, gallery: string[] }) {
   const [mainImg, setMainImg] = useState(gallery[0]);
-  const [color, setColor] = useState("black");
 
   return (
     <main className="max-w-6xl mx-auto px-4 py-12 flex flex-col md:flex-row gap-12">
       {/* Галерея */}
       <div className="flex-1 flex flex-col items-center">
-        <div className="w-full aspect-[4/3] bg-gray-100 rounded-2xl overflow-hidden flex items-center justify-center mb-4">
-          <Image src={mainImg} alt={product.title} width={600} height={450} sizes="(max-width: 768px) 100vw, 50vw" className="object-contain w-full h-full" />
+        <div className="w-full aspect-[4/3] bg-gray-100 rounded-3xl overflow-hidden flex items-center justify-center mb-4">
+          <Image src={mainImg} alt={product.title} width={600} height={450} 
+          sizes="(max-width: 768px) 100vw, 50vw" className="object-contain w-full h-full" />
         </div>
         <div className="flex gap-2 mt-2">
           {gallery.map((img: string) => (
@@ -31,19 +31,29 @@ export default function ProductPageClient({ product, gallery }: { product: { tit
           <span className="ml-4 text-yellow-500 font-bold">★ 4.6/5</span>
         </div>
         <div className="mb-4 text-gray-700">{product.description}</div>
-        {/* Селектор цвета */}
-        <div className="mb-4">
-          <div className="mb-1 text-sm font-medium">Color</div>
-          <div className="flex gap-4">
-            {["black", "white"].map((c: string) => (
-              <label key={c} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="color" checked={color === c} onChange={() => setColor(c)} className="hidden" />
-                <span className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${color === c ? "border-coral" : "border-gray-300"}`} style={{ background: c }} />
-                <span className="text-sm capitalize">{c}</span>
-              </label>
-            ))}
-          </div>
+        
+        {/* Характеристики товара */}
+        <div className="mb-6 space-y-3">
+          {product.color && (
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium text-gray-600">Цвет:</span>
+              <span className="text-sm">{product.color}</span>
+            </div>
+          )}
+          {product.size && (
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium text-gray-600">Размер:</span>
+              <span className="text-sm">{product.size}</span>
+            </div>
+          )}
+          {product.material && (
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium text-gray-600">Материал:</span>
+              <span className="text-sm">{product.material}</span>
+            </div>
+          )}
         </div>
+        
         <button className="w-full py-3 rounded-full bg-black text-white font-bold text-lg mt-4 hover:bg-coral transition">
           Add to basket
         </button>
