@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useFilters } from "../../hooks/product/useFilters";
+import { useFilters } from "../../hooks/filters/useFilters";
 
 interface FilterSettings {
   categories?: string[];
