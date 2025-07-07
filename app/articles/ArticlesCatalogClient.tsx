@@ -1,13 +1,14 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import UniversalCard from "../components/content/UniversalCard";
 import CatalogToolbar from "../components/content/CatalogToolbar";
 import FilterModal from "../components/content/FilterModal";
-import ShowMoreButton from "../components/content/ShowMoreButton";
-import { useArticles, useAllArticles } from "../hooks/useArticles";
+import InfiniteScroll from "../components/content/InfiniteScroll";
+import { useInfiniteArticles } from "../hooks/useInfiniteArticles";
 import { Skeleton } from "../components/sections/Skeleton";
+import { Article } from "@/types";
 
 type ArticleFilterSettings = {
   categories?: string[];
@@ -18,14 +19,19 @@ type ArticleFilterSettings = {
   dateTo?: string;
 };
 
-export default function ArticlesCatalogClient() {
+interface ArticlesCatalogClientProps {
+  initialArticles: Article[];
+}
+
+export default function ArticlesCatalogClient({ }: ArticlesCatalogClientProps) {
   const searchParams = useSearchParams();
   const selectedCategory = searchParams.get("category") || "";
   
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc">("asc");
   const [filterOpen, setFilterOpen] = useState(false);
-  const [filterSettings, setFilterSettings] = useState<ArticleFilterSettings>({
+
+  const [activeFilters, setActiveFilters] = useState<ArticleFilterSettings>({
     categories: selectedCategory ? [selectedCategory] : [],
     lengths: [],
     tones: [],
@@ -33,23 +39,41 @@ export default function ArticlesCatalogClient() {
     dateFrom: "",
     dateTo: "",
   });
-  const [showAll, setShowAll] = useState(false);
   const [toolbarAtTop, setToolbarAtTop] = useState(false);
 
-  // Use React Query hooks
-  const { data: articles = [], isLoading, error } = useArticles({
+  // Use infinite query for articles
+  const queryParams = useMemo(() => ({
     search,
-    categories: filterSettings.categories || [],
-    lengths: filterSettings.lengths || [],
-    tones: filterSettings.tones || [],
-    authors: filterSettings.authors || [],
-    dateFrom: filterSettings.dateFrom || "",
-    dateTo: filterSettings.dateTo || "",
+    categories: activeFilters.categories || [],
+    lengths: activeFilters.lengths || [],
+    tones: activeFilters.tones || [],
+    authors: activeFilters.authors || [],
+    dateFrom: activeFilters.dateFrom || "",
+    dateTo: activeFilters.dateTo || "",
     sort,
-  });
+  }), [search, activeFilters, sort]);
+  
 
-  // Get all articles for filter options
-  const { data: allArticles = [] } = useAllArticles();
+  
+  const {
+    data: infiniteData,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useInfiniteArticles(queryParams);
+
+
+  
+
+
+  // Используем данные из React Query
+  const displayArticles = infiniteData?.pages.flatMap(page => page.articles) || [];
+  
+
+
+
 
   useEffect(() => {
     const onScroll = () => {
@@ -68,12 +92,12 @@ export default function ArticlesCatalogClient() {
             onSort={(v) => setSort(v as "asc" | "desc")}
             onFilter={() => setFilterOpen(true)}
             filterCount={
-              (filterSettings.categories?.length || 0) +
-              (filterSettings.lengths?.length || 0) +
-              (filterSettings.tones?.length || 0) +
-              (filterSettings.authors?.length || 0) +
-              (filterSettings.dateFrom ? 1 : 0) +
-              (filterSettings.dateTo ? 1 : 0)
+              (activeFilters.categories?.length || 0) +
+              (activeFilters.lengths?.length || 0) +
+              (activeFilters.tones?.length || 0) +
+              (activeFilters.authors?.length || 0) +
+              (activeFilters.dateFrom ? 1 : 0) +
+              (activeFilters.dateTo ? 1 : 0)
             }
             sortValue={sort}
             searchValue={search}
@@ -111,12 +135,12 @@ export default function ArticlesCatalogClient() {
           onSort={(v) => setSort(v as "asc" | "desc")}
           onFilter={() => setFilterOpen(true)}
           filterCount={
-            (filterSettings.categories?.length || 0) +
-            (filterSettings.lengths?.length || 0) +
-            (filterSettings.tones?.length || 0) +
-            (filterSettings.authors?.length || 0) +
-            (filterSettings.dateFrom ? 1 : 0) +
-            (filterSettings.dateTo ? 1 : 0)
+            (activeFilters.categories?.length || 0) +
+            (activeFilters.lengths?.length || 0) +
+            (activeFilters.tones?.length || 0) +
+            (activeFilters.authors?.length || 0) +
+            (activeFilters.dateFrom ? 1 : 0) +
+            (activeFilters.dateTo ? 1 : 0)
           }
           sortValue={sort}
           searchValue={search}
@@ -124,40 +148,41 @@ export default function ArticlesCatalogClient() {
       </div>
       <main className=" relative">
         <section className=" max-w-7xl mx-auto px-8 py-12 lg:px-16 relative z-10 space-y-10 lg:space-y-12">
-          <div className="grid grid-cols-1 md:grid-cols-2  gap-4 md:gap-8 lg:gap-12">
-            {(showAll ? articles : articles.slice(0, 8)).map((article) => (
-              <UniversalCard key={article._id} type="article" data={article} />
-            ))}
-          </div>
-          {!showAll && articles.length > 9 && (
-            <div className="flex justify-center mt-6">
-              <ShowMoreButton onClick={() => setShowAll(true)}>
-                Show more
-              </ShowMoreButton>
+          <InfiniteScroll
+            onLoadMore={fetchNextPage}
+            hasMore={hasNextPage ?? false}
+            isLoading={isFetchingNextPage}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2  gap-4 md:gap-8 lg:gap-12">
+              {displayArticles.map((article: Article) => (
+                <UniversalCard key={article._id} type="article" data={article} />
+              ))}
             </div>
-          )}
+          </InfiniteScroll>
         </section>
       </main>
       <FilterModal
         isOpen={filterOpen}
         onClose={() => setFilterOpen(false)}
-        data={allArticles}
-        settings={filterSettings}
-        onChange={(newSettings) => setFilterSettings(newSettings as ArticleFilterSettings)}
+        settings={activeFilters}
+        onChange={(newSettings) => {
+          setActiveFilters(newSettings as ArticleFilterSettings);
+        }}
         onClear={() => {
-          setFilterSettings({
+          const clearedSettings = {
             categories: [],
             lengths: [],
             tones: [],
             authors: [],
             dateFrom: "",
             dateTo: "",
-          });
+          };
+          setActiveFilters(clearedSettings);
           setFilterOpen(false);
         }}
         filterType="articles"
       />
-      {articles.length === 0 && (
+      {displayArticles.length === 0 && (
         <div className="text-center text-gray-400 py-20">
           No articles found.
         </div>

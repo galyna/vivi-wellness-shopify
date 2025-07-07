@@ -12,6 +12,9 @@ export async function GET(request: NextRequest) {
     const dateFrom = searchParams.get("dateFrom");
     const dateTo = searchParams.get("dateTo");
     const sort = searchParams.get("sort") || "asc";
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "8");
+    const offset = (page - 1) * limit;
 
     // Build Sanity query with filters
     let query = `*[_type == "article"`;
@@ -50,7 +53,7 @@ export async function GET(request: NextRequest) {
       query += ` && (${conditions.join(" && ")})`;
     }
     
-    query += `] | order(title ${sort}) {
+    query += `] | order(title ${sort}) [${offset}...${offset + limit}] {
       _id,
       title,
       description,
@@ -66,9 +69,28 @@ export async function GET(request: NextRequest) {
       "slug": slug.current
     }`;
 
+    // Get total count for pagination with filters
+    let countQuery = `*[_type == "article"`;
+    
+    if (conditions.length > 0) {
+      countQuery += ` && (${conditions.join(" && ")})`;
+    }
+    
+    countQuery += `]`;
+    const totalCount = await client.fetch(`count(${countQuery})`);
+
     const articles = await client.fetch(query);
     
-    return NextResponse.json(articles);
+    return NextResponse.json({
+      articles,
+      pagination: {
+        page,
+        limit,
+        total: totalCount,
+        hasMore: offset + limit < totalCount,
+        totalPages: Math.ceil(totalCount / limit)
+      }
+    });
   } catch (error) {
     console.error("Error fetching articles:", error);
     return NextResponse.json({ error: "Failed to fetch articles" }, { status: 500 });

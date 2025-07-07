@@ -1,12 +1,13 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import UniversalCard from "../components/content/UniversalCard";
 import CatalogToolbar from "../components/content/CatalogToolbar";
 import FilterModal from "../components/content/FilterModal";
-import ShowMoreButton from "../components/content/ShowMoreButton";
-import { useProducts, useAllProducts } from "../hooks/useProducts";
+import InfiniteScroll from "../components/content/InfiniteScroll";
+import { useInfiniteProducts } from "../hooks/useInfiniteProducts";
 import { Skeleton } from "../components/sections/Skeleton";
+import { Product } from "@/types";
 
 type ProductFilterSettings = {
   categories?: string[];
@@ -17,7 +18,11 @@ type ProductFilterSettings = {
   maxPrice?: string;
 };
 
-export default function ProductsCatalogClient() {
+interface ProductsCatalogClientProps {
+  initialProducts: Product[];
+}
+
+export default function ProductsCatalogClient({ }: ProductsCatalogClientProps) {
   const searchParams = useSearchParams();
   const selectedCategory = searchParams.get("category") || "";
   
@@ -32,11 +37,10 @@ export default function ProductsCatalogClient() {
     minPrice: "",
     maxPrice: "",
   });
-  const [showAll, setShowAll] = useState(false);
   const [toolbarAtTop, setToolbarAtTop] = useState(false);
 
-  // Use React Query hooks
-  const { data: products = [], isLoading, error } = useProducts({
+  // Use infinite query for products
+  const queryParams = useMemo(() => ({
     search,
     categories: settings.categories || [],
     colors: settings.colors || [],
@@ -45,10 +49,21 @@ export default function ProductsCatalogClient() {
     minPrice: settings.minPrice || "",
     maxPrice: settings.maxPrice || "",
     sort,
-  });
+  }), [search, settings, sort]);
 
-  // Get all products for filter options
-  const { data: allProducts = [] } = useAllProducts();
+  const {
+    data: infiniteData,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useInfiniteProducts(queryParams);
+
+  // Используем данные из React Query
+  const displayProducts = infiniteData?.pages.flatMap(page => page.products) || [];
+
+
 
   useEffect(() => {
     const onScroll = () => {
@@ -120,24 +135,22 @@ export default function ProductsCatalogClient() {
       </div>
       <main className="relative">
         <section className="mx-auto max-w-7xl px-8 py-12 lg:px-16 relative space-y-10 lg:space-y-12">
-          <div className="grid grid-cols-1 md:grid-cols-2  gap-4 md:gap-8 lg:gap-12">
-            {(showAll ? products : products.slice(0, 8)).map((product) => (
-              <UniversalCard key={product._id} type="product" data={product} />
-            ))}
-          </div>
-          {!showAll && products.length > 9 && (
-            <div className="flex justify-center mt-6">
-              <ShowMoreButton onClick={() => setShowAll(true)}>
-                Show more
-              </ShowMoreButton>
+          <InfiniteScroll
+            onLoadMore={fetchNextPage}
+            hasMore={hasNextPage ?? false}
+            isLoading={isFetchingNextPage}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2  gap-4 md:gap-8 lg:gap-12">
+              {displayProducts.map((product: Product) => (
+                <UniversalCard key={product._id} type="product" data={product} />
+              ))}
             </div>
-          )}
+          </InfiniteScroll>
         </section>
       </main>
       <FilterModal
         isOpen={filterOpen}
         onClose={() => setFilterOpen(false)}
-        data={allProducts}
         settings={settings}
         onChange={(newSettings) => setSettings(newSettings as ProductFilterSettings)}
         onClear={() => {
@@ -153,7 +166,7 @@ export default function ProductsCatalogClient() {
         }}
         filterType="products"
       />
-      {products.length === 0 && (
+      {displayProducts.length === 0 && (
         <div className="text-center text-gray-400 py-20">
           No products found.
         </div>

@@ -30,7 +30,7 @@ export function useRecipes(params: UseRecipesParams = {}) {
     queryFn: async (): Promise<Recipe[]> => {
       if (!hasFilters) {
         // No filters - get all recipes
-        const response = await fetch("/api/recipes/search");
+        const response = await fetch("/api/recipes");
         if (!response.ok) {
           throw new Error("Failed to fetch recipes");
         }
@@ -46,7 +46,7 @@ export function useRecipes(params: UseRecipesParams = {}) {
       if (difficulties.length > 0) queryParams.set("difficulties", difficulties.join(","));
       if (sort) queryParams.set("sort", sort);
 
-      const response = await fetch(`/api/recipes/search?${queryParams}`);
+      const response = await fetch(`/api/recipes?${queryParams}`);
       if (!response.ok) {
         throw new Error("Failed to fetch recipes");
       }
@@ -58,18 +58,4 @@ export function useRecipes(params: UseRecipesParams = {}) {
   });
 }
 
-// Hook to get all recipes for filter options
-export function useAllRecipes() {
-  return useQuery({
-    queryKey: ["all-recipes"],
-    queryFn: async (): Promise<Recipe[]> => {
-      const response = await fetch("/api/recipes/search");
-      if (!response.ok) {
-        throw new Error("Failed to fetch all recipes");
-      }
-      return response.json();
-    },
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 20 * 60 * 1000, // 20 minutes
-  });
-} 
+ 

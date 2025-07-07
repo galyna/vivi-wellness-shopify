@@ -1,13 +1,14 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import UniversalCard from "../components/content/UniversalCard";
 import CatalogToolbar from "../components/content/CatalogToolbar";
 import FilterModal from "../components/content/FilterModal";
-import ShowMoreButton from "../components/content/ShowMoreButton";
-import { useRecipes, useAllRecipes } from "../hooks/useRecipes";
+import InfiniteScroll from "../components/content/InfiniteScroll";
+import { useInfiniteRecipes } from "../hooks/useInfiniteRecipes";
 import { Skeleton } from "../components/sections/Skeleton";
+import { Recipe } from "@/types";
 
 type RecipeFilterSettings = {
   categories?: string[];
@@ -15,7 +16,11 @@ type RecipeFilterSettings = {
   difficulties?: string[];
 };
 
-export default function RecipesCatalogClient() {
+interface RecipesCatalogClientProps {
+  initialRecipes: Recipe[];
+}
+
+export default function RecipesCatalogClient({ }: RecipesCatalogClientProps) {
   const searchParams = useSearchParams();
   const selectedCategory = searchParams.get("category") || "";
   
@@ -27,20 +32,30 @@ export default function RecipesCatalogClient() {
     times: [],
     difficulties: [],
   });
-  const [showAll, setShowAll] = useState(false);
   const [toolbarAtTop, setToolbarAtTop] = useState(false);
 
-  // Use React Query hooks
-  const { data: recipes = [], isLoading, error } = useRecipes({
+  // Use infinite query for recipes
+  const queryParams = useMemo(() => ({
     search,
     categories: settings.categories || [],
     times: settings.times || [],
     difficulties: settings.difficulties || [],
     sort,
-  });
+  }), [search, settings, sort]);
 
-  // Get all recipes for filter options
-  const { data: allRecipes = [] } = useAllRecipes();
+  const {
+    data: infiniteData,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useInfiniteRecipes(queryParams);
+
+  // Используем данные из React Query
+  const displayRecipes = infiniteData?.pages.flatMap(page => page.recipes) || [];
+
+
 
   useEffect(() => {
     const onScroll = () => {
@@ -101,24 +116,22 @@ export default function RecipesCatalogClient() {
           priority={false}
         />
         <section className=" mx-auto max-w-7xl px-8 py-12 lg:px-16 relative z-10 space-y-10 lg:space-y-12">
-          <div className="grid grid-cols-1 md:grid-cols-2  gap-4 md:gap-8 lg:gap-12">
-            {(showAll ? recipes : recipes.slice(0, 8)).map((recipe) => (
-              <UniversalCard key={recipe._id} type="recipe" data={recipe} />
-            ))}
-          </div>
-          {!showAll && recipes.length > 9 && (
-            <div className="flex justify-center mt-6">
-              <ShowMoreButton onClick={() => setShowAll(true)}>
-                Show more
-              </ShowMoreButton>
+          <InfiniteScroll
+            onLoadMore={fetchNextPage}
+            hasMore={hasNextPage ?? false}
+            isLoading={isFetchingNextPage}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2  gap-4 md:gap-8 lg:gap-12">
+              {displayRecipes.map((recipe: Recipe) => (
+                <UniversalCard key={recipe._id} type="recipe" data={recipe} />
+              ))}
             </div>
-          )}
+          </InfiniteScroll>
         </section>
       </main>
       <FilterModal
         isOpen={filterOpen}
         onClose={() => setFilterOpen(false)}
-        data={allRecipes}
         settings={settings}
         onChange={(newSettings) => setSettings(newSettings as RecipeFilterSettings)}
         onClear={() => {
@@ -127,7 +140,7 @@ export default function RecipesCatalogClient() {
         }}
         filterType="recipes"
       />
-      {recipes.length === 0 && (
+      {displayRecipes.length === 0 && (
         <div className="text-center text-gray-400 py-20">
           No recipes found.
         </div>

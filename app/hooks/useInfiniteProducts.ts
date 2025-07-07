@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Product } from "@/types";
 
-interface UseProductsParams {
+interface UseInfiniteProductsParams {
   search?: string;
   categories?: string[];
   colors?: string[];
@@ -10,9 +10,22 @@ interface UseProductsParams {
   minPrice?: string;
   maxPrice?: string;
   sort?: "asc" | "desc";
+  limit?: number;
 }
 
-export function useProducts(params: UseProductsParams = {}) {
+interface ProductsResponse {
+  products: Product[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    hasMore: boolean;
+    totalPages: number;
+  };
+  nextPage?: number;
+}
+
+export function useInfiniteProducts(params: UseInfiniteProductsParams = {}) {
   const {
     search = "",
     categories = [],
@@ -21,32 +34,22 @@ export function useProducts(params: UseProductsParams = {}) {
     materials = [],
     minPrice = "",
     maxPrice = "",
-    sort = "asc"
+    sort = "asc",
+    limit = 8
   } = params;
 
   // Check if any filters are applied
-  const hasFilters = search || 
+  const hasFilters = Boolean(search) || 
     categories.length > 0 || 
     colors.length > 0 || 
     sizes.length > 0 || 
     materials.length > 0 || 
-    minPrice || 
-    maxPrice;
+    Boolean(minPrice) || 
+    Boolean(maxPrice);
 
-  // Always call useQuery, but with different logic based on filters
-  return useQuery({
-    queryKey: hasFilters ? ["products", params] : ["all-products"],
-    queryFn: async (): Promise<Product[]> => {
-      if (!hasFilters) {
-        // No filters - get all products
-        const response = await fetch("/api/products");
-        if (!response.ok) {
-          throw new Error("Failed to fetch products");
-        }
-        return response.json();
-      }
-
-      // Has filters - make filtered request
+  return useInfiniteQuery({
+    queryKey: hasFilters ? ["infinite-products", params] : ["infinite-all-products", sort],
+    queryFn: async ({ pageParam = 1 }): Promise<ProductsResponse> => {
       const queryParams = new URLSearchParams();
       
       if (search) queryParams.set("search", search);
@@ -57,17 +60,26 @@ export function useProducts(params: UseProductsParams = {}) {
       if (minPrice) queryParams.set("minPrice", minPrice);
       if (maxPrice) queryParams.set("maxPrice", maxPrice);
       if (sort) queryParams.set("sort", sort);
+      queryParams.set("page", pageParam.toString());
+      queryParams.set("limit", limit.toString());
 
       const response = await fetch(`/api/products?${queryParams}`);
       if (!response.ok) {
         throw new Error("Failed to fetch products");
       }
-      return response.json();
+      const data = await response.json();
+      return {
+        products: data.products,
+        pagination: data.pagination,
+        nextPage: data.pagination.hasMore ? pageParam + 1 : undefined
+      };
     },
-    staleTime: hasFilters ? 5 * 60 * 1000 : 10 * 60 * 1000, // 5 minutes for filtered, 10 for all
-    gcTime: hasFilters ? 10 * 60 * 1000 : 20 * 60 * 1000, // 10 minutes for filtered, 20 for all
-    placeholderData: hasFilters ? (previousData) => previousData : undefined, // Keep showing previous data while fetching new data only for filtered
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextPage;
+    },
+    initialPageParam: 1,
+    enabled: true, // Всегда включаем запрос
+    staleTime: 30 * 1000, // 30 seconds
+    gcTime: 5 * 60 * 1000, // 5 minutes
   });
-}
-
- 
+} 

@@ -39,7 +39,7 @@ export function useArticles(params: UseArticlesParams = {}) {
     queryFn: async (): Promise<Article[]> => {
       if (!hasFilters) {
         // No filters - get all articles
-        const response = await fetch("/api/articles/search");
+        const response = await fetch("/api/articles");
         if (!response.ok) {
           throw new Error("Failed to fetch articles");
         }
@@ -58,7 +58,7 @@ export function useArticles(params: UseArticlesParams = {}) {
       if (dateTo) queryParams.set("dateTo", dateTo);
       if (sort) queryParams.set("sort", sort);
 
-      const response = await fetch(`/api/articles/search?${queryParams}`);
+      const response = await fetch(`/api/articles?${queryParams}`);
       if (!response.ok) {
         throw new Error("Failed to fetch articles");
       }
@@ -70,18 +70,4 @@ export function useArticles(params: UseArticlesParams = {}) {
   });
 }
 
-// Hook to get all articles for filter options
-export function useAllArticles() {
-  return useQuery({
-    queryKey: ["all-articles"],
-    queryFn: async (): Promise<Article[]> => {
-      const response = await fetch("/api/articles/search");
-      if (!response.ok) {
-        throw new Error("Failed to fetch all articles");
-      }
-      return response.json();
-    },
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 20 * 60 * 1000, // 20 minutes
-  });
-} 
+ 

@@ -12,6 +12,9 @@ export async function GET(request: NextRequest) {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
     const sort = searchParams.get("sort") || "asc";
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "8");
+    const offset = (page - 1) * limit;
 
     // Build Sanity query with filters
     let query = `*[_type == "product"`;
@@ -50,7 +53,7 @@ export async function GET(request: NextRequest) {
       query += ` && (${conditions.join(" && ")})`;
     }
     
-    query += `] | order(title ${sort}) {
+    query += `] | order(title ${sort}) [${offset}...${offset + limit}] {
       _id,
       title,
       description,
@@ -70,9 +73,28 @@ export async function GET(request: NextRequest) {
       "slug": slug.current
     }`;
 
+    // Get total count for pagination with filters
+    let countQuery = `*[_type == "product"`;
+    
+    if (conditions.length > 0) {
+      countQuery += ` && (${conditions.join(" && ")})`;
+    }
+    
+    countQuery += `]`;
+    const totalCount = await client.fetch(`count(${countQuery})`);
+
     const products = await client.fetch(query);
     
-    return NextResponse.json(products);
+    return NextResponse.json({
+      products,
+      pagination: {
+        page,
+        limit,
+        total: totalCount,
+        hasMore: offset + limit < totalCount,
+        totalPages: Math.ceil(totalCount / limit)
+      }
+    });
   } catch (error) {
     console.error("Error fetching products:", error);
     return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
