@@ -6,7 +6,7 @@ import UniversalCard from "../components/content/UniversalCard";
 import CatalogToolbar from "../components/content/CatalogToolbar";
 import FilterModal from "../components/content/FilterModal";
 import InfiniteScroll from "../components/content/InfiniteScroll";
-import { useInfiniteArticles } from "../hooks/useInfiniteArticles";
+import { useInfiniteArticles } from "../hooks/article/useInfiniteArticles";
 import { Skeleton } from "../components/sections/Skeleton";
 import { Article } from "@/types";
 

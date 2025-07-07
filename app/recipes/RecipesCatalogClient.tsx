@@ -6,7 +6,7 @@ import UniversalCard from "../components/content/UniversalCard";
 import CatalogToolbar from "../components/content/CatalogToolbar";
 import FilterModal from "../components/content/FilterModal";
 import InfiniteScroll from "../components/content/InfiniteScroll";
-import { useInfiniteRecipes } from "../hooks/useInfiniteRecipes";
+import { useInfiniteRecipes } from "../hooks/recipe/useInfiniteRecipes";
 import { Skeleton } from "../components/sections/Skeleton";
 import { Recipe } from "@/types";
 

@@ -4,7 +4,7 @@ import { useFavoritesStore } from "@/app/store/favoritesStore";
 import UniversalCard from "@/app/components/content/UniversalCard";
 import { useMemo, useState } from "react";
 import { Article, Product, Recipe } from "@/types";
-import { useFavoritesData } from "@/app/hooks/useFavoritesData";
+import { useFavoritesData } from "@/a../hooks/favorites/useFavoritesData";
 import { Skeleton } from "@/app/components/sections/Skeleton";
 
 const filters = [

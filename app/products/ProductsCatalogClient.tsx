@@ -5,7 +5,7 @@ import UniversalCard from "../components/content/UniversalCard";
 import CatalogToolbar from "../components/content/CatalogToolbar";
 import FilterModal from "../components/content/FilterModal";
 import InfiniteScroll from "../components/content/InfiniteScroll";
-import { useInfiniteProducts } from "../hooks/useInfiniteProducts";
+import { useInfiniteProducts } from "../hooks/product/useInfiniteProducts";
 import { Skeleton } from "../components/sections/Skeleton";
 import { Product } from "@/types";
 
