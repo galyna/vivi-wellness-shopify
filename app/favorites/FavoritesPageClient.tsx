@@ -4,7 +4,7 @@ import { useFavoritesStore } from "@/app/store/favoritesStore";
 import UniversalCard from "@/app/components/content/UniversalCard";
 import { useMemo, useState } from "react";
 import { Article, Product, Recipe } from "@/types";
-import { useFavoritesData } from "@/a../hooks/favorites/useFavoritesData";
+import { useFavoritesData } from "../hooks/favorites/useFavoritesData";
 import { Skeleton } from "@/app/components/sections/Skeleton";
 
 const filters = [
@@ -71,27 +71,31 @@ export default function FavoritesPageClient() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 min-h-[60vh]">
       <h1 className="text-3xl font-bold mb-6">My Favorites</h1>
-      <div className="flex gap-2 mb-6">
-        {filters.map((f) => (
-          <button
-            key={f.key}
-            onClick={() => setFilter(f.key as typeof filter)}
-            className={`px-4 py-1 rounded-full font-semibold ${
-              filter === f.key
-                ? "bg-coral text-white"
-                : "bg-gray-100 text-gray-700"
-            }`}
-          >
-            {f.label}
-          </button>
-        ))}
+      <div className="flex flex-col sm:flex-row w-full gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 flex-1">
+          {filters.map((f) => (
+            <button
+              key={f.key}
+              onClick={() => setFilter(f.key as typeof filter)}
+              className={`min-w-[80px] px-3 py-1 rounded-full font-semibold text-sm
+                ${filter === f.key
+                  ? "bg-coral text-white"
+                  : "bg-gray-100 text-gray-700"}
+              `}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
         {favorites.length > 0 && (
-          <button
-            onClick={clearFavorites}
-            className="ml-auto px-4 py-1 rounded-full bg-gray-200 text-gray-600 font-semibold hover:bg-gray-300"
-          >
-            Clear all
-          </button>
+          <div className="mt-2 sm:mt-0">
+            <button
+              onClick={clearFavorites}
+              className="min-w-[80px] px-3 py-1 rounded-full bg-gray-200 text-gray-600 font-semibold hover:bg-gray-300 text-sm"
+            >
+              Clear all
+            </button>
+          </div>
         )}
       </div>
       {loading ? (
@@ -101,9 +105,9 @@ export default function FavoritesPageClient() {
           Your favorites list is empty.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {items.map((item) => (
-            <div key={item.data._id} className="relative group">
+            <div key={item.data._id} className="relative group w-full max-w-sm mx-auto sm:max-w-full">
               <UniversalCard
                 type={item.type}
                 data={item.data}

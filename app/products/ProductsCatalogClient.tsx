@@ -140,9 +140,11 @@ export default function ProductsCatalogClient({ }: ProductsCatalogClientProps) {
             hasMore={hasNextPage ?? false}
             isLoading={isFetchingNextPage}
           >
-            <div className="grid grid-cols-1 md:grid-cols-2  gap-4 md:gap-8 lg:gap-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {displayProducts.map((product: Product) => (
-                <UniversalCard key={product._id} type="product" data={product} />
+                <div key={product._id} className="w-full max-w-sm mx-auto sm:max-w-full">
+                  <UniversalCard type="product" data={product} />
+                </div>
               ))}
             </div>
           </InfiniteScroll>

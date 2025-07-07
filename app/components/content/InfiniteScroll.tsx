@@ -85,7 +85,7 @@ export default function InfiniteScroll({
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-24 right-8 z-40 bg-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border-2 border-white/30"
+          className="fixed bottom-24 md:right-8 right-7 z-40 bg-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border-2 border-white/30"
           aria-label="Scroll to top"
         >
           <svg 
