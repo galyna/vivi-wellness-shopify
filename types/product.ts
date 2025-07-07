@@ -6,6 +6,10 @@ export interface Product {
     asset?: { url: string };
     alt?: string;
   };
+  cardImage?: {
+    asset?: { url: string };
+    alt?: string;
+  };
   galleryImages?: { asset?: { url: string } }[];
   color?: string;
   size?: string;

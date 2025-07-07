@@ -43,15 +43,19 @@ export default function CartSidebar() {
               if (!prod) return null;
               return (
                 <div key={item.productId} className="flex items-center gap-3 mb-4 border-b pb-3">
-                  <Image 
-                    src={prod.mainImage?.asset?.url || "/placeholder.jpg"} 
-                    alt={prod.title} 
-                    width={64}
-                    height={64}
-                    className="w-16 h-16 object-cover rounded-xl" 
-                  />
+                  <Link href={`/products/${prod.slug}`} onClick={closeSidebar} className="shrink-0">
+                    <Image 
+                      src={prod.mainImage?.asset?.url || "/placeholder.jpg"} 
+                      alt={prod.title} 
+                      width={64}
+                      height={64}
+                      className="w-16 h-16 object-cover rounded-xl" 
+                    />
+                  </Link>
                   <div className="flex-1">
-                    <div className="font-bold text-charcoal">{prod.title}</div>
+                    <Link href={`/products/${prod.slug}`} onClick={closeSidebar} className="font-bold text-charcoal hover:underline">
+                      {prod.title}
+                    </Link>
                     <div className="text-coral font-bold">${prod.price}</div>
                     <div className="flex items-center gap-2 mt-1">
                       <button onClick={() => updateQty(item.productId, item.qty - 1)} disabled={item.qty <= 1} className="px-2 py-0.5 bg-gray-200 rounded text-lg font-bold">-</button>

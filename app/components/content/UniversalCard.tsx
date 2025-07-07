@@ -11,12 +11,14 @@ interface UniversalCardProps<T> {
   type: "product" | "article" | "recipe";
   data: T;
   hideFavoriteButton?: boolean;
+  showTypeMarker?: boolean;
 }
 
 const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
   type,
   data,
   hideFavoriteButton,
+  showTypeMarker = false,
 }) => {
   const { addFavorite, removeFavorite, isFavorite } = useFavoritesStore();
   const [showToast, setShowToast] = useState(false);
@@ -85,6 +87,12 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
           <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-xs font-medium text-gray-700 px-2 py-1 rounded-full shadow-sm">
             {category}
           </div>
+          {/* Тип маркер */}
+          {showTypeMarker && (
+            <div className="absolute top-12 left-3 bg-white/90 backdrop-blur-sm text-xs font-medium text-gray-500 px-2 py-1 rounded-full shadow-sm capitalize">
+              {type}
+            </div>
+          )}
         
           {/* Сердце */}
           {mounted && !hideFavoriteButton && (

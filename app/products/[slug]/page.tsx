@@ -1,7 +1,12 @@
 import React from "react";
-import { getProductBySlug } from "@/lib/sanityApi";
+import { getProductBySlug, getArticlesByIds, getRecipesByIds } from "@/lib/sanityApi";
 import { notFound } from "next/navigation";
 import ProductPageClient from "./ProductPageClient";
+import CardsSection from "@/app/components/sections/CardsSection";
+import { Article, Recipe } from "@/types";
+
+type CardItem = (Article | Recipe) & { _id: string; type: "article" | "recipe" };
+type IdRef = string | { _id: string };
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -11,5 +16,31 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     product.mainImage?.asset?.url,
     ...(product.galleryImages?.map((img: { asset?: { url?: string } }) => img.asset?.url) || [])
   ].filter(Boolean) as string[];
-  return <ProductPageClient product={product} gallery={gallery} />;
+
+  // Related content
+  const articleIds: string[] = (product.articlesIds as IdRef[] || []).map((a) => typeof a === 'string' ? a : a._id).filter(Boolean);
+  const recipeIds: string[] = (product.recipesIds as IdRef[] || []).map((r) => typeof r === 'string' ? r : r._id).filter(Boolean);
+
+  const [relatedArticles, relatedRecipes] = await Promise.all([
+    getArticlesByIds(articleIds, 2),
+    getRecipesByIds(recipeIds, 2),
+  ]);
+
+  const relatedItems: CardItem[] = [
+    ...relatedArticles.map((a: Article) => ({ ...a, type: "article" as const })),
+    ...relatedRecipes.map((r: Recipe) => ({ ...r, type: "recipe" as const })),
+  ].slice(0, 2);
+
+  return (
+    <>
+      <ProductPageClient product={product} gallery={gallery} />
+      {relatedItems.length > 0 && (
+        <CardsSection
+          title="Related"
+          items={relatedItems}
+          showTypeMarker
+        />
+      )}
+    </>
+  );
 } 

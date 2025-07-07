@@ -142,6 +142,9 @@ export async function getProductBySlug(slug: string) {
     },
     description,
     category,
+    color,
+    size,
+    material,
     price,
     articlesIds[]->{_id},
     recipesIds[]->{_id}
@@ -166,6 +169,63 @@ export async function getCatalogHeroData(id: string) {
     ctaUrl
   }`;
   return client.fetch(query, { id });
+}
+
+export async function getProductsByIds(ids: string[], limit: number = 2) {
+  if (!ids || ids.length === 0) return [];
+  return client.fetch(`*[_type == "product" && _id in $ids][0...${limit}] {
+    _id,
+    title,
+    "slug": slug.current,
+    mainImage {
+      asset->{url},
+      alt
+    },
+    cardImage {
+      asset->{url},
+      alt
+    },
+    description,
+    category,
+    price,
+    color,
+    size,
+    material
+  }`, { ids });
+}
+
+export async function getArticlesByIds(ids: string[], limit: number = 2) {
+  if (!ids || ids.length === 0) return [];
+  return client.fetch(`*[_type == "article" && _id in $ids][0...${limit}] {
+    _id,
+    title,
+    "slug": slug.current,
+    intro,
+    mainImage {
+      asset->{url},
+      alt
+    },
+    category,
+    author,
+    date
+  }`, { ids });
+}
+
+export async function getRecipesByIds(ids: string[], limit: number = 2) {
+  if (!ids || ids.length === 0) return [];
+  return client.fetch(`*[_type == "recipe" && _id in $ids][0...${limit}] {
+    _id,
+    title,
+    "slug": slug.current,
+    intro,
+    mainImage {
+      asset->{url},
+      alt
+    },
+    category,
+    time,
+    difficulty
+  }`, { ids });
 }
 
 

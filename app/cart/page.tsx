@@ -36,15 +36,19 @@ export default function CartPage() {
               if (!prod) return null;
               return (
                 <div key={item.productId} className="flex items-center gap-4 border-b pb-4">
-                  <Image
-                    src={prod.cardImage?.asset?.url || prod.mainImage?.asset?.url || "/placeholder.jpg"}
-                    alt={prod.title}
-                    width={80}
-                    height={80}
-                    className="w-20 h-20 object-cover rounded-xl"
-                  />
+                  <Link href={`/products/${prod.slug}`} className="shrink-0">
+                    <Image
+                      src={prod.cardImage?.asset?.url || prod.mainImage?.asset?.url || "/placeholder.jpg"}
+                      alt={prod.title}
+                      width={80}
+                      height={80}
+                      className="w-20 h-20 object-cover rounded-xl"
+                    />
+                  </Link>
                   <div className="flex-1">
-                    <div className="font-bold text-charcoal text-lg">{prod.title}</div>
+                    <Link href={`/products/${prod.slug}`} className="font-bold text-charcoal text-lg hover:underline">
+                      {prod.title}
+                    </Link>
                     <div className="text-coral font-bold">${prod.price}</div>
                     <div className="flex items-center gap-2 mt-1">
                       <button onClick={() => updateQty(item.productId, item.qty - 1)} disabled={item.qty <= 1} className="px-2 py-0.5 bg-gray-200 rounded text-lg font-bold">-</button>
