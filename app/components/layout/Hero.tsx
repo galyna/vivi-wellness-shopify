@@ -10,7 +10,16 @@ const Hero = async () => {
   const hero = await getCatalogHeroData(HERO_ID);
   return (
     <section className="relative w-full h-min-[500px] h-[90vh] lg:h-[70vh] text-white pt-20">
-      {hero?.image && (
+      {hero?.video ? (
+        <video
+          src={hero.video}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      ) : hero?.image ? (
         <Image
           src={hero.image}
           alt={hero.title || "Hero"}
@@ -18,7 +27,7 @@ const Hero = async () => {
           className="object-cover object-center"
           priority
         />
-      )}
+      ) : null}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
       <div className="relative z-10 h-full flex flex-col justify-end items-start p-8 md:p-16">
         <h1 className="text-4xl md:text-6xl font-bold mb-4">

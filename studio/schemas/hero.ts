@@ -8,6 +8,12 @@ export default {
       { name: 'ctaText', type: 'string', title: 'Button Text' },
       { name: 'ctaUrl', type: 'string', title: 'Button URL' },
       { name: 'mainImagePrompt', type: 'string', title: 'Image Prompt' },
+      {              // ↓ новое поле
+        name: 'video',
+        type: 'file',
+        title: 'Background Video',
+        options: { accept: 'video/*' }
+      },
       {
         name: 'mainImage',
         type: 'image',

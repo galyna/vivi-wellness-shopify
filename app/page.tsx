@@ -22,15 +22,15 @@ export default function HomePage() {
           <Suspense fallback={<SkeletonSection title="Inspire" />}>
             <InspireHero id="hero-inspire-1" />
           </Suspense>
-          <Suspense fallback={<SkeletonSection title="Recipes" />}>
-            <RecipesSection />
-          </Suspense>
-          <Suspense fallback={<SkeletonSection title="Inspire" />}>
-            <InspireHero id="hero-inspire-2" reverse />
-          </Suspense>
           <Suspense fallback={<SkeletonSection title="Articles" />}>
             <ArticlesSection />
           </Suspense>
+          <Suspense fallback={<SkeletonSection title="Inspire" />}>
+            <InspireHero id="hero-inspire-2"  />
+          </Suspense>
+          <Suspense fallback={<SkeletonSection title="Recipes" />}>
+            <RecipesSection />
+          </Suspense> 
         </div>
       </div>
       <BubbleChat />

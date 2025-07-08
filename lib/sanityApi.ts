@@ -165,6 +165,7 @@ export async function getCatalogHeroData(id: string) {
     title,
     subtitle,
     "image": mainImage.asset->url,
+    "video": video.asset->url,
     ctaText,
     ctaUrl
   }`;
