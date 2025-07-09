@@ -21,8 +21,7 @@ export default function CheckoutPage() {
   // On page enter — initialize order from cart
   useEffect(() => {
     setOrder(items);
-    // reset(); // if you want to reset flow on every entry
-  }, []);
+  }, [items, setOrder]);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10 min-h-[70vh]">
