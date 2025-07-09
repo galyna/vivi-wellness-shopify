@@ -1,5 +1,5 @@
-export interface Tip {
-  _id: string;
-  text: string;
-  icon?: string;
-} 
+import Product from './product';
+import Article from './article';
+import Recipe from './recipe';
+
+export type { Product, Article, Recipe }; 

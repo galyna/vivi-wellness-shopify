@@ -1,29 +1,39 @@
-import Hero from "./components/Hero";
-import TodayPickCard from "./components/TodayPickCard";
-import ViviBot from "./components/ViviBot";
-import { getTips } from "@/lib/sanityApi";
-import { Tip } from "@/types";
+import Hero from "./components/layout/Hero";
+import BubbleChat from "./components/chat";
+import { Suspense } from "react";
+import ProductsSection from "./components/sections/ProductsSection";
+import RecipesSection from "./components/sections/RecipesSection";
+import ArticlesSection from "./components/sections/ArticlesSection";
+import InspireHero from "./components/layout/InspireHero";
 
-export default async function HomePage() {
-  const tips = await getTips();
+function SkeletonSection({ title }: { title: string }) {
+  return <div className="min-h-[300px] flex items-center justify-center text-gray-400">{title} loading...</div>;
+}
+
+export default function HomePage() {
   return (
-    <main className="max-w-4xl mx-auto px-4 py-8">
+    <main>
       <Hero />
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-4 text-charcoal">Today&apos;s Picks</h2>
-        <div className="flex flex-wrap gap-6 justify-center">
-          {tips.map((tip: Tip) => (
-            <TodayPickCard
-              key={tip._id}
-              title={tip.text}
-              description={"Try this today!"}
-              category={"tip"}
-              image={tip.icon}
-            />
-          ))}
+      <div className="relative">
+        <div className="relative z-10">
+          <Suspense fallback={<SkeletonSection title="Products" />}>
+            <ProductsSection />
+          </Suspense>
+          <Suspense fallback={<SkeletonSection title="Inspire" />}>
+            <InspireHero id="hero-inspire-1" />
+          </Suspense>
+          <Suspense fallback={<SkeletonSection title="Articles" />}>
+            <ArticlesSection />
+          </Suspense>
+          <Suspense fallback={<SkeletonSection title="Inspire" />}>
+            <InspireHero id="hero-inspire-2"  />
+          </Suspense>
+          <Suspense fallback={<SkeletonSection title="Recipes" />}>
+            <RecipesSection />
+          </Suspense> 
         </div>
-      </section>
-      <ViviBot />
+      </div>
+      <BubbleChat />
     </main>
   );
 }

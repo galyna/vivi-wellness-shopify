@@ -1,23 +1,132 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { getArticleBySlug } from "@/lib/sanityApi";
+import { getArticleBySlug, getArticles, getProductsByIds, getRecipesByIds } from "@/lib/sanityApi";
 import { PortableText } from "@portabletext/react";
+import { Article } from "@/types";
+import Image from "next/image";
+import AskViviButton from "../../components/content/AskViviButton";
+import CardsSection from "@/app/components/sections/CardsSection";
+import { Product, Recipe } from "@/types";
 
-export default async function ArticlePage({ params }: { params: { slug: string } }) {
-  const article = await getArticleBySlug(params.slug);
+type CardItem = (Product | Recipe) & { _id: string; type: "product" | "recipe" };
+type IdRef = string | { _id: string };
+
+export default async function ArticlePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const article: Article | null = await getArticleBySlug(slug);
   if (!article) return notFound();
+
+  // Related products & recipes
+  const productIds: string[] = (article.productsIds as IdRef[] || []).map((p) => typeof p === 'string' ? p : p._id).filter(Boolean);
+  const recipeIds: string[] = (article.recipesIds as IdRef[] || []).map((r) => typeof r === 'string' ? r : r._id).filter(Boolean);
+
+  const [relatedProducts, relatedRecipes] = await Promise.all([
+    getProductsByIds(productIds, 2),
+    getRecipesByIds(recipeIds, 2),
+  ]);
+
+  const relatedItems: CardItem[] = [
+    ...relatedProducts.map((p: Product) => ({ ...p, type: "product" as const })),
+    ...relatedRecipes.map((r: Recipe) => ({ ...r, type: "recipe" as const })),
+  ].slice(0, 2);
+
   return (
-    <main className="max-w-2xl mx-auto px-4 py-12">
-      <div className="mb-6">
-        <div className="text-3xl font-bold text-charcoal mb-2">{article.title}</div>
-        <div className="text-md text-charcoal/70 mb-4">{article.publishedAt && new Date(article.publishedAt).toLocaleDateString()}</div>
-      </div>
-      <article className="prose prose-lg text-charcoal bg-white rounded-2xl shadow-md p-6">
-        <PortableText value={article.body} />
-      </article>
-      <div className="mt-8 flex justify-end">
-        <button className="px-5 py-2 rounded-full bg-coral text-white font-bold shadow hover:bg-neon transition">Ask Vivi</button>
-      </div>
+    <main className="max-w-7xl mx-auto px-8 py-14 lg:px-16">
+      <section className="w-full flex flex-col md:flex-row items-stretch justify-between rounded-3xl mb-14 shadow-lg overflow-hidden">
+        {/* Image block — сверху на мобиле, справа на десктопе */}
+        <div className="w-full md:w-1/2 h-48 md:h-auto aspect-[4/3] md:aspect-auto overflow-hidden flex-shrink-0 relative">
+          {article.mainImage?.asset?.url && (
+            <Image
+              src={article.mainImage.asset.url}
+              alt={article.mainImage.alt || article.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover w-full h-full"
+              priority
+            />
+          )}
+        </div>
+        {/* Text block */}
+        <div className="flex-1 flex flex-col justify-center items-start text-white p-14 bg-[#222]">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            {article.title}
+          </h1>
+          {article.intro && <p className="text-lg mb-6">{article.intro}</p>}
+          <div className="text-sm text-white/70 mb-4">
+            {article.author && <span>By {article.author}</span>}
+            {article.author && article.date && <span className="mx-2">|</span>}
+            {article.date && (
+              <span>{new Date(article.date).toLocaleDateString()}</span>
+            )}
+          </div>
+          <div className="mt-8 flex justify-end">
+            <AskViviButton />
+          </div>
+        </div>
+      </section>
+
+      {/* Параграфы */}
+      <section className="space-y-16">
+      {article.paragraphs?.map((p, i) => (
+        <div key={i} className="w-full">
+          {p.image?.asset?.url && (
+            <Image
+              src={p.image.asset.url}
+              alt={p.image.alt || p.title || "Article image"}
+              width={600}
+              height={424}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className={`w-full md:w-1/2 h-auto object-cover rounded-xl shadow-md mb-10 ${
+                i % 2 === 0 ? "md:float-right md:ml-12" : "md:float-left md:mr-12"
+              } md:mb-8`}
+             
+            />
+          )}
+          <div className="text-left">
+            {p.title && (
+              <h2 className="text-4xl font-semibold mb-6 text-charcoal">
+                {p.title}
+              </h2>
+            )}
+            {p.body && (
+              <div className="text-xl leading-relaxed text-gray-800 space-y-6">
+                {/* Строки */}
+                {Array.isArray(p.body) &&
+                  p.body
+                    .filter((x) => typeof x === "string")
+                    .map((str, idx) => <p key={"str-" + idx}>{str}</p>)}
+                {/* PortableText-блоки */}
+                {Array.isArray(p.body) &&
+                  p.body.some((x) => typeof x === "object") && (
+                    <PortableText
+                      value={p.body.filter((x) => typeof x === "object")}
+                    />
+                  )}
+              </div>
+            )}
+          </div>
+          <div className="clear-both" />
+        </div>
+      ))}
+      </section>
+      {relatedItems.length > 0 && (
+        <CardsSection
+          title="Related"
+          items={relatedItems}
+          showTypeMarker
+        />
+      )}
     </main>
   );
-} 
+}
+
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const articles: Article[] = await getArticles();
+  return articles.map((article: Article) => ({ slug: article.slug }));
+}
