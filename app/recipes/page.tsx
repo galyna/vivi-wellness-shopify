@@ -8,7 +8,7 @@ export default async function RecipesCatalogPage() {
       {/* Hero-блок каталога рецептов */}
       <CatalogHero id="hero-recipes" />
       <Suspense fallback={null}>
-        <RecipesCatalogClient initialRecipes={[]} />
+        <RecipesCatalogClient  />
       </Suspense>
     </>
   );

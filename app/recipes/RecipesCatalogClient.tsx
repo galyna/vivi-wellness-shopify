@@ -16,11 +16,8 @@ type RecipeFilterSettings = {
   difficulties?: string[];
 };
 
-interface RecipesCatalogClientProps {
-  initialRecipes: Recipe[];
-}
 
-export default function RecipesCatalogClient({ }: RecipesCatalogClientProps) {
+export default function RecipesCatalogClient() {
   const searchParams = useSearchParams();
   const selectedCategory = searchParams.get("category") || "";
   

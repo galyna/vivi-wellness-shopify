@@ -8,7 +8,7 @@ export default async function ArticlesCatalogPage() {
       {/* Hero-блок каталога статей */}
       <CatalogHero id="hero-articles" />
       <Suspense fallback={null}>
-        <ArticlesCatalogClient initialArticles={[]} />
+        <ArticlesCatalogClient />
       </Suspense>
     </>
   );
