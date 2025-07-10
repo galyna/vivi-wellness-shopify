@@ -1,6 +1,5 @@
 "use client";
 import { useCheckoutStore } from "@/app/store/checkoutStore";
-import { getProducts } from "@/lib/sanityApi";
 import { useEffect, useState } from "react";
 import { Product } from "@/types";
 import Link from "next/link";
@@ -13,7 +12,15 @@ export default function OrderConfirmationPage() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    getProducts().then(setProducts);
+    (async () => {
+      try {
+        const res = await fetch("/api/products?limit=1000");
+        const data = await res.json();
+        setProducts(data.products);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
   }, []);
 
   const getProduct = (id: string) => products.find(p => p._id === id);
