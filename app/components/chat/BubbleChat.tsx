@@ -75,7 +75,7 @@ export default function BubbleChat() {
       {/* Modal (sheet) */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/40 flex items-end justify-end z-50"
+          className="fixed inset-0 bg-black/40 flex items-end justify-end z-[1100]"
           onClick={closeChat}
         >
           <div
