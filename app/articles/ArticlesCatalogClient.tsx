@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import UniversalCard from "../components/content/UniversalCard";
@@ -37,7 +37,6 @@ export default function ArticlesCatalogClient() {
     dateFrom: "",
     dateTo: "",
   });
-  const [toolbarAtTop, setToolbarAtTop] = useState(false);
 
   // Use infinite query for articles
   const queryParams = useMemo(() => ({
@@ -73,18 +72,10 @@ export default function ArticlesCatalogClient() {
 
 
 
-  useEffect(() => {
-    const onScroll = () => {
-      setToolbarAtTop(window.scrollY > 0);
-    };
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   if (isLoading) {
     return (
       <div>
-        <div className={`sticky top-[64px] z-30 bg-white min-h-[64px]`}>
+        <div className="bg-white min-h-[64px]">
           <CatalogToolbar
             onSearch={setSearch}
             onSort={(v) => setSort(v as "asc" | "desc")}
@@ -127,7 +118,7 @@ export default function ArticlesCatalogClient() {
 
   return (
     <div>
-      <div className={`sticky ${toolbarAtTop ? "top-0 z-[999]" : "top-[64px] z-30"} bg-white min-h-[64px]`}>
+      <div className="bg-white min-h-[64px]">
         <CatalogToolbar
           onSearch={setSearch}
           onSort={(v) => setSort(v as "asc" | "desc")}

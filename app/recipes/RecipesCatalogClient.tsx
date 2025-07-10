@@ -1,7 +1,6 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
 import UniversalCard from "../components/content/UniversalCard";
 import CatalogToolbar from "../components/content/CatalogToolbar";
 import FilterModal from "../components/content/FilterModal";
@@ -29,7 +28,6 @@ export default function RecipesCatalogClient() {
     times: [],
     difficulties: [],
   });
-  const [toolbarAtTop, setToolbarAtTop] = useState(false);
 
   // Use infinite query for recipes
   const queryParams = useMemo(() => ({
@@ -54,18 +52,10 @@ export default function RecipesCatalogClient() {
 
 
 
-  useEffect(() => {
-    const onScroll = () => {
-      setToolbarAtTop(window.scrollY > 0);
-    };
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   if (isLoading) {
     return (
       <div>
-        <div className={`sticky top-[64px] z-30 bg-white min-h-[64px]`}>
+        <div className="bg-white min-h-[64px]">
           <CatalogToolbar
             onSearch={setSearch}
             onSort={(v) => setSort(v as "asc" | "desc")}
@@ -94,7 +84,7 @@ export default function RecipesCatalogClient() {
 
   return (
     <div>
-      <div className={`sticky ${toolbarAtTop ? "top-0 z-[999]" : "top-[64px] z-30"} bg-white min-h-[64px]`}>
+      <div className="bg-white min-h-[64px]">
         <CatalogToolbar
           onSearch={setSearch}
           onSort={(v) => setSort(v as "asc" | "desc")}
@@ -105,13 +95,7 @@ export default function RecipesCatalogClient() {
         />
       </div>
       <main className=" relative">
-        <Image
-          src="/bg.jpg"
-          alt="Background"
-          fill
-          className="object-cover object-center opacity-15 blur-lg pointer-events-none select-none z-0"
-          priority={false}
-        />
+      
         <section className=" mx-auto max-w-7xl px-8 py-12 lg:px-16 relative z-10 space-y-10 lg:space-y-12">
           <InfiniteScroll
             onLoadMore={fetchNextPage}
