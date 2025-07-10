@@ -18,11 +18,8 @@ type ProductFilterSettings = {
   maxPrice?: string;
 };
 
-interface ProductsCatalogClientProps {
-  initialProducts: Product[];
-}
 
-export default function ProductsCatalogClient({ }: ProductsCatalogClientProps) {
+export default function ProductsCatalogClient() {
   const searchParams = useSearchParams();
   const selectedCategory = searchParams.get("category") || "";
   

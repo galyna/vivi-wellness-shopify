@@ -19,11 +19,9 @@ type ArticleFilterSettings = {
   dateTo?: string;
 };
 
-interface ArticlesCatalogClientProps {
-  initialArticles: Article[];
-}
 
-export default function ArticlesCatalogClient({ }: ArticlesCatalogClientProps) {
+
+export default function ArticlesCatalogClient() {
   const searchParams = useSearchParams();
   const selectedCategory = searchParams.get("category") || "";
   
