@@ -4,7 +4,14 @@ import { useCartStore } from "@/app/store/cartStore";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getProducts } from "@/lib/sanityApi";
+
+// Fetch products via Next.js API to avoid direct Sanity CORS issues
+async function fetchProducts() {
+  const res = await fetch("/api/products?limit=100");
+  if (!res.ok) throw new Error("Failed to fetch products");
+  const data = await res.json();
+  return data.products;
+}
 import { Product } from "@/types";
 
 export default function CartSidebar() {
@@ -12,7 +19,11 @@ export default function CartSidebar() {
   const { items, removeFromCart, updateQty, clearCart } = useCartStore();
   const [products, setProducts] = useState<Product[]>([]);
   useEffect(() => {
-    if (isOpen) getProducts().then(setProducts);
+    if (isOpen) {
+      fetchProducts()
+        .then(setProducts)
+        .catch(console.error);
+    }
   }, [isOpen]);
 
   const getProduct = (id: string) => products.find(p => p._id === id);
