@@ -119,7 +119,7 @@ export default function ProductPageClient({ product, gallery }: { product: Produ
             </div>
           )}
         </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center md:justify-start">
           <button
             className="w-full md:max-w-xs py-3 rounded-full bg-black text-white font-bold text-lg mt-4 hover:bg-coral transition"
             onClick={() => {
