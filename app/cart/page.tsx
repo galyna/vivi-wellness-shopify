@@ -1,7 +1,7 @@
 "use client";
 import { useCartStore } from "@/app/store/cartStore";
 import { useEffect, useState } from "react";
-import { getProducts } from "@/lib/sanityApi";
+// We'll fetch via Next.js API route to avoid CORS issues
 import { Product } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
@@ -12,7 +12,18 @@ export default function CartPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getProducts().then(p => { setProducts(p); setLoading(false); });
+    async function fetchProducts() {
+      try {
+        const res = await fetch("/api/products?limit=1000");
+        const data = await res.json();
+        setProducts(data.products);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProducts();
   }, []);
 
   const getProduct = (id: string) => products.find(p => p._id === id);
