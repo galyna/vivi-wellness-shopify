@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useFavoritesStore } from "@/app/store/favoritesStore";
+import { useCartStore } from "@/app/store/cartStore";
+import { useCartSidebarStore } from "@/app/store/cartSidebarStore";
 
 interface ProductData {
   _id: string;
@@ -21,6 +23,8 @@ export default function ProductPageClient({ product, gallery }: { product: Produ
 
   // Favorites logic
   const { addFavorite, removeFavorite, isFavorite } = useFavoritesStore();
+  const { addToCart } = useCartStore();
+  const { openSidebar } = useCartSidebarStore();
   const [mounted, setMounted] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
@@ -115,10 +119,16 @@ export default function ProductPageClient({ product, gallery }: { product: Produ
             </div>
           )}
         </div>
-        <div className=" flex justify-s">
-        <button className="w-full md:max-w-xs py-3 rounded-full bg-black text-white font-bold text-lg mt-4 hover:bg-coral transition">
-          Add to basket
-        </button>
+        <div className="flex justify-center">
+          <button
+            className="w-full md:max-w-xs py-3 rounded-full bg-black text-white font-bold text-lg mt-4 hover:bg-coral transition"
+            onClick={() => {
+              addToCart(product._id, 1);
+              openSidebar();
+            }}
+          >
+            Add to basket
+          </button>
         </div>
         
       </div>
