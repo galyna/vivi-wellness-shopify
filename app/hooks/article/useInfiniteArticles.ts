@@ -67,7 +67,7 @@ export function useInfiniteArticles(params: UseInfiniteArticlesParams = {}) {
       queryParams.set("page", pageParam.toString());
       queryParams.set("limit", limit.toString());
 
-      const response = await fetch(`http://localhost:3000/api/articles?${queryParams}`);
+      const response = await fetch(`/api/articles?${queryParams}`);
       if (!response.ok) {
         throw new Error("Failed to fetch articles");
       }
