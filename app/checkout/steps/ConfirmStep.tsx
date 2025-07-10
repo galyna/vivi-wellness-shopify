@@ -1,6 +1,6 @@
 "use client";
 import { useCheckoutStore } from "@/app/store/checkoutStore";
-import { getProducts } from "@/lib/sanityApi";
+// fetch via API route
 import { useEffect, useState } from "react";
 import { Product } from "@/types";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,15 @@ export default function ConfirmStep() {
   const router = useRouter();
 
   useEffect(() => {
-    getProducts().then(setProducts);
+    (async () => {
+      try {
+        const res = await fetch("/api/products?limit=1000");
+        const data = await res.json();
+        setProducts(data.products);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
   }, []);
 
   const getProduct = (id: string) => products.find(p => p._id === id);

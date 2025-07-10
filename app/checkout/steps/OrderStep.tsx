@@ -1,7 +1,7 @@
 "use client";
 import { useCheckoutStore } from "@/app/store/checkoutStore";
 import { useRouter } from "next/navigation";
-import { getProducts } from "@/lib/sanityApi";
+// fetch via Next API
 import { useEffect, useState } from "react";
 import { Product } from "@/types";
 import Image from "next/image";
@@ -12,7 +12,15 @@ export default function OrderStep() {
   const router = useRouter();
 
   useEffect(() => {
-    getProducts().then(setProducts);
+    (async () => {
+      try {
+        const res = await fetch("/api/products?limit=1000");
+        const data = await res.json();
+        setProducts(data.products);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
   }, []);
 
   const getProduct = (id: string) => products.find(p => p._id === id);
