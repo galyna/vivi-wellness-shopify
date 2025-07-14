@@ -1,6 +1,11 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { getArticleBySlug, getArticles, getProductsByIds, getRecipesByIds } from "@/lib/sanityApi";
+import {
+  getArticleBySlug,
+  getArticles,
+  getProductsByIds,
+  getRecipesByIds,
+} from "@/lib/sanityApi";
 import { PortableText } from "@portabletext/react";
 import { Article } from "@/types";
 import Image from "next/image";
@@ -8,7 +13,10 @@ import AskViviButton from "../../components/content/AskViviButton";
 import CardsSection from "@/app/components/sections/CardsSection";
 import { Product, Recipe } from "@/types";
 
-type CardItem = (Product | Recipe) & { _id: string; type: "product" | "recipe" };
+type CardItem = (Product | Recipe) & {
+  _id: string;
+  type: "product" | "recipe";
+};
 type IdRef = string | { _id: string };
 
 export default async function ArticlePage({
@@ -21,8 +29,12 @@ export default async function ArticlePage({
   if (!article) return notFound();
 
   // Related products & recipes
-  const productIds: string[] = (article.productsIds as IdRef[] || []).map((p) => typeof p === 'string' ? p : p._id).filter(Boolean);
-  const recipeIds: string[] = (article.recipesIds as IdRef[] || []).map((r) => typeof r === 'string' ? r : r._id).filter(Boolean);
+  const productIds: string[] = ((article.productsIds as IdRef[]) || [])
+    .map((p) => (typeof p === "string" ? p : p._id))
+    .filter(Boolean);
+  const recipeIds: string[] = ((article.recipesIds as IdRef[]) || [])
+    .map((r) => (typeof r === "string" ? r : r._id))
+    .filter(Boolean);
 
   const [relatedProducts, relatedRecipes] = await Promise.all([
     getProductsByIds(productIds, 2),
@@ -30,12 +42,15 @@ export default async function ArticlePage({
   ]);
 
   const relatedItems: CardItem[] = [
-    ...relatedProducts.map((p: Product) => ({ ...p, type: "product" as const })),
+    ...relatedProducts.map((p: Product) => ({
+      ...p,
+      type: "product" as const,
+    })),
     ...relatedRecipes.map((r: Recipe) => ({ ...r, type: "recipe" as const })),
   ].slice(0, 2);
 
   return (
-    <main className="max-w-7xl mx-auto px-8 py-14 lg:px-16">
+    <main className="max-w-7xl mx-auto px-8 lg:px-16 py-12 lg:py-16">
       <section className="w-full flex flex-col md:flex-row items-stretch justify-between rounded-3xl mb-14 shadow-lg overflow-hidden">
         {/* Image block — сверху на мобиле, справа на десктопе */}
         <div className="w-full md:w-1/2 h-48 md:h-auto aspect-[4/3] md:aspect-auto overflow-hidden flex-shrink-0 relative">
@@ -71,54 +86,53 @@ export default async function ArticlePage({
 
       {/* Параграфы */}
       <section className="space-y-16">
-      {article.paragraphs?.map((p, i) => (
-        <div key={i} className="w-full">
-          {p.image?.asset?.url && (
-            <Image
-              src={p.image.asset.url}
-              alt={p.image.alt || p.title || "Article image"}
-              width={600}
-              height={424}
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className={`w-full md:w-1/2 h-auto object-cover rounded-xl shadow-md mb-10 ${
-                i % 2 === 0 ? "md:float-right md:ml-12" : "md:float-left md:mr-12"
-              } md:mb-8`}
-             
-            />
-          )}
-          <div className="text-left">
-            {p.title && (
-              <h2 className="text-4xl font-semibold mb-6 text-charcoal">
-                {p.title}
-              </h2>
+        {article.paragraphs?.map((p, i) => (
+          <div key={i} className="w-full">
+            {p.image?.asset?.url && (
+              <Image
+                src={p.image.asset.url}
+                alt={p.image.alt || p.title || "Article image"}
+                width={600}
+                height={424}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className={`w-full md:w-1/2 h-auto object-cover rounded-xl shadow-md mb-10 ${
+                  i % 2 === 0
+                    ? "md:float-right md:ml-12"
+                    : "md:float-left md:mr-12"
+                } md:mb-8`}
+              />
             )}
-            {p.body && (
-              <div className="text-xl leading-relaxed text-gray-800 space-y-6">
-                {/* Строки */}
-                {Array.isArray(p.body) &&
-                  p.body
-                    .filter((x) => typeof x === "string")
-                    .map((str, idx) => <p key={"str-" + idx}>{str}</p>)}
-                {/* PortableText-блоки */}
-                {Array.isArray(p.body) &&
-                  p.body.some((x) => typeof x === "object") && (
-                    <PortableText
-                      value={p.body.filter((x) => typeof x === "object")}
-                    />
-                  )}
-              </div>
-            )}
+            <div className="text-left">
+              {p.title && (
+                <h2 className="text-4xl font-semibold mb-6 text-charcoal">
+                  {p.title}
+                </h2>
+              )}
+              {p.body && (
+                <div className="text-xl leading-relaxed text-gray-800 space-y-6">
+                  {/* Строки */}
+                  {Array.isArray(p.body) &&
+                    p.body
+                      .filter((x) => typeof x === "string")
+                      .map((str, idx) => <p key={"str-" + idx}>{str}</p>)}
+                  {/* PortableText-блоки */}
+                  {Array.isArray(p.body) &&
+                    p.body.some((x) => typeof x === "object") && (
+                      <PortableText
+                        value={p.body.filter((x) => typeof x === "object")}
+                      />
+                    )}
+                </div>
+              )}
+            </div>
+            <div className="clear-both" />
           </div>
-          <div className="clear-both" />
-        </div>
-      ))}
+        ))}
       </section>
       {relatedItems.length > 0 && (
-        <CardsSection
-          title="Related"
-          items={relatedItems}
-          showTypeMarker
-        />
+        <section className="pt-12">
+          <CardsSection title="Related" items={relatedItems} showTypeMarker />
+        </section>
       )}
     </main>
   );

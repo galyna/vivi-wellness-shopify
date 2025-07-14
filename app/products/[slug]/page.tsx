@@ -35,11 +35,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     <>
       <ProductPageClient product={product} gallery={gallery} />
       {relatedItems.length > 0 && (
+        <section className=" max-w-7xl mx-auto relative">
+          <div className="px-8 lg:px-16 py-12 lg:py-16">
         <CardsSection
           title="Related"
           items={relatedItems}
           showTypeMarker
         />
+        </div>
+        </section>
       )}
     </>
   );
