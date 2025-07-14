@@ -44,7 +44,7 @@ export default function ProductPageClient({ product, gallery }: { product: Produ
   };
 
   return (
-    <main className="max-w-6xl mx-auto px-4 pt-14 md:pt-16 flex flex-col md:flex-row gap-12">
+    <main className="max-w-7xl mx-auto px-8 lg:px-16 pt-12 lg:pt-16 flex flex-col md:flex-row gap-12">
       {/* Gallery */}
       <div className="flex-1 flex flex-col items-center">
         <div className="relative w-full aspect-[4/3] bg-gray-100  overflow-hidden shadow-lg rounded-3xl  flex items-center justify-center mb-4">

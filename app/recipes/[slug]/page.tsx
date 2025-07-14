@@ -116,11 +116,15 @@ export default async function RecipePage({
         </div>
       </section>
       {relatedItems.length > 0 && (
+        <section className=" pt-12 max-w-7xl mx-auto relative">
+          
         <CardsSection
           title="Related"
           items={relatedItems}
           showTypeMarker
         />
+      
+        </section>
       )}
     </main>
   );
