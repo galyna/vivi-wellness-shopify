@@ -15,6 +15,7 @@
     "@tanstack/react-query": "^5.81.5",
     "ai": "^2.1.21",
     "autoprefixer": "^10.4.21",
+    "graphql-request": "^7.2.0",
     "next": "15.3.4",
     "openai-edge": "^1.2.3",
     "postcss": "^8.5.6",

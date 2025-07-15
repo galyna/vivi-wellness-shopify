@@ -42,44 +42,18 @@ export default function CatalogToolbar({
     <div className="flex items-center gap-2 px-8 py-2 bg-white min-h-[64px]">
       <div className="max-w-6xl mx-auto flex-1 flex items-center gap-2">
       {/* Sort */}
-      <button
-        className="px-3 py-1 rounded-full border text-sm font-medium flex items-center gap-1"
-        onClick={() => onSort(sortValue === "asc" ? "desc" : "asc")}
-        aria-label={sortValue === "asc" ? "Sort descending" : "Sort ascending"}
+      <select
+        className="px-3 py-1 rounded-full border text-sm font-medium"
+        value={sortValue}
+        onChange={(e) => onSort(e.target.value)}
       >
-        <span>Sort</span>
-        {sortValue === "asc" ? (
-          <svg
-            width="16"
-            height="16"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 15l7-7 7 7"
-            />
-          </svg>
-        ) : (
-          <svg
-            width="16"
-            height="16"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        )}
-      </button>
+        <option value="title_asc">Name A-Z</option>
+        <option value="title_desc">Name Z-A</option>
+        <option value="price_asc">Price Low-High</option>
+        <option value="price_desc">Price High-Low</option>
+        <option value="created_desc">Newest First</option>
+        <option value="created_asc">Oldest First</option>
+      </select>
       {/* Filter */}
       <button
         className="px-3 py-1 rounded-full border text-sm font-medium flex items-center gap-1"

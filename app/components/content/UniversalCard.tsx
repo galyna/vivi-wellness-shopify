@@ -46,6 +46,13 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
   if ("image" in data && typeof data.image === "string") image = data.image;
   else if ("mainImage" in data && data.mainImage?.asset?.url)
     image = data.mainImage.asset.url;
+  else if ("images" in data && Array.isArray(data.images) && data.images.length > 0) {
+    // Безопасно получаем первое изображение
+    const firstImage = data.images.find((img: unknown) => img && typeof img === 'string' && img.trim() !== '');
+    if (firstImage) {
+      image = firstImage;
+    }
+  }
   const category = data.category || "Uncategorized";
   const price = type === "product" ? (data as Product).price : undefined;
 

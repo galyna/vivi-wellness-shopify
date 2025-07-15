@@ -3,19 +3,15 @@ import { useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import UniversalCard from "../components/content/UniversalCard";
 import CatalogToolbar from "../components/content/CatalogToolbar";
-import FilterModal from "../components/content/FilterModal";
+
 import InfiniteScroll from "../components/content/InfiniteScroll";
 import { useInfiniteProducts } from "../hooks/product/useInfiniteProducts";
 import { Skeleton } from "../components/sections/Skeleton";
 import { Product } from "@/types";
+import { useQuery } from "@tanstack/react-query";
 
 type ProductFilterSettings = {
-  categories?: string[];
-  colors?: string[];
-  sizes?: string[];
-  materials?: string[];
-  minPrice?: string;
-  maxPrice?: string;
+  category?: string;
 };
 
 
@@ -24,26 +20,16 @@ export default function ProductsCatalogClient() {
   const selectedCategory = searchParams.get("category") || "";
   
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<"asc" | "desc">("asc");
+  const [sort, setSort] = useState<string>("title_asc");
   const [filterOpen, setFilterOpen] = useState(false);
   const [settings, setSettings] = useState<ProductFilterSettings>({
-    categories: selectedCategory ? [selectedCategory] : [],
-    colors: [],
-    sizes: [],
-    materials: [],
-    minPrice: "",
-    maxPrice: "",
+    category: selectedCategory || "",
   });
 
   // Use infinite query for products
   const queryParams = useMemo(() => ({
     search,
-    categories: settings.categories || [],
-    colors: settings.colors || [],
-    sizes: settings.sizes || [],
-    materials: settings.materials || [],
-    minPrice: settings.minPrice || "",
-    maxPrice: settings.maxPrice || "",
+    category: settings.category || "",
     sort,
   }), [search, settings, sort]);
 
@@ -59,27 +45,33 @@ export default function ProductsCatalogClient() {
   // Используем данные из React Query
   const displayProducts = infiniteData?.pages.flatMap(page => page.products) || [];
 
+  // Fetch categories from Shopify
+  const { data: categoriesData } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const response = await fetch('/api/categories');
+      if (!response.ok) throw new Error('Failed to fetch categories');
+      return response.json();
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  const categories = categoriesData?.categories || [];
+
 
 
   if (isLoading) {
     return (
       <div>
         <div className="bg-white">
-          <CatalogToolbar
-            onSearch={setSearch}
-            onSort={(v) => setSort(v as "asc" | "desc")}
-            onFilter={() => setFilterOpen(true)}
-            filterCount={
-              (settings.categories?.length || 0) +
-              (settings.colors?.length || 0) +
-              (settings.sizes?.length || 0) +
-              (settings.materials?.length || 0) +
-              (settings.minPrice ? 1 : 0) +
-              (settings.maxPrice ? 1 : 0)
-            }
-            sortValue={sort}
-            searchValue={search}
-          />
+                  <CatalogToolbar
+          onSearch={setSearch}
+          onSort={(v) => setSort(v)}
+          onFilter={() => setFilterOpen(true)}
+          filterCount={settings.category ? 1 : 0}
+          sortValue={sort}
+          searchValue={search}
+        />
         </div>
         <main>
           <section className="mx-auto max-w-7xl px-8 py-12 lg:px-16 relative space-y-10 lg:space-y-12">
@@ -103,16 +95,9 @@ export default function ProductsCatalogClient() {
       <div className="bg-white">
         <CatalogToolbar
           onSearch={setSearch}
-          onSort={(v) => setSort(v as "asc" | "desc")}
+          onSort={(v) => setSort(v)}
           onFilter={() => setFilterOpen(true)}
-          filterCount={
-            (settings.categories?.length || 0) +
-            (settings.colors?.length || 0) +
-            (settings.sizes?.length || 0) +
-            (settings.materials?.length || 0) +
-            (settings.minPrice ? 1 : 0) +
-            (settings.maxPrice ? 1 : 0)
-          }
+          filterCount={settings.category ? 1 : 0}
           sortValue={sort}
           searchValue={search}
         />
@@ -134,24 +119,57 @@ export default function ProductsCatalogClient() {
           </InfiniteScroll>
         </section>
       </main>
-      <FilterModal
-        isOpen={filterOpen}
-        onClose={() => setFilterOpen(false)}
-        settings={settings}
-        onChange={(newSettings) => setSettings(newSettings as ProductFilterSettings)}
-        onClear={() => {
-          setSettings({
-            categories: [],
-            colors: [],
-            sizes: [],
-            materials: [],
-            minPrice: "",
-            maxPrice: "",
-          });
-          setFilterOpen(false);
-        }}
-        filterType="products"
-      />
+      {/* Simple category filter for now */}
+      {filterOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-[9999] flex items-end"
+          onClick={() => setFilterOpen(false)}
+        >
+          <div
+            className="bg-white md:rounded-t-3xl z-[9999] p-0 md:pt-5 relative w-full h-full md:h-auto md:max-w-6xl md:mx-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute top-2 right-4 text-2xl text-coral z-10"
+              onClick={() => setFilterOpen(false)}
+              aria-label="Close filter"
+              type="button"
+            >
+              ×
+            </button>
+            <div className="p-8">
+              <div className="font-bold mb-4">Category</div>
+              <div className="space-y-2">
+                {categories.map((cat: string) => (
+                  <button
+                    key={cat}
+                    className={`block w-full text-left px-3 py-2 rounded ${
+                      settings.category === cat 
+                        ? "bg-coral text-white" 
+                        : "hover:bg-gray-100"
+                    }`}
+                    onClick={() => {
+                      setSettings({ category: settings.category === cat ? "" : cat });
+                      setFilterOpen(false);
+                    }}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+              <button
+                className="mt-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                onClick={() => {
+                  setSettings({ category: "" });
+                  setFilterOpen(false);
+                }}
+              >
+                Clear All
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {displayProducts.length === 0 && (
         <div className="text-center text-gray-400 py-20">
           No products found.

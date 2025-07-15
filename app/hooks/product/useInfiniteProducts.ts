@@ -3,13 +3,8 @@ import { Product } from "@/types";
 
 interface UseInfiniteProductsParams {
   search?: string;
-  categories?: string[];
-  colors?: string[];
-  sizes?: string[];
-  materials?: string[];
-  minPrice?: string;
-  maxPrice?: string;
-  sort?: "asc" | "desc";
+  category?: string;
+  sort?: string;
   limit?: number;
 }
 
@@ -28,37 +23,20 @@ interface ProductsResponse {
 export function useInfiniteProducts(params: UseInfiniteProductsParams = {}) {
   const {
     search = "",
-    categories = [],
-    colors = [],
-    sizes = [],
-    materials = [],
-    minPrice = "",
-    maxPrice = "",
+    category = "",
     sort = "asc",
     limit = 8
   } = params;
 
-  // Check if any filters are applied
-  const hasFilters = Boolean(search) || 
-    categories.length > 0 || 
-    colors.length > 0 || 
-    sizes.length > 0 || 
-    materials.length > 0 || 
-    Boolean(minPrice) || 
-    Boolean(maxPrice);
+
 
   return useInfiniteQuery({
-    queryKey: hasFilters ? ["infinite-products", params] : ["infinite-all-products", sort],
+    queryKey: ["infinite-products", params],
     queryFn: async ({ pageParam = 1 }): Promise<ProductsResponse> => {
       const queryParams = new URLSearchParams();
       
       if (search) queryParams.set("search", search);
-      if (categories.length > 0) queryParams.set("categories", categories.join(","));
-      if (colors.length > 0) queryParams.set("colors", colors.join(","));
-      if (sizes.length > 0) queryParams.set("sizes", sizes.join(","));
-      if (materials.length > 0) queryParams.set("materials", materials.join(","));
-      if (minPrice) queryParams.set("minPrice", minPrice);
-      if (maxPrice) queryParams.set("maxPrice", maxPrice);
+      if (category) queryParams.set("category", category);
       if (sort) queryParams.set("sort", sort);
       queryParams.set("page", pageParam.toString());
       queryParams.set("limit", limit.toString());
@@ -70,8 +48,14 @@ export function useInfiniteProducts(params: UseInfiniteProductsParams = {}) {
       const data = await response.json();
       return {
         products: data.products,
-        pagination: data.pagination,
-        nextPage: data.pagination.hasMore ? pageParam + 1 : undefined
+        pagination: {
+          page: pageParam,
+          limit,
+          total: data.total,
+          hasMore: data.hasMore,
+          totalPages: Math.ceil(data.total / limit)
+        },
+        nextPage: data.hasMore ? pageParam + 1 : undefined
       };
     },
     getNextPageParam: (lastPage) => {
