@@ -28,8 +28,6 @@ export function useInfiniteProducts(params: UseInfiniteProductsParams = {}) {
     limit = 8
   } = params;
 
-
-
   return useInfiniteQuery({
     queryKey: ["infinite-products", params],
     queryFn: async ({ pageParam = 1 }): Promise<ProductsResponse> => {
@@ -42,10 +40,12 @@ export function useInfiniteProducts(params: UseInfiniteProductsParams = {}) {
       queryParams.set("limit", limit.toString());
 
       const response = await fetch(`/api/products?${queryParams}`);
+      
       if (!response.ok) {
         throw new Error("Failed to fetch products");
       }
       const data = await response.json();
+      
       return {
         products: data.products,
         pagination: {
@@ -62,8 +62,9 @@ export function useInfiniteProducts(params: UseInfiniteProductsParams = {}) {
       return lastPage.nextPage;
     },
     initialPageParam: 1,
-    enabled: true, // Всегда включаем запрос
+    enabled: true,
     staleTime: 30 * 1000, // 30 seconds
     gcTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false, // Убираем лишние запросы при фокусе
   });
 } 

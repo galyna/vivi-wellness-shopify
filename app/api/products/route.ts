@@ -5,18 +5,11 @@ export async function GET(request: NextRequest) {
   try {
     // Check environment variables
     if (!process.env.SHOPIFY_SHOP_NAME || !process.env.SHOPIFY_STOREFRONT_TOKEN) {
-      console.error('Missing Shopify Storefront environment variables');
       return NextResponse.json(
         { error: 'Shopify Storefront configuration missing' },
         { status: 500 }
       );
     }
-
-    console.log('Shopify Storefront config:', {
-      shopName: process.env.SHOPIFY_SHOP_NAME,
-      hasToken: !!process.env.SHOPIFY_STOREFRONT_TOKEN,
-      graphqlUrl: `https://${process.env.SHOPIFY_SHOP_NAME}/api/2024-01/graphql.json`
-    });
 
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '20');
@@ -46,12 +39,8 @@ export async function GET(request: NextRequest) {
       params.title = search;
     }
 
-    console.log('Shopify API params:', params);
-
     // Try Shopify Storefront GraphQL first, fallback to mock data
     try {
-      console.log('Attempting to fetch products from Shopify Storefront...');
-      
       // Build GraphQL query variables
       const variables: {
         first: number;
@@ -95,8 +84,6 @@ export async function GET(request: NextRequest) {
         variables.reverse = false;
       }
       
-      console.log('GraphQL variables:', variables);
-      
       const data = await shopifyGraphQL.request(PRODUCTS_QUERY, variables) as {
         products: {
           edges: {
@@ -114,7 +101,6 @@ export async function GET(request: NextRequest) {
           pageInfo: { hasNextPage: boolean }
         }
       };
-      console.log(`Successfully fetched ${data.products.edges.length} products from Shopify`);
 
       // Transform GraphQL response to match your app's format
       const transformedProducts = data.products.edges.map((edge) => {
@@ -145,25 +131,18 @@ export async function GET(request: NextRequest) {
         products: transformedProducts,
         hasMore: data.products.pageInfo.hasNextPage,
         total: transformedProducts.length,
-        source: 'shopify' // Добавляем метку источника
+        source: 'shopify'
       };
 
-      console.log('Returning Shopify data:', response);
       return NextResponse.json(response);
-    } catch (shopifyError) {
-      console.error('Shopify Storefront API error details:', {
-        message: String(shopifyError),
-        code: 'SHOPIFY_ERROR'
-      });
-      
+    } catch {
       return NextResponse.json(
         { error: 'Failed to fetch products from Shopify' },
         { status: 500 }
       );
     }
 
-  } catch (error) {
-    console.error('Error fetching products:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch products' },
       { status: 500 }

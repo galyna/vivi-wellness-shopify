@@ -5,14 +5,11 @@ export async function GET() {
   try {
     // Check environment variables
     if (!process.env.SHOPIFY_SHOP_NAME || !process.env.SHOPIFY_STOREFRONT_TOKEN) {
-      console.error('Missing Shopify Storefront environment variables');
       return NextResponse.json(
         { error: 'Shopify Storefront configuration missing' },
         { status: 500 }
       );
     }
-
-    console.log('Fetching categories from Shopify Storefront...');
 
     try {
       // Get product types (categories)
@@ -29,24 +26,14 @@ export async function GET() {
         .filter((tag: string) => tag && tag.trim() !== '')
         .filter((tag: string, index: number, arr: string[]) => arr.indexOf(tag) === index); // Remove duplicates
 
-      console.log('Categories fetched successfully:', {
-        productTypes: productTypes.length,
-        tags: allTags.length
-      });
-
       return NextResponse.json({
         categories: productTypes,
         tags: allTags,
         source: 'shopify'
       });
 
-    } catch (shopifyError) {
-      console.error('Shopify Storefront API error:', {
-        message: String(shopifyError),
-        code: 'SHOPIFY_ERROR',
-      });
+    } catch {
       // Fallback to mock categories
-      console.log('Falling back to mock categories...');
       return NextResponse.json({
         categories: ['Wellness', 'Beauty', 'Home', 'Gifts'],
         tags: ['organic', 'natural', 'vegan', 'cruelty-free', 'sustainable'],
@@ -54,8 +41,7 @@ export async function GET() {
       });
     }
 
-  } catch (error) {
-    console.error('Error fetching categories:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch categories' },
       { status: 500 }
