@@ -6,6 +6,9 @@ interface UseInfiniteProductsParams {
   category?: string;
   sort?: string;
   limit?: number;
+  colors?: string[];
+  sizes?: string[];
+  materials?: string[];
 }
 
 interface ProductsResponse {
@@ -20,7 +23,10 @@ export function useInfiniteProducts(params: UseInfiniteProductsParams = {}) {
     search = "",
     category = "",
     sort = "asc",
-    limit = 8
+    limit = 8,
+    colors = [],
+    sizes = [],
+    materials = []
   } = params;
 
   return useInfiniteQuery({
@@ -33,6 +39,11 @@ export function useInfiniteProducts(params: UseInfiniteProductsParams = {}) {
       if (sort) queryParams.set("sort", sort);
       if (pageParam) queryParams.set("after", pageParam);
       queryParams.set("limit", limit.toString());
+      
+      // Add variant-based filter parameters
+      if (colors.length > 0) queryParams.set("colors", colors.join(","));
+      if (sizes.length > 0) queryParams.set("sizes", sizes.join(","));
+      if (materials.length > 0) queryParams.set("materials", materials.join(","));
 
       const response = await fetch(`/api/products?${queryParams}`);
       

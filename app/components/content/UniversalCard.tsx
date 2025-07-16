@@ -12,6 +12,7 @@ interface UniversalCardProps<T> {
   data: T;
   hideFavoriteButton?: boolean;
   showTypeMarker?: boolean;
+  priority?: boolean;
 }
 
 const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
@@ -19,6 +20,7 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
   data,
   hideFavoriteButton,
   showTypeMarker = false,
+  priority = false,
 }) => {
   const { addFavorite, removeFavorite, isFavorite } = useFavoritesStore();
   const [showToast, setShowToast] = useState(false);
@@ -88,7 +90,7 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="object-cover object-center rounded-3xl"
-            priority={false}
+            priority={priority}
           />
           {/* Категория */}
           <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-xs font-medium text-gray-700 px-2 py-1 rounded-full shadow-sm">

@@ -55,8 +55,17 @@ export const PRODUCTS_QUERY = `
                 sku
                 weight
                 weightUnit
+                selectedOptions {
+                  name
+                  value
+                }
               }
             }
+          }
+          options {
+            id
+            name
+            values
           }
           priceRange {
             minVariantPrice {

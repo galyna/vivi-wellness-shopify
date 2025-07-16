@@ -39,6 +39,7 @@ function CardsSection({
               type={item.type}
               data={item}
               showTypeMarker={showTypeMarker}
+              priority={idx < 4} // Priority for first 4 images
             />
           </div>
         ))}

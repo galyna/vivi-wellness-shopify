@@ -3,15 +3,17 @@ import { useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import UniversalCard from "../components/content/UniversalCard";
 import CatalogToolbar from "../components/content/CatalogToolbar";
-
+import FilterModal from "../components/content/FilterModal";
 import InfiniteScroll from "../components/content/InfiniteScroll";
 import { useInfiniteProducts } from "../hooks/product/useInfiniteProducts";
 import { Skeleton } from "../components/sections/Skeleton";
 import { Product } from "@/types";
-import { useQuery } from "@tanstack/react-query";
 
 type ProductFilterSettings = {
-  category?: string;
+  categories?: string[];
+  colors?: string[];
+  sizes?: string[];
+  materials?: string[];
 };
 
 
@@ -23,14 +25,20 @@ export default function ProductsCatalogClient() {
   const [sort, setSort] = useState<string>("title_asc");
   const [filterOpen, setFilterOpen] = useState(false);
   const [settings, setSettings] = useState<ProductFilterSettings>({
-    category: selectedCategory || "",
+    categories: selectedCategory ? [selectedCategory] : [],
+    colors: [],
+    sizes: [],
+    materials: [],
   });
 
   // Use infinite query for products
   const queryParams = useMemo(() => ({
     search,
-    category: settings.category || "",
+    category: settings.categories?.[0] || "",
     sort,
+    colors: settings.colors || [],
+    sizes: settings.sizes || [],
+    materials: settings.materials || [],
   }), [search, settings, sort]);
 
   const {
@@ -45,18 +53,7 @@ export default function ProductsCatalogClient() {
   // Используем данные из React Query
   const displayProducts = infiniteData?.pages.flatMap(page => page.products) || [];
 
-  // Fetch categories from Shopify
-  const { data: categoriesData } = useQuery({
-    queryKey: ['categories'],
-    queryFn: async () => {
-      const response = await fetch('/api/categories');
-      if (!response.ok) throw new Error('Failed to fetch categories');
-      return response.json();
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
 
-  const categories = categoriesData?.categories || [];
 
 
 
@@ -68,9 +65,11 @@ export default function ProductsCatalogClient() {
           onSearch={setSearch}
           onSort={(v) => setSort(v)}
           onFilter={() => setFilterOpen(true)}
-          filterCount={settings.category ? 1 : 0}
+          filterCount={Object.values(settings).filter(v => Array.isArray(v) ? v.length > 0 : Boolean(v)).length}
           sortValue={sort}
           searchValue={search}
+          pageType="products"
+          searchPlaceholder="Search products..."
         />
         </div>
         <main>
@@ -97,9 +96,11 @@ export default function ProductsCatalogClient() {
           onSearch={setSearch}
           onSort={(v) => setSort(v)}
           onFilter={() => setFilterOpen(true)}
-          filterCount={settings.category ? 1 : 0}
+          filterCount={Object.values(settings).filter(v => Array.isArray(v) ? v.length > 0 : Boolean(v)).length}
           sortValue={sort}
           searchValue={search}
+          pageType="products"
+          searchPlaceholder="Search products..."
         />
       </div>
       <main className="relative">
@@ -110,66 +111,34 @@ export default function ProductsCatalogClient() {
             isLoading={isFetchingNextPage}
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {displayProducts.map((product: Product) => (
+              {displayProducts.map((product: Product, index: number) => (
                 <div key={product._id} className="w-full max-w-sm mx-auto sm:max-w-full">
-                  <UniversalCard type="product" data={product} />
+                  <UniversalCard 
+                    type="product" 
+                    data={product} 
+                    priority={index < 4} // Priority for first 4 images
+                  />
                 </div>
               ))}
             </div>
           </InfiniteScroll>
         </section>
       </main>
-      {/* Simple category filter for now */}
-      {filterOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 z-[9999] flex items-end"
-          onClick={() => setFilterOpen(false)}
-        >
-          <div
-            className="bg-white md:rounded-t-3xl z-[9999] p-0 md:pt-5 relative w-full h-full md:h-auto md:max-w-6xl md:mx-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="absolute top-2 right-4 text-2xl text-coral z-10"
-              onClick={() => setFilterOpen(false)}
-              aria-label="Close filter"
-              type="button"
-            >
-              ×
-            </button>
-            <div className="p-8">
-              <div className="font-bold mb-4">Category</div>
-              <div className="space-y-2">
-                {categories.map((cat: string) => (
-                  <button
-                    key={cat}
-                    className={`block w-full text-left px-3 py-2 rounded ${
-                      settings.category === cat 
-                        ? "bg-coral text-white" 
-                        : "hover:bg-gray-100"
-                    }`}
-                    onClick={() => {
-                      setSettings({ category: settings.category === cat ? "" : cat });
-                      setFilterOpen(false);
-                    }}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-              <button
-                className="mt-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-                onClick={() => {
-                  setSettings({ category: "" });
-                  setFilterOpen(false);
-                }}
-              >
-                Clear All
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      
+      {/* Filter Modal */}
+      <FilterModal
+        isOpen={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        settings={settings}
+        onChange={setSettings}
+        onClear={() => setSettings({
+          categories: [],
+          colors: [],
+          sizes: [],
+          materials: [],
+        })}
+        filterType="products"
+      />
       {displayProducts.length === 0 && (
         <div className="text-center text-gray-400 py-20">
           No products found.

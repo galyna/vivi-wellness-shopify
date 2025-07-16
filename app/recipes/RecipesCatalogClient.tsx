@@ -21,7 +21,7 @@ export default function RecipesCatalogClient() {
   const selectedCategory = searchParams.get("category") || "";
   
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<"asc" | "desc">("asc");
+  const [sort, setSort] = useState<"title_asc" | "title_desc">("title_asc");
   const [filterOpen, setFilterOpen] = useState(false);
   const [settings, setSettings] = useState<RecipeFilterSettings>({
     categories: selectedCategory ? [selectedCategory] : [],
@@ -58,11 +58,13 @@ export default function RecipesCatalogClient() {
         <div className="bg-white min-h-[64px]">
           <CatalogToolbar
             onSearch={setSearch}
-            onSort={(v) => setSort(v as "asc" | "desc")}
+            onSort={(v) => setSort(v as "title_asc" | "title_desc")}
             onFilter={() => setFilterOpen(true)}
             filterCount={(settings.categories?.length || 0) + (settings.times?.length || 0) + (settings.difficulties?.length || 0)}
             sortValue={sort}
             searchValue={search}
+            pageType="recipes"
+            searchPlaceholder="Search recipes..."
           />
         </div>
         <main className="relative">
@@ -87,11 +89,13 @@ export default function RecipesCatalogClient() {
       <div className="bg-white min-h-[64px]">
         <CatalogToolbar
           onSearch={setSearch}
-          onSort={(v) => setSort(v as "asc" | "desc")}
+          onSort={(v) => setSort(v as "title_asc" | "title_desc")}
           onFilter={() => setFilterOpen(true)}
           filterCount={(settings.categories?.length || 0) + (settings.times?.length || 0) + (settings.difficulties?.length || 0)}
           sortValue={sort}
           searchValue={search}
+          pageType="recipes"
+          searchPlaceholder="Search recipes..."
         />
       </div>
       <main className=" relative">
