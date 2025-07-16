@@ -395,9 +395,9 @@ export async function getProductByHandle(handle: string) {
     const product = data.product;
     const firstVariant = product.variants.edges[0]?.node;
     
-    return {
-      _id: product.id.split('/').pop() || product.handle,
-      title: product.title,
+          return {
+        _id: product.id.split('/').pop() || product.handle || product.id || `product-${Math.random()}`,
+        title: product.title,
       description: product.description,
       price: parseFloat(firstVariant?.price?.amount || '0'),
       compareAtPrice: firstVariant?.compareAtPrice ? parseFloat(firstVariant.compareAtPrice.amount) : undefined,

@@ -41,10 +41,7 @@ export default async function ArticlePage({
   ]);
 
   const relatedItems: CardItem[] = [
-    ...relatedProducts.map((p: Product) => ({
-      ...p,
-      type: "product" as const,
-    })),
+    ...(relatedProducts as Array<Product & { type: "product" }>),
     ...relatedRecipes.map((r: Recipe) => ({ ...r, type: "recipe" as const })),
   ].slice(0, 2);
 

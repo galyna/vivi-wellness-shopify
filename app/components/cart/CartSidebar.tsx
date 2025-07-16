@@ -21,15 +21,40 @@ export default function CartSidebar() {
   useEffect(() => {
     if (isOpen) {
       fetchProducts()
-        .then(setProducts)
+        .then((products) => {
+          console.log('Fetched products:', products);
+          setProducts(products);
+        })
         .catch(console.error);
     }
   }, [isOpen]);
 
-  const getProduct = (id: string) => products.find(p => p._id === id);
+  const getProduct = (id: string) => {
+    // First try to find by product _id
+    let product = products.find(p => p._id === id);
+    
+    // If not found, it might be a variant ID, so find product that contains this variant
+    if (!product && products.length > 0) {
+      product = products.find(p => p.variants?.some(v => v.id === id));
+    }
+    
+    return product;
+  };
+  const getProductPrice = (id: string) => {
+    const prod = getProduct(id);
+    if (!prod) return 0;
+    // If it's a variant ID, find the variant price
+    if (prod.variants) {
+      const variant = prod.variants.find(v => v.id === id);
+      if (variant?.price?.amount) {
+        return parseFloat(variant.price.amount);
+      }
+    }
+    return prod.price;
+  };
+  
   const total = items.reduce((sum, item) => {
-    const prod = getProduct(item.productId);
-    return sum + (prod ? prod.price * item.qty : 0);
+    return sum + (getProductPrice(item.productId) * item.qty);
   }, 0);
 
   return (
@@ -50,13 +75,15 @@ export default function CartSidebar() {
         ) : (
           <div className="flex-1 overflow-y-auto">
             {items.map(item => {
+              console.log('Cart item:', item);
               const prod = getProduct(item.productId);
+              console.log('Found product:', prod);
               if (!prod) return null;
               return (
                 <div key={item.productId} className="flex items-center gap-3 mb-4 border-b pb-3">
                   <Link href={`/products/${prod.slug}`} onClick={closeSidebar} className="shrink-0">
                     <Image 
-                      src={prod.mainImage?.asset?.url || "/placeholder.jpg"} 
+                      src={prod.images?.[0] || "/placeholder.jpg"} 
                       alt={prod.title} 
                       width={64}
                       height={64}
@@ -67,7 +94,7 @@ export default function CartSidebar() {
                     <Link href={`/products/${prod.slug}`} onClick={closeSidebar} className="font-bold text-charcoal hover:underline">
                       {prod.title}
                     </Link>
-                    <div className="text-coral font-bold">${prod.price}</div>
+                    <div className="text-coral font-bold">${getProductPrice(item.productId)}</div>
                     <div className="flex items-center gap-2 mt-1">
                       <button onClick={() => updateQty(item.productId, item.qty - 1)} disabled={item.qty <= 1} className="px-2 py-0.5 bg-gray-200 rounded text-lg font-bold">-</button>
                       <span className="px-2">{item.qty}</span>

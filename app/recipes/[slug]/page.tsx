@@ -31,7 +31,7 @@ export default async function RecipePage({
   ]);
 
   const relatedItems: CardItem[] = [
-    ...relatedProducts.map((p: Product) => ({ ...p, type: "product" as const })),
+    ...(relatedProducts as Array<Product & { type: "product" }>),
     ...relatedArticles.map((a: Article) => ({ ...a, type: "article" as const })),
   ].slice(0, 2);
 

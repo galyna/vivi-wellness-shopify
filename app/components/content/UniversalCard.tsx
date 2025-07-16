@@ -163,7 +163,7 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
               className="mt-3 w-full md:w-3/5 max-w-sm py-2 rounded-full border-2 border-coral text-coral font-bold hover:text-white hover:bg-coral/80 transition"
               onClick={(e) => {
                 e.preventDefault();
-                addToCart(favId, 1);
+                addToCart(data._id, 1);
                 openSidebar();
               }}
             >

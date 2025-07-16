@@ -10,10 +10,7 @@ export default async function ProductsSection() {
   ];
   
   const products = await getProductsByHandles(specificProductHandles);
-  const items = products.map((p: Product) => ({
-    ...p,
-    type: "product" as const,
-  }));
+  const items = products as Array<Product & { type: "product" }>;
   
   return (
     <section className="mb-4 max-w-7xl mx-auto relative">

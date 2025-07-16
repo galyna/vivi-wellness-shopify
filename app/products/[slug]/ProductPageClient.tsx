@@ -4,22 +4,17 @@ import { useState, useEffect } from "react";
 import { useFavoritesStore } from "@/app/store/favoritesStore";
 import { useCartStore } from "@/app/store/cartStore";
 import { useCartSidebarStore } from "@/app/store/cartSidebarStore";
+import { Product, ShopifyVariant, ShopifyOption } from "@/types";
 
-interface ProductData {
-  _id: string;
-  title: string;
-  mainImage?: { asset?: { url?: string } };
-  galleryImages?: { asset?: { url?: string } }[];
-  category?: string;
-  price: number;
-  description?: string;
-  color?: string;
-  size?: string;
-  material?: string;
+interface ProductPageClientProps {
+  product: Product;
+  gallery: string[];
 }
 
-export default function ProductPageClient({ product, gallery }: { product: ProductData; gallery: string[] }) {
+export default function ProductPageClient({ product, gallery }: ProductPageClientProps) {
   const [mainImg, setMainImg] = useState(gallery[0]);
+  const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0] || null);
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
 
   // Favorites logic
   const { addFavorite, removeFavorite, isFavorite } = useFavoritesStore();
@@ -31,23 +26,57 @@ export default function ProductPageClient({ product, gallery }: { product: Produ
   const toastText = "Added to favorites!";
   useEffect(() => setMounted(true), []);
 
-  const favorite = isFavorite(product._id, "product");
+  // Initialize selected options from first variant
+  useEffect(() => {
+    if (product.variants?.[0]) {
+      const initialOptions: Record<string, string> = {};
+      product.variants[0].selectedOptions?.forEach((option: { name: string; value: string }) => {
+        initialOptions[option.name] = option.value;
+      });
+      setSelectedOptions(initialOptions);
+      setSelectedVariant(product.variants[0]);
+    }
+  }, [product.variants]);
+
+  const favorite = isFavorite(product.slug, "product");
 
   const handleFavorite = () => {
     if (favorite) {
-      removeFavorite(product._id, "product");
+      removeFavorite(product.slug, "product");
     } else {
-      addFavorite({ id: product._id, type: "product" });
+      addFavorite({ id: product.slug, type: "product" });
       setShowToast(true);
       setTimeout(() => setShowToast(false), 1200);
     }
   };
 
+  const handleOptionChange = (optionName: string, value: string) => {
+    const newOptions = { ...selectedOptions, [optionName]: value };
+    setSelectedOptions(newOptions);
+
+    // Find matching variant
+    const matchingVariant = product.variants?.find((variant: ShopifyVariant) => 
+      variant.selectedOptions?.every((option: { name: string; value: string }) => 
+        newOptions[option.name] === option.value
+      )
+    );
+    
+    if (matchingVariant) {
+      setSelectedVariant(matchingVariant);
+    }
+  };
+
+  const currentPrice = selectedVariant?.price?.amount 
+    ? parseFloat(selectedVariant.price.amount) 
+    : product.price;
+
+  const isAvailable = selectedVariant?.availableForSale !== false;
+
   return (
-    <main className="max-w-7xl mx-auto px-8 lg:px-16 pt-12 lg:pt-16 flex flex-col md:flex-row gap-12">
+    <main className="max-w-7xl mx-auto px-8 lg:px-16 py-12 lg:py-16 flex flex-col md:flex-row gap-12">
       {/* Gallery */}
       <div className="flex-1 flex flex-col items-center">
-        <div className="relative w-full aspect-[4/3] bg-gray-100  overflow-hidden shadow-lg rounded-3xl  flex items-center justify-center mb-4">
+        <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden shadow-lg rounded-3xl flex items-center justify-center mb-4">
           <Image src={mainImg} alt={product.title} width={600} height={450} 
           sizes="(max-width: 768px) 100vw, 50vw" className="object-cover w-full h-full" />
           {mounted && (
@@ -92,42 +121,61 @@ export default function ProductPageClient({ product, gallery }: { product: Produ
         <div className="mb-2 text-sm text-gray-500">{product.category}</div>
         <h1 className="text-4xl font-bold mb-2">{product.title}</h1>
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-2xl font-bold">${product.price}</span>
+          <span className="text-2xl font-bold">${currentPrice}</span>
+          {selectedVariant?.compareAtPrice?.amount && (
+            <span className="text-lg text-gray-500 line-through">
+              ${parseFloat(selectedVariant.compareAtPrice.amount)}
+            </span>
+          )}
           {/* Rating and stars */}
           <span className="ml-4 text-yellow-500 font-bold">★ 4.6/5</span>
         </div>
         <div className="mb-4 text-gray-700">{product.description}</div>
         
-        {/* Product details */}
-        <div className="mb-6 space-y-3">
-          {product.color && (
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-gray-600">Color:</span>
-              <span className="text-sm">{product.color}</span>
-            </div>
-          )}
-          {product.size && (
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-gray-600">Size:</span>
-              <span className="text-sm">{product.size}</span>
-            </div>
-          )}
-          {product.material && (
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-gray-600">Material:</span>
-              <span className="text-sm">{product.material}</span>
-            </div>
-          )}
-        </div>
+        {/* Product options */}
+        {product.options && product.options.length > 0 && (
+          <div className="mb-6 space-y-4">
+            {product.options.map((option: ShopifyOption) => (
+              <div key={option.name} className="space-y-2">
+                <label className="text-sm font-medium text-gray-600">
+                  {option.name}:
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {option.values.map((value: string) => (
+                    <button
+                      key={value}
+                      onClick={() => handleOptionChange(option.name, value)}
+                      className={`px-3 py-1 rounded-full border text-sm font-medium transition ${
+                        selectedOptions[option.name] === value
+                          ? "border-coral bg-coral text-white"
+                          : "border-gray-300 text-gray-700 hover:border-coral"
+                      }`}
+                    >
+                      {value}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="flex justify-center md:justify-start">
           <button
-            className="w-full md:max-w-xs py-3 rounded-full bg-black text-white font-bold text-lg mt-4 hover:bg-coral transition"
+            className={`w-full md:max-w-xs py-3 rounded-full font-bold text-lg mt-4 transition ${
+              isAvailable
+                ? "bg-black text-white hover:bg-coral"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
             onClick={() => {
-              addToCart(product._id, 1);
-              openSidebar();
+              if (isAvailable && selectedVariant) {
+                addToCart(selectedVariant.id, 1);
+                openSidebar();
+              }
             }}
+            disabled={!isAvailable}
           >
-            Add to basket
+            {isAvailable ? "Add to basket" : "Out of stock"}
           </button>
         </div>
         
