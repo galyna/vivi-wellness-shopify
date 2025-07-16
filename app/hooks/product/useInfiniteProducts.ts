@@ -10,14 +10,9 @@ interface UseInfiniteProductsParams {
 
 interface ProductsResponse {
   products: Product[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    hasMore: boolean;
-    totalPages: number;
-  };
-  nextPage?: number;
+  hasMore: boolean;
+  nextCursor?: string;
+  total: number;
 }
 
 export function useInfiniteProducts(params: UseInfiniteProductsParams = {}) {
@@ -30,13 +25,13 @@ export function useInfiniteProducts(params: UseInfiniteProductsParams = {}) {
 
   return useInfiniteQuery({
     queryKey: ["infinite-products", params],
-    queryFn: async ({ pageParam = 1 }): Promise<ProductsResponse> => {
+    queryFn: async ({ pageParam }: { pageParam: string | undefined }): Promise<ProductsResponse> => {
       const queryParams = new URLSearchParams();
       
       if (search) queryParams.set("search", search);
       if (category) queryParams.set("category", category);
       if (sort) queryParams.set("sort", sort);
-      queryParams.set("page", pageParam.toString());
+      if (pageParam) queryParams.set("after", pageParam);
       queryParams.set("limit", limit.toString());
 
       const response = await fetch(`/api/products?${queryParams}`);
@@ -48,23 +43,18 @@ export function useInfiniteProducts(params: UseInfiniteProductsParams = {}) {
       
       return {
         products: data.products,
-        pagination: {
-          page: pageParam,
-          limit,
-          total: data.total,
-          hasMore: data.hasMore,
-          totalPages: Math.ceil(data.total / limit)
-        },
-        nextPage: data.hasMore ? pageParam + 1 : undefined
+        hasMore: data.hasMore,
+        nextCursor: data.nextCursor,
+        total: data.total
       };
     },
     getNextPageParam: (lastPage) => {
-      return lastPage.nextPage;
+      return lastPage.nextCursor;
     },
-    initialPageParam: 1,
+    initialPageParam: undefined as string | undefined,
     enabled: true,
     staleTime: 30 * 1000, // 30 seconds
     gcTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: false, // Убираем лишние запросы при фокусе
+    refetchOnWindowFocus: false,
   });
 } 

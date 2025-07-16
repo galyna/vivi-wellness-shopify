@@ -13,43 +13,28 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '20');
-    const page = parseInt(searchParams.get('page') || '1');
+    const after = searchParams.get('after'); // Используем cursor вместо page
     const category = searchParams.get('category');
     const search = searchParams.get('search');
     const sort = searchParams.get('sort') || 'asc';
-
-    // Build query parameters
-    const params: {
-      limit: number;
-      page: number;
-      status: string;
-      product_type?: string;
-      title?: string;
-    } = {
-      limit,
-      page,
-      status: 'active'
-    };
-
-    if (category) {
-      params.product_type = category;
-    }
-
-    if (search) {
-      params.title = search;
-    }
 
     // Try Shopify Storefront GraphQL first, fallback to mock data
     try {
       // Build GraphQL query variables
       const variables: {
         first: number;
+        after?: string;
         query?: string;
         sortKey?: string;
         reverse?: boolean;
       } = {
         first: limit
       };
+      
+      // Добавляем cursor для пагинации
+      if (after) {
+        variables.after = after;
+      }
       
       if (category) {
         variables.query = `product_type:${category}`;
@@ -98,7 +83,10 @@ export async function GET(request: NextRequest) {
               options?: { id: string; name: string; values: string[] }[];
             }
           }[];
-          pageInfo: { hasNextPage: boolean }
+          pageInfo: { 
+            hasNextPage: boolean;
+            endCursor: string;
+          }
         }
       };
 
@@ -130,6 +118,7 @@ export async function GET(request: NextRequest) {
       const response = {
         products: transformedProducts,
         hasMore: data.products.pageInfo.hasNextPage,
+        nextCursor: data.products.pageInfo.endCursor, // Возвращаем cursor для следующей страницы
         total: transformedProducts.length,
         source: 'shopify'
       };
