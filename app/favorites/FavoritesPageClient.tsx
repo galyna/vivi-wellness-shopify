@@ -41,15 +41,15 @@ export default function FavoritesPageClient() {
       .filter((f) => filter === "all" || f.type === filter)
       .map((f) => {
         if (f.type === "article") {
-          const data = articles.find((a) => a._id === f.id);
+          const data = articles.find((a) => a.slug === f.id);
           return data ? { type: "article" as const, data } : null;
         }
         if (f.type === "product") {
-          const data = products.find((p) => p._id === f.id);
+          const data = products.find((p) => p.slug === f.id);
           return data ? { type: "product" as const, data } : null;
         }
         if (f.type === "recipe") {
-          const data = recipes.find((r) => r._id === f.id);
+          const data = recipes.find((r) => r.slug === f.id);
           return data ? { type: "recipe" as const, data } : null;
         }
         return null;
@@ -116,7 +116,7 @@ export default function FavoritesPageClient() {
               />
               <button
                 className="absolute top-3 right-3 z-20 bg-white/80 rounded-full p-1 shadow hover:bg-coral hover:text-white transition"
-                onClick={() => removeFavorite(item.data._id, item.type)}
+                onClick={() => removeFavorite(item.data.slug, item.type)}
                 aria-label="Remove from favorites"
               >
                 <svg

@@ -76,7 +76,12 @@ export interface Product {
   title: string;
   description: string;
   price: number;
+  compareAtPrice?: number;
   images: string[];
   category: string;
   slug: string;
+  tags?: string[];
+  variants?: any[];
+  options?: any[];
+  type?: "product";
 } 

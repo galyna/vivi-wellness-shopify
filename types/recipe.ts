@@ -25,6 +25,7 @@ export interface Recipe {
   category?: string;
   productsIds?: string[];
   articlesIds?: string[];
+  shopifyProductHandles?: string[];
 }
 
 export default Recipe; 

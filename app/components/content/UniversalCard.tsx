@@ -65,7 +65,7 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
   else if (type === "recipe") href = `/recipes/${slug}`;
 
   const favType = type as FavoriteType;
-  const favId = data._id;
+  const favId = slug; // Используем slug для всех типов
   const favorite = isFavorite(favId, favType);
 
   const handleFavorite = (e: React.MouseEvent) => {

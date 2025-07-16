@@ -60,6 +60,13 @@ export default {
       title: 'Products',
     },
     {
+      name: 'shopifyProductHandles',
+      type: 'array',
+      of: [{type: 'string'}],
+      title: 'Shopify Product Handles',
+      description: 'Enter Shopify product handles (e.g., "bamboo-wellness-mat")',
+    },
+    {
       name: 'recipesIds',
       type: 'array',
       of: [{type: 'reference', to: [{type: 'recipe'}]}],

@@ -26,6 +26,7 @@ export interface Article {
   category?: string;
   productsIds?: string[];
   recipesIds?: string[];
+  shopifyProductHandles?: string[];
 }
 
 export default Article; 

@@ -1,36 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import client from "@/lib/sanity";
+import { getProductsByHandles } from "@/lib/shopify-graphql";
+import { getArticlesBySlugs, getRecipesBySlugs } from "@/lib/sanityApi";
 
 export async function GET(req: NextRequest) {
-  // Получаем все id из query (?id=xxx&id=yyy)
-  const ids = req.nextUrl.searchParams.getAll("id");
-  if (!ids.length) {
+  // Получаем все slug из query (?id=xxx&id=yyy)
+  const slugs = req.nextUrl.searchParams.getAll("id");
+  if (!slugs.length) {
     return NextResponse.json({ products: [], articles: [], recipes: [] });
   }
 
   // Запрашиваем все типы одним промисом
   const [products, articles, recipes] = await Promise.all([
-    client.fetch(
-      `*[_type == "product" && _id in $ids]{_id, title, slug, description, price, category, mainImage {
-      asset->{url},
-      alt
-    }}`,
-      { ids }
-    ),
-    client.fetch(
-      `*[_type == "article" && _id in $ids]{_id, title, slug, description, body, category, mainImage {
-      asset->{url},
-      alt
-    }}`,
-      { ids }
-    ),
-    client.fetch(
-      `*[_type == "recipe" && _id in $ids]{_id, title, slug, description, ingredients, steps, category, mainImage {
-      asset->{url},
-      alt
-    }}`,
-      { ids }
-    ),
+    getProductsByHandles(slugs),
+    getArticlesBySlugs(slugs),
+    getRecipesBySlugs(slugs),
   ]);
 
   return NextResponse.json({ products, articles, recipes });

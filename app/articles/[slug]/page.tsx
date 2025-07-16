@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import {
   getArticleBySlug,
   getArticles,
-  getProductsByIds,
   getRecipesByIds,
 } from "@/lib/sanityApi";
+import { getProductsByHandles } from "@/lib/shopify-graphql";
 import { PortableText } from "@portabletext/react";
 import { Article } from "@/types";
 import Image from "next/image";
@@ -17,7 +17,7 @@ type CardItem = (Product | Recipe) & {
   _id: string;
   type: "product" | "recipe";
 };
-type IdRef = string | { _id: string };
+type ArticleRef = string | { _id: string };
 
 export default async function ArticlePage({
   params,
@@ -29,15 +29,14 @@ export default async function ArticlePage({
   if (!article) return notFound();
 
   // Related products & recipes
-  const productIds: string[] = ((article.productsIds as IdRef[]) || [])
-    .map((p) => (typeof p === "string" ? p : p._id))
+  const productHandles: string[] = (article.shopifyProductHandles || [])
     .filter(Boolean);
-  const recipeIds: string[] = ((article.recipesIds as IdRef[]) || [])
+  const recipeIds: string[] = ((article.recipesIds as ArticleRef[]) || [])
     .map((r) => (typeof r === "string" ? r : r._id))
     .filter(Boolean);
 
   const [relatedProducts, relatedRecipes] = await Promise.all([
-    getProductsByIds(productIds, 2),
+    getProductsByHandles(productHandles),
     getRecipesByIds(recipeIds, 2),
   ]);
 

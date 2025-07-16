@@ -1,29 +1,25 @@
 import React from "react";
-import { getProductBySlug, getArticlesByIds, getRecipesByIds } from "@/lib/sanityApi";
+import { getArticlesByIds, getRecipesByIds } from "@/lib/sanityApi";
+import { getProductByHandle } from "@/lib/shopify-graphql";
 import { notFound } from "next/navigation";
 import ProductPageClient from "./ProductPageClient";
 import CardsSection from "@/app/components/sections/CardsSection";
 import { Article, Recipe } from "@/types";
 
 type CardItem = (Article | Recipe) & { _id: string; type: "article" | "recipe" };
-type IdRef = string | { _id: string };
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const product = await getProductByHandle(slug);
   if (!product) return notFound();
-  const gallery: string[] = [
-    product.mainImage?.asset?.url,
-    ...(product.galleryImages?.map((img: { asset?: { url?: string } }) => img.asset?.url) || [])
-  ].filter(Boolean) as string[];
+  
+  const gallery: string[] = product.images || [];
 
-  // Related content
-  const articleIds: string[] = (product.articlesIds as IdRef[] || []).map((a) => typeof a === 'string' ? a : a._id).filter(Boolean);
-  const recipeIds: string[] = (product.recipesIds as IdRef[] || []).map((r) => typeof r === 'string' ? r : r._id).filter(Boolean);
-
+  // Related content - for now, we'll get recent articles and recipes
+  // In the future, you might want to add related content fields to Shopify products
   const [relatedArticles, relatedRecipes] = await Promise.all([
-    getArticlesByIds(articleIds, 2),
-    getRecipesByIds(recipeIds, 2),
+    getArticlesByIds([], 2), // Empty array for now, will get recent articles
+    getRecipesByIds([], 2), // Empty array for now, will get recent recipes
   ]);
 
   const relatedItems: CardItem[] = [
