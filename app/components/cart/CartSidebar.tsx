@@ -4,14 +4,6 @@ import { useCartStore } from "@/app/store/cartStore";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-
-// Fetch products via Next.js API to avoid direct Sanity CORS issues
-async function fetchProducts() {
-  const res = await fetch("/api/products?limit=100");
-  if (!res.ok) throw new Error("Failed to fetch products");
-  const data = await res.json();
-  return data.products;
-}
 import { Product } from "@/types";
 
 export default function CartSidebar() {
@@ -19,15 +11,24 @@ export default function CartSidebar() {
   const { lines, removeFromCart, updateQty, clearCart } = useCartStore();
   const [products, setProducts] = useState<Product[]>([]);
   useEffect(() => {
-    if (isOpen) {
-      fetchProducts()
-        .then((products) => {
-          console.log('Fetched products:', products);
-          setProducts(products);
-        })
-        .catch(console.error);
+    async function fetchProducts() {
+      try {
+        const ids = (lines ?? []).map(l => l.merchandiseId).join(",");
+        if (!ids) {
+          setProducts([]);
+          return;
+        }
+        const res = await fetch(`/api/products?ids=${ids}`);
+        const data = await res.json();
+        setProducts(data.products);
+      } catch (e) {
+        console.error(e);
+      }
     }
-  }, [isOpen]);
+    if (isOpen) {
+      fetchProducts();
+    }
+  }, [isOpen, lines]);
 
   const getProduct = (id: string) => {
     // First try to find by product _id

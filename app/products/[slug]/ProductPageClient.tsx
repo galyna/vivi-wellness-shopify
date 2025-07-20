@@ -18,7 +18,7 @@ export default function ProductPageClient({ product, gallery }: ProductPageClien
 
   // Favorites logic
   const { addFavorite, removeFavorite, isFavorite } = useFavoritesStore();
-  const { addToCart } = useCartStore();
+  const { addToCart, lines } = useCartStore();
   const { openSidebar } = useCartSidebarStore();
   const [mounted, setMounted] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -39,6 +39,7 @@ export default function ProductPageClient({ product, gallery }: ProductPageClien
   }, [product.variants]);
 
   const favorite = isFavorite(product.slug, "product");
+  const isInCart = selectedVariant ? lines.some(line => line.merchandiseId === selectedVariant.id) : false;
 
   const handleFavorite = () => {
     if (favorite) {
@@ -161,22 +162,31 @@ export default function ProductPageClient({ product, gallery }: ProductPageClien
         )}
 
         <div className="flex justify-center md:justify-start">
-          <button
-            className={`w-full md:max-w-xs py-3 rounded-full font-bold text-lg mt-4 transition ${
-              isAvailable
-                ? "bg-black text-white hover:bg-coral"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
-            onClick={() => {
-              if (isAvailable && selectedVariant) {
-                addToCart(selectedVariant.id, 1);
-                openSidebar();
-              }
-            }}
-            disabled={!isAvailable}
-          >
-            {isAvailable ? "Add to basket" : "Out of stock"}
-          </button>
+          {isInCart ? (
+            <button
+              className="w-full md:max-w-xs py-3 rounded-full font-bold text-lg mt-4 bg-gray-300 text-gray-500 cursor-not-allowed"
+              disabled
+            >
+              In cart
+            </button>
+          ) : (
+            <button
+              className={`w-full md:max-w-xs py-3 rounded-full font-bold text-lg mt-4 transition ${
+                isAvailable
+                  ? "bg-black text-white hover:bg-coral"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+              onClick={() => {
+                if (isAvailable && selectedVariant) {
+                  addToCart(selectedVariant.id, 1);
+                  openSidebar();
+                }
+              }}
+              disabled={!isAvailable}
+            >
+              {isAvailable ? "Add to basket" : "Out of stock"}
+            </button>
+          )}
         </div>
         
       </div>

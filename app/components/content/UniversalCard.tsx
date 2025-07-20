@@ -30,6 +30,7 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
   useEffect(() => {
     setMounted(true);
   }, []);
+  const { lines } = useCartStore();
   if (!data) return null;
   // Универсальные поля
   let slug = "";
@@ -84,6 +85,9 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
       setTimeout(() => setShowToast(false), 1200);
     }
   };
+
+  const variantId = type === "product" ? (data as Product).variants?.[0]?.id : undefined;
+  const isInCart = type === "product" && variantId ? lines.some(line => line.merchandiseId === variantId) : false;
 
   return (
     <Link href={href} className="block h-full group cursor-pointer">
@@ -165,21 +169,29 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
           <div className="flex justify-center w-full">
            {/* Add to cart button */}
           {type === "product" && (
-            <button
-              className="mt-3 w-full md:w-3/5 max-w-sm py-2 rounded-full border-2 border-coral text-coral font-bold hover:text-white hover:bg-coral/80 transition"
-              onClick={(e) => {
-                e.preventDefault();
-                const variantId = (data as Product).variants?.[0]?.id;
-                if (variantId) {
-                  addToCart(variantId, 1);
-                  openSidebar();
-                } else {
-                  alert("No variant found for this product");
-                }
-              }}
-            >
-              Add to cart
-            </button>
+            isInCart ? (
+              <button
+                className="mt-3 w-full md:w-3/5 max-w-sm py-2 rounded-full border-2 border-gray-300 text-gray-400 font-bold cursor-not-allowed"
+                disabled
+              >
+                In cart
+              </button>
+            ) : (
+              <button
+                className="mt-3 w-full md:w-3/5 max-w-sm py-2 rounded-full border-2 border-coral text-coral font-bold hover:text-white hover:bg-coral/80 transition"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (variantId) {
+                    addToCart(variantId, 1);
+                    openSidebar();
+                  } else {
+                    alert("No variant found for this product");
+                  }
+                }}
+              >
+                Add to cart
+              </button>
+            )
           )}
           </div>
         </div>
