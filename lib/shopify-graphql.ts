@@ -38,6 +38,7 @@ export const PRODUCTS_QUERY = `
           variants(first: 1) {
             edges {
               node {
+                id
                 price {
                   amount
                 }

@@ -16,7 +16,7 @@ import { Product } from "@/types";
 
 export default function CartSidebar() {
   const { isOpen, closeSidebar } = useCartSidebarStore();
-  const { items, removeFromCart, updateQty, clearCart } = useCartStore();
+  const { lines, removeFromCart, updateQty, clearCart } = useCartStore();
   const [products, setProducts] = useState<Product[]>([]);
   useEffect(() => {
     if (isOpen) {
@@ -53,8 +53,9 @@ export default function CartSidebar() {
     return prod.price;
   };
   
-  const total = items.reduce((sum, item) => {
-    return sum + (getProductPrice(item.productId) * item.qty);
+  // lines: ShopifyCartLine[]
+  const total = (lines ?? []).reduce((sum: number, line) => {
+    return sum + (getProductPrice(line.merchandiseId) * line.quantity);
   }, 0);
 
   return (
@@ -70,17 +71,15 @@ export default function CartSidebar() {
           <h2 className="text-xl font-bold">Cart</h2>
           <button onClick={closeSidebar} className="text-2xl text-coral hover:text-charcoal">×</button>
         </div>
-        {items.length === 0 ? (
+        {(lines ?? []).length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-gray-400">Cart is empty</div>
         ) : (
           <div className="flex-1 overflow-y-auto">
-            {items.map(item => {
-              console.log('Cart item:', item);
-              const prod = getProduct(item.productId);
-              console.log('Found product:', prod);
+            {(lines ?? []).map((line) => {
+              const prod = getProduct(line.merchandiseId);
               if (!prod) return null;
               return (
-                <div key={item.productId} className="flex items-center gap-3 mb-4 border-b pb-3">
+                <div key={line.id} className="flex items-center gap-3 mb-4 border-b pb-3">
                   <Link href={`/products/${prod.slug}`} onClick={closeSidebar} className="shrink-0">
                     <Image 
                       src={prod.images?.[0] || "/placeholder.jpg"} 
@@ -94,14 +93,14 @@ export default function CartSidebar() {
                     <Link href={`/products/${prod.slug}`} onClick={closeSidebar} className="font-bold text-charcoal hover:underline">
                       {prod.title}
                     </Link>
-                    <div className="text-coral font-bold">${getProductPrice(item.productId)}</div>
+                    <div className="text-coral font-bold">${getProductPrice(line.merchandiseId)}</div>
                     <div className="flex items-center gap-2 mt-1">
-                      <button onClick={() => updateQty(item.productId, item.qty - 1)} disabled={item.qty <= 1} className="px-2 py-0.5 bg-gray-200 rounded text-lg font-bold">-</button>
-                      <span className="px-2">{item.qty}</span>
-                      <button onClick={() => updateQty(item.productId, item.qty + 1)} className="px-2 py-0.5 bg-gray-200 rounded text-lg font-bold">+</button>
+                      <button onClick={() => updateQty(line.id, line.quantity - 1)} disabled={line.quantity <= 1} className="px-2 py-0.5 bg-gray-200 rounded text-lg font-bold">-</button>
+                      <span className="px-2">{line.quantity}</span>
+                      <button onClick={() => updateQty(line.id, line.quantity + 1)} className="px-2 py-0.5 bg-gray-200 rounded text-lg font-bold">+</button>
                     </div>
                   </div>
-                  <button onClick={() => removeFromCart(item.productId)} className="text-gray-400 hover:text-coral text-xl ml-2">×</button>
+                  <button onClick={() => removeFromCart(line.id)} className="text-gray-400 hover:text-coral text-xl ml-2">×</button>
                 </div>
               );
             })}
@@ -117,7 +116,7 @@ export default function CartSidebar() {
             <button onClick={closeSidebar} className="flex-1 py-2 rounded-full bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300">Continue shopping</button>
             <Link href="/cart" className="flex-1 py-2 rounded-full bg-coral text-white font-bold text-center hover:bg-coral/90" onClick={closeSidebar}>Go to cart</Link>
           </div>
-          {items.length > 0 && (
+          {(lines ?? []).length > 0 && (
             <button onClick={clearCart} className="mt-3 w-full py-2 rounded-full bg-gray-100 text-gray-500 font-medium hover:bg-gray-200">Clear cart</button>
           )}
         </div>

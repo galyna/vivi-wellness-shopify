@@ -3,7 +3,7 @@ import { useCartStore } from "@/app/store/cartStore";
 import { useCartSidebarStore } from "@/app/store/cartSidebarStore";
 
 export default function CartIcon() {
-  const items = useCartStore((state) => state.items);
+  const lines = useCartStore(state => state.lines);
   const { openSidebar } = useCartSidebarStore();
   return (
     <button
@@ -28,9 +28,9 @@ export default function CartIcon() {
         <circle cx="20" cy="21" r="1" />
         <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
       </svg>
-      {items.length > 0 && (
+      {lines.length > 0 && (
         <span className="absolute -top-1 -right-2 bg-coral text-white text-xs rounded-full px-1">
-          {items.length}
+          {lines.length}
         </span>
       )}
     </button>
