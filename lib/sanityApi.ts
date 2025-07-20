@@ -118,7 +118,7 @@ export async function getCatalogHeroData(id: string) {
 }
 
 
-export async function getArticlesByIds(ids: string[], limit: number = 2) {
+export async function getArticlesByIds(ids: string[], limit: number = 100) {
   if (!ids || ids.length === 0) return [];
   return client.fetch(`*[_type == "article" && _id in $ids][0...${limit}] {
     _id,
@@ -135,7 +135,7 @@ export async function getArticlesByIds(ids: string[], limit: number = 2) {
   }`, { ids });
 }
 
-export async function getRecipesByIds(ids: string[], limit: number = 2) {
+export async function getRecipesByIds(ids: string[], limit: number = 100) {
   if (!ids || ids.length === 0) return [];
   return client.fetch(`*[_type == "recipe" && _id in $ids][0...${limit}] {
     _id,

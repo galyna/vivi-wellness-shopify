@@ -18,8 +18,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   // Related content - for now, we'll get recent articles and recipes
   // In the future, you might want to add related content fields to Shopify products
   const [relatedArticles, relatedRecipes] = await Promise.all([
-    getArticlesByIds([], 2), // Empty array for now, will get recent articles
-    getRecipesByIds([], 2), // Empty array for now, will get recent recipes
+    getArticlesByIds([], 20), // Empty array for now, will get recent articles
+    getRecipesByIds([], 20), // Empty array for now, will get recent recipes
   ]);
 
   const relatedItems: CardItem[] = [

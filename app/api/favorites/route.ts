@@ -1,19 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getProductsByHandles } from "@/lib/shopify-graphql";
-import { getArticlesBySlugs, getRecipesBySlugs } from "@/lib/sanityApi";
+import { getProductsByIds } from "@/lib/shopify-graphql";
+import { getArticlesByIds, getRecipesByIds } from "@/lib/sanityApi";
 
 export async function GET(req: NextRequest) {
-  // Получаем все slug из query (?id=xxx&id=yyy)
-  const slugs = req.nextUrl.searchParams.getAll("id");
-  if (!slugs.length) {
+  // Получаем все id из query (?id=xxx&id=yyy)
+  const ids = req.nextUrl.searchParams.getAll("id");
+  if (!ids.length) {
     return NextResponse.json({ products: [], articles: [], recipes: [] });
   }
 
   // Запрашиваем все типы одним промисом
   const [products, articles, recipes] = await Promise.all([
-    getProductsByHandles(slugs),
-    getArticlesBySlugs(slugs),
-    getRecipesBySlugs(slugs),
+    getProductsByIds(ids),
+    getArticlesByIds(ids),
+    getRecipesByIds(ids),
   ]);
 
   return NextResponse.json({ products, articles, recipes });

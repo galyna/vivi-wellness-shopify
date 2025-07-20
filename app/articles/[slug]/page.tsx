@@ -37,7 +37,7 @@ export default async function ArticlePage({
 
   const [relatedProducts, relatedRecipes] = await Promise.all([
     getProductsByHandles(productHandles),
-    getRecipesByIds(recipeIds, 2),
+    getRecipesByIds(recipeIds, 20),
   ]);
 
   const relatedItems: CardItem[] = [

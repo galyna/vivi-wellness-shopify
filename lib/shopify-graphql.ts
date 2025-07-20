@@ -35,17 +35,15 @@ export const PRODUCTS_QUERY = `
               }
             }
           }
-          variants(first: 1) {
+          variants(first: 10) {
             edges {
               node {
                 id
-                price {
-                  amount
-                }
-                selectedOptions {
-                  name
-                  value
-                }
+                title
+                price { amount }
+                compareAtPrice { amount }
+                availableForSale
+                selectedOptions { name value }
               }
             }
           }
@@ -81,17 +79,10 @@ export const PRODUCT_QUERY = `
           node {
             id
             title
-            price {
-              amount
-            }
-            compareAtPrice {
-              amount
-            }
+            price { amount }
+            compareAtPrice { amount }
             availableForSale
-            selectedOptions {
-              name
-              value
-            }
+            selectedOptions { name value }
           }
         }
       }
@@ -145,12 +136,15 @@ export const HOMEPAGE_PRODUCTS_QUERY = `
               }
             }
           }
-          variants(first: 1) {
+          variants(first: 10) {
             edges {
               node {
-                price {
-                  amount
-                }
+                id
+                title
+                price { amount }
+                compareAtPrice { amount }
+                availableForSale
+                selectedOptions { name value }
               }
             }
           }
@@ -195,6 +189,7 @@ export async function getHomepageProducts(limit: number = 2) {
         category: product.productType,
         slug: product.handle,
         type: "product" as const,
+        variants: product.variants.edges.map((vEdge) => vEdge.node),
       };
     });
   } catch (error) {
@@ -234,12 +229,15 @@ export async function getProductsByHandles(handles: string[]) {
                   }
                 }
               }
-              variants(first: 1) {
+              variants(first: 10) {
                 edges {
                   node {
-                    price {
-                      amount
-                    }
+                    id
+                    title
+                    price { amount }
+                    compareAtPrice { amount }
+                    availableForSale
+                    selectedOptions { name value }
                   }
                 }
               }
@@ -279,6 +277,7 @@ export async function getProductsByHandles(handles: string[]) {
         category: product.productType,
         slug: product.handle,
         type: "product" as const,
+        variants: product.variants.edges.map((vEdge) => vEdge.node),
       };
     });
   } catch (error) {
@@ -287,7 +286,7 @@ export async function getProductsByHandles(handles: string[]) {
   }
 }
 
-export async function getProductsByIds(ids: string[], limit: number = 2) {
+export async function getProductsByIds(ids: string[], limit: number = 100) {
   if (!process.env.SHOPIFY_SHOP_NAME || !process.env.SHOPIFY_STOREFRONT_TOKEN) {
     throw new Error('Shopify Storefront configuration missing');
   }
@@ -317,12 +316,15 @@ export async function getProductsByIds(ids: string[], limit: number = 2) {
                   }
                 }
               }
-              variants(first: 1) {
+              variants(first: 10) {
                 edges {
                   node {
-                    price {
-                      amount
-                    }
+                    id
+                    title
+                    price { amount }
+                    compareAtPrice { amount }
+                    availableForSale
+                    selectedOptions { name value }
                   }
                 }
               }
@@ -361,6 +363,7 @@ export async function getProductsByIds(ids: string[], limit: number = 2) {
         category: product.productType,
         slug: product.handle,
         type: "product" as const,
+        variants: product.variants.edges.map((vEdge) => vEdge.node),
       };
     });
   } catch (error) {
@@ -396,9 +399,9 @@ export async function getProductByHandle(handle: string) {
     const product = data.product;
     const firstVariant = product.variants.edges[0]?.node;
     
-          return {
-        _id: product.id.split('/').pop() || product.handle || product.id || `product-${Math.random()}`,
-        title: product.title,
+    return {
+      _id: product.id.split('/').pop() || product.handle || product.id || `product-${Math.random()}`,
+      title: product.title,
       description: product.description,
       price: parseFloat(firstVariant?.price?.amount || '0'),
       compareAtPrice: firstVariant?.compareAtPrice ? parseFloat(firstVariant.compareAtPrice.amount) : undefined,
