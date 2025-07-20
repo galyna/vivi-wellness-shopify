@@ -11,10 +11,17 @@ interface ProductPageClientProps {
   gallery: string[];
 }
 
-export default function ProductPageClient({ product, gallery }: ProductPageClientProps) {
+export default function ProductPageClient({
+  product,
+  gallery,
+}: ProductPageClientProps) {
   const [mainImg, setMainImg] = useState(gallery[0]);
-  const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0] || null);
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const [selectedVariant, setSelectedVariant] = useState(
+    product.variants?.[0] || null
+  );
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, string>
+  >({});
 
   // Favorites logic
   const { addFavorite, removeFavorite, isFavorite } = useFavoritesStore();
@@ -30,16 +37,20 @@ export default function ProductPageClient({ product, gallery }: ProductPageClien
   useEffect(() => {
     if (product.variants?.[0]) {
       const initialOptions: Record<string, string> = {};
-      product.variants[0].selectedOptions?.forEach((option: { name: string; value: string }) => {
-        initialOptions[option.name] = option.value;
-      });
+      product.variants[0].selectedOptions?.forEach(
+        (option: { name: string; value: string }) => {
+          initialOptions[option.name] = option.value;
+        }
+      );
       setSelectedOptions(initialOptions);
       setSelectedVariant(product.variants[0]);
     }
   }, [product.variants]);
 
   const favorite = isFavorite(product.slug, "product");
-  const isInCart = selectedVariant ? lines.some(line => line.merchandiseId === selectedVariant.id) : false;
+  const isInCart = selectedVariant
+    ? lines.some((line) => line.merchandiseId === selectedVariant.id)
+    : false;
 
   const handleFavorite = () => {
     if (favorite) {
@@ -56,19 +67,20 @@ export default function ProductPageClient({ product, gallery }: ProductPageClien
     setSelectedOptions(newOptions);
 
     // Find matching variant
-    const matchingVariant = product.variants?.find((variant: ShopifyVariant) => 
-      variant.selectedOptions?.every((option: { name: string; value: string }) => 
-        newOptions[option.name] === option.value
+    const matchingVariant = product.variants?.find((variant: ShopifyVariant) =>
+      variant.selectedOptions?.every(
+        (option: { name: string; value: string }) =>
+          newOptions[option.name] === option.value
       )
     );
-    
+
     if (matchingVariant) {
       setSelectedVariant(matchingVariant);
     }
   };
 
-  const currentPrice = selectedVariant?.price?.amount 
-    ? parseFloat(selectedVariant.price.amount) 
+  const currentPrice = selectedVariant?.price?.amount
+    ? parseFloat(selectedVariant.price.amount)
     : product.price;
 
   const isAvailable = selectedVariant?.availableForSale !== false;
@@ -78,12 +90,22 @@ export default function ProductPageClient({ product, gallery }: ProductPageClien
       {/* Gallery */}
       <div className="flex-1 flex flex-col items-center">
         <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden shadow-lg rounded-3xl flex items-center justify-center mb-4">
-          <Image src={mainImg} alt={product.title} width={600} height={450} 
-          sizes="(max-width: 768px) 100vw, 50vw" className="object-cover w-full h-full" />
+          <Image
+            src={mainImg}
+            alt={product.title}
+            width={600}
+            height={450}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover w-full h-full"
+          />
           {mounted && (
             <button
-              className={`absolute top-3 right-3 rounded-full p-2 shadow transition ${favorite ? "bg-coral/90" : "bg-white/80"}`}
-              aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
+              className={`absolute top-3 right-3 rounded-full p-2 shadow transition ${
+                favorite ? "bg-coral/90" : "bg-white/80"
+              }`}
+              aria-label={
+                favorite ? "Remove from favorites" : "Add to favorites"
+              }
               onClick={handleFavorite}
             >
               <svg
@@ -92,7 +114,11 @@ export default function ProductPageClient({ product, gallery }: ProductPageClien
                 fill={favorite ? "currentColor" : "none"}
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                className={favorite ? "text-white" : "text-gray-400 hover:text-coral transition"}
+                className={
+                  favorite
+                    ? "text-white"
+                    : "text-gray-400 hover:text-coral transition"
+                }
               >
                 <path
                   strokeLinecap="round"
@@ -111,8 +137,21 @@ export default function ProductPageClient({ product, gallery }: ProductPageClien
         </div>
         <div className="flex gap-2 mt-2">
           {gallery.map((img: string) => (
-            <button key={img} onClick={() => setMainImg(img)} className={`w-20 h-16 rounded-xl overflow-hidden border ${mainImg === img ? "border-coral" : "border-gray-200"}`}>
-              <Image src={img} alt="thumb" width={80} height={64} sizes="80px" className="object-cover w-full h-full" />
+            <button
+              key={img}
+              onClick={() => setMainImg(img)}
+              className={`w-20 h-16 rounded-xl overflow-hidden border ${
+                mainImg === img ? "border-coral" : "border-gray-200"
+              }`}
+            >
+              <Image
+                src={img}
+                alt="thumb"
+                width={80}
+                height={64}
+                sizes="80px"
+                className="object-cover w-full h-full"
+              />
             </button>
           ))}
         </div>
@@ -128,11 +167,9 @@ export default function ProductPageClient({ product, gallery }: ProductPageClien
               ${parseFloat(selectedVariant.compareAtPrice.amount)}
             </span>
           )}
-          {/* Rating and stars */}
-          <span className="ml-4 text-yellow-500 font-bold">★ 4.6/5</span>
         </div>
         <div className="mb-4 text-gray-700">{product.description}</div>
-        
+
         {/* Product options */}
         {product.options && product.options.length > 0 && (
           <div className="mb-6 space-y-4">
@@ -188,8 +225,7 @@ export default function ProductPageClient({ product, gallery }: ProductPageClien
             </button>
           )}
         </div>
-        
       </div>
     </main>
   );
-} 
+}
