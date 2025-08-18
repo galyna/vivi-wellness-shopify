@@ -1,7 +1,7 @@
 import React from "react";
 import { notFound } from "next/navigation";
 import { getRecipeBySlug, getRecipes, getArticlesByIds } from "@/lib/sanityApi";
-import { getProductsByHandles } from "@/lib/shopify-graphql";
+import { getProductsByIds } from "@/lib/shopify-graphql";
 import { Recipe } from "@/types";
 import Image from "next/image";
 import AskViviButton from "../../components/content/AskViviButton";
@@ -21,12 +21,12 @@ export default async function RecipePage({
   if (!recipe) return notFound();
 
   // Related products & articles
-  const productHandles: string[] = (recipe.shopifyProductHandles || [])
+  const productsIds: string[] = (recipe.productsIds || [])
     .filter(Boolean);
   const articleIds: string[] = (recipe.articlesIds as ArticleRef[] || []).map((a) => typeof a === 'string' ? a : a._id).filter(Boolean);
 
   const [relatedProducts, relatedArticles] = await Promise.all([
-    getProductsByHandles(productHandles),
+    getProductsByIds(productsIds,20),
     getArticlesByIds(articleIds, 2),
   ]);
 

@@ -5,7 +5,7 @@ import {
   getArticles,
   getRecipesByIds,
 } from "@/lib/sanityApi";
-import { getProductsByHandles } from "@/lib/shopify-graphql";
+import { getProductsByIds } from "@/lib/shopify-graphql";
 import { PortableText } from "@portabletext/react";
 import { Article } from "@/types";
 import Image from "next/image";
@@ -29,14 +29,15 @@ export default async function ArticlePage({
   if (!article) return notFound();
 
   // Related products & recipes
-  const productHandles: string[] = (article.shopifyProductHandles || [])
+  const productsIds: string[] = (article.productsIds || [])
     .filter(Boolean);
+
   const recipeIds: string[] = ((article.recipesIds as ArticleRef[]) || [])
     .map((r) => (typeof r === "string" ? r : r._id))
     .filter(Boolean);
-
+  
   const [relatedProducts, relatedRecipes] = await Promise.all([
-    getProductsByHandles(productHandles),
+    getProductsByIds(productsIds,20),
     getRecipesByIds(recipeIds, 20),
   ]);
 

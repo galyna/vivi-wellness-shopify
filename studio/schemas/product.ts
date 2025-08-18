@@ -5,6 +5,11 @@ export default {
   fields: [
     {name: 'title', type: 'string', title: 'Title'},
     {
+      name: 'shopifyId',
+      type: 'string',
+      title: 'Shopify ID',
+    },
+    {
       name: 'galleryImages',
       type: 'array',
       of: [{

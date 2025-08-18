@@ -40,7 +40,7 @@ export async function getArticleBySlug(slug: string) {
       alt
     },
     category,
-    productsIds[]->{_id},
+    productsIds[]->{shopifyId},
     recipesIds[]->{_id},
     date,
     author,
@@ -87,7 +87,7 @@ export async function getRecipeBySlug(slug: string) {
     servings,
     ingredients,
     category,
-    productsIds[]->{_id},
+    productsIds[]->{shopifyId},
     articlesIds[]->{_id},
     mainImage {
       asset->{url},
