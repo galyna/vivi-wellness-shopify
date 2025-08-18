@@ -9,7 +9,7 @@ interface UseInfiniteArticlesParams {
   authors?: string[];
   dateFrom?: string;
   dateTo?: string;
-  sort?: "asc" | "desc";
+  sort?: "title_asc" | "title_desc";
   limit?: number;
 }
 
@@ -34,7 +34,7 @@ export function useInfiniteArticles(params: UseInfiniteArticlesParams = {}) {
     authors = [],
     dateFrom = "",
     dateTo = "",
-    sort = "asc",
+    sort = "title_asc",
     limit = 8
   } = params;
 
@@ -46,10 +46,6 @@ export function useInfiniteArticles(params: UseInfiniteArticlesParams = {}) {
     authors.length > 0 || 
     Boolean(dateFrom) || 
     Boolean(dateTo);
-
-
-  
-
 
   return useInfiniteQuery({
     queryKey: hasFilters ? ["infinite-articles", params] : ["infinite-all-articles", sort],

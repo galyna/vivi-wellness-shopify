@@ -16,6 +16,18 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "8");
     const offset = (page - 1) * limit;
 
+    // Map sort values to Sanity order syntax
+    const getSortOrder = (sortValue: string) => {
+      switch (sortValue) {
+        case "title_asc":
+          return "order(title asc)";
+        case "title_desc":
+          return "order(title desc)";
+        default:
+          return "order(title asc)";
+      }
+    };
+
     // Build Sanity query with filters
     let query = `*[_type == "article"`;
     
@@ -53,7 +65,7 @@ export async function GET(request: NextRequest) {
       query += ` && (${conditions.join(" && ")})`;
     }
     
-    query += `] | order(title ${sort}) [${offset}...${offset + limit}] {
+    query += `] | ${getSortOrder(sort)} [${offset}...${offset + limit}] {
       _id,
       title,
       description,
@@ -77,9 +89,13 @@ export async function GET(request: NextRequest) {
     }
     
     countQuery += `]`;
-    const totalCount = await client.fetch(`count(${countQuery})`);
-
-    const articles = await client.fetch(query);
+    
+    console.log("Sanity query:", query);
+    
+    const [articles, totalCount] = await Promise.all([
+      client.fetch(query),
+      client.fetch(`count(${countQuery})`)
+    ]);
     
     return NextResponse.json({
       articles,

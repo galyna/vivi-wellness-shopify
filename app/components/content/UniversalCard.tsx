@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Article, Recipe, Product } from "@/types";
-import { FC, useState, useEffect } from "react";
+import React, { FC, useMemo, useCallback, useState, useEffect } from "react";
 import { useFavoritesStore, FavoriteType } from "@/app/store/favoritesStore";
 import { useCartStore } from "@/app/store/cartStore";
 import { useCartSidebarStore } from "@/app/store/cartSidebarStore";
@@ -12,6 +12,7 @@ interface UniversalCardProps<T> {
   data: T;
   hideFavoriteButton?: boolean;
   showTypeMarker?: boolean;
+  priority?: boolean;
 }
 
 const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
@@ -19,47 +20,59 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
   data,
   hideFavoriteButton,
   showTypeMarker = false,
+  priority = false,
 }) => {
   const { addFavorite, removeFavorite, isFavorite } = useFavoritesStore();
   const [showToast, setShowToast] = useState(false);
   const { addToCart } = useCartStore();
   const { openSidebar } = useCartSidebarStore();
   const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  if (!data) return null;
-  // Универсальные поля
-  let slug = "";
-  if (typeof data.slug === "string") {
-    slug = data.slug;
-  } else if (
-    data.slug &&
-    typeof data.slug === "object" &&
-    "current" in data.slug &&
-    typeof (data.slug as { current: string }).current === "string"
-  ) {
-    slug = (data.slug as { current: string }).current;
-  }
+  const { lines } = useCartStore();
+
+  // Все хуки до любых условий
+  const slug = useMemo(() => {
+    if (typeof data.slug === "string") return data.slug;
+    if (data.slug && typeof data.slug === "object" && "current" in data.slug && typeof (data.slug as { current: string }).current === "string") {
+      return (data.slug as { current: string }).current;
+    }
+    return "";
+  }, [data]);
+
   const title = data.title;
-  let image = "/placeholder.jpg";
-  if ("image" in data && typeof data.image === "string") image = data.image;
-  else if ("mainImage" in data && data.mainImage?.asset?.url)
-    image = data.mainImage.asset.url;
+
+  const getImage = useCallback(() => {
+    if ("image" in data && typeof data.image === "string") return data.image;
+    if ("mainImage" in data && data.mainImage?.asset?.url) return data.mainImage.asset.url;
+    if ("images" in data && Array.isArray(data.images) && data.images.length > 0) {
+      const firstImage = data.images.find((img: unknown) => img && typeof img === 'string' && img.trim() !== '');
+      if (firstImage) return firstImage;
+    }
+    return "/placeholder.jpg";
+  }, [data]);
+
+  const image = getImage();
   const category = data.category || "Uncategorized";
   const price = type === "product" ? (data as Product).price : undefined;
 
-  // Ссылки
-  let href = "#";
-  if (type === "article") href = `/articles/${slug}`;
-  else if (type === "product") href = `/products/${slug}`;
-  else if (type === "recipe") href = `/recipes/${slug}`;
+  const href = useMemo(() => {
+    if (type === "article") return `/articles/${slug}`;
+    if (type === "product") return `/products/${slug}`;
+    if (type === "recipe") return `/recipes/${slug}`;
+    return "#";
+  }, [type, slug]);
 
   const favType = type as FavoriteType;
-  const favId = data._id;
+  const favId = useMemo(() =>
+    type === "product"
+      ? (data as Product)._id
+      : type === "article"
+      ? (data as Article)._id
+      : (data as Recipe)._id,
+    [type, data]
+  );
   const favorite = isFavorite(favId, favType);
 
-  const handleFavorite = (e: React.MouseEvent) => {
+  const handleFavorite = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     if (favorite) {
       removeFavorite(favId, favType);
@@ -68,7 +81,28 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
       setShowToast(true);
       setTimeout(() => setShowToast(false), 1200);
     }
-  };
+  }, [favorite, favId, favType, addFavorite, removeFavorite]);
+
+  const variantId = useMemo(
+    () => type === "product" ? (data as Product).variants?.[0]?.id : undefined,
+    [type, data]
+  );
+  const isInCart = useMemo(
+    () => type === "product" && variantId ? lines.some(line => line.merchandiseId === variantId) : false,
+    [type, variantId, lines]
+  );
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!data) return null;
+
+  // Универсальные поля
+  // Универсальные поля
+
+  // Ссылки
+  // Ссылки
 
   return (
     <Link href={href} className="block h-full group cursor-pointer">
@@ -81,7 +115,7 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="object-cover object-center rounded-3xl"
-            priority={false}
+            priority={priority}
           />
           {/* Категория */}
           <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-xs font-medium text-gray-700 px-2 py-1 rounded-full shadow-sm">
@@ -150,16 +184,29 @@ const UniversalCard: FC<UniversalCardProps<Product | Article | Recipe>> = ({
           <div className="flex justify-center w-full">
            {/* Add to cart button */}
           {type === "product" && (
-            <button
-              className="mt-3 w-full md:w-3/5 max-w-sm py-2 rounded-full border-2 border-coral text-coral font-bold hover:text-white hover:bg-coral/80 transition"
-              onClick={(e) => {
-                e.preventDefault();
-                addToCart(favId, 1);
-                openSidebar();
-              }}
-            >
-              Add to cart
-            </button>
+            isInCart ? (
+              <button
+                className="mt-3 w-full md:w-3/5 max-w-sm py-2 rounded-full border-2 border-gray-300 text-gray-400 font-bold cursor-not-allowed"
+                disabled
+              >
+                In cart
+              </button>
+            ) : (
+              <button
+                className="mt-3 w-full md:w-3/5 max-w-sm py-2 rounded-full border-2 border-coral text-coral font-bold hover:text-white hover:bg-coral/80 transition"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (variantId) {
+                    addToCart(variantId, 1);
+                    openSidebar();
+                  } else {
+                    alert("No variant found for this product");
+                  }
+                }}
+              >
+                Add to cart
+              </button>
+            )
           )}
           </div>
         </div>

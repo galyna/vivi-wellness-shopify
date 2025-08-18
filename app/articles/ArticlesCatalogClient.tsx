@@ -26,7 +26,7 @@ export default function ArticlesCatalogClient() {
   const selectedCategory = searchParams.get("category") || "";
   
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<"asc" | "desc">("asc");
+  const [sort, setSort] = useState<"title_asc" | "title_desc">("title_asc");
   const [filterOpen, setFilterOpen] = useState(false);
 
   const [activeFilters, setActiveFilters] = useState<ArticleFilterSettings>({
@@ -78,7 +78,7 @@ export default function ArticlesCatalogClient() {
         <div className="bg-white min-h-[64px]">
           <CatalogToolbar
             onSearch={setSearch}
-            onSort={(v) => setSort(v as "asc" | "desc")}
+            onSort={(v) => setSort(v as "title_asc" | "title_desc")}
             onFilter={() => setFilterOpen(true)}
             filterCount={
               (activeFilters.categories?.length || 0) +
@@ -90,6 +90,8 @@ export default function ArticlesCatalogClient() {
             }
             sortValue={sort}
             searchValue={search}
+            pageType="articles"
+            searchPlaceholder="Search articles..."
           />
         </div>
         <main className="relative">
@@ -121,7 +123,7 @@ export default function ArticlesCatalogClient() {
       <div className="bg-white min-h-[64px]">
         <CatalogToolbar
           onSearch={setSearch}
-          onSort={(v) => setSort(v as "asc" | "desc")}
+          onSort={(v) => setSort(v as "title_asc" | "title_desc")}
           onFilter={() => setFilterOpen(true)}
           filterCount={
             (activeFilters.categories?.length || 0) +
@@ -133,6 +135,8 @@ export default function ArticlesCatalogClient() {
           }
           sortValue={sort}
           searchValue={search}
+          pageType="articles"
+          searchPlaceholder="Search articles..."
         />
       </div>
       <main className=" relative">

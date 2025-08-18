@@ -14,8 +14,6 @@ type ProductFilterSettings = {
   colors?: string[];
   sizes?: string[];
   materials?: string[];
-  minPrice?: string;
-  maxPrice?: string;
 };
 
 
@@ -24,27 +22,23 @@ export default function ProductsCatalogClient() {
   const selectedCategory = searchParams.get("category") || "";
   
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<"asc" | "desc">("asc");
+  const [sort, setSort] = useState<string>("title_asc");
   const [filterOpen, setFilterOpen] = useState(false);
   const [settings, setSettings] = useState<ProductFilterSettings>({
     categories: selectedCategory ? [selectedCategory] : [],
     colors: [],
     sizes: [],
     materials: [],
-    minPrice: "",
-    maxPrice: "",
   });
 
   // Use infinite query for products
   const queryParams = useMemo(() => ({
     search,
-    categories: settings.categories || [],
+    category: settings.categories?.[0] || "",
+    sort,
     colors: settings.colors || [],
     sizes: settings.sizes || [],
     materials: settings.materials || [],
-    minPrice: settings.minPrice || "",
-    maxPrice: settings.maxPrice || "",
-    sort,
   }), [search, settings, sort]);
 
   const {
@@ -61,25 +55,22 @@ export default function ProductsCatalogClient() {
 
 
 
+
+
   if (isLoading) {
     return (
       <div>
         <div className="bg-white">
-          <CatalogToolbar
-            onSearch={setSearch}
-            onSort={(v) => setSort(v as "asc" | "desc")}
-            onFilter={() => setFilterOpen(true)}
-            filterCount={
-              (settings.categories?.length || 0) +
-              (settings.colors?.length || 0) +
-              (settings.sizes?.length || 0) +
-              (settings.materials?.length || 0) +
-              (settings.minPrice ? 1 : 0) +
-              (settings.maxPrice ? 1 : 0)
-            }
-            sortValue={sort}
-            searchValue={search}
-          />
+                  <CatalogToolbar
+          onSearch={setSearch}
+          onSort={(v) => setSort(v)}
+          onFilter={() => setFilterOpen(true)}
+          filterCount={Object.values(settings).filter(v => Array.isArray(v) ? v.length > 0 : Boolean(v)).length}
+          sortValue={sort}
+          searchValue={search}
+          pageType="products"
+          searchPlaceholder="Search products..."
+        />
         </div>
         <main>
           <section className="mx-auto max-w-7xl px-8 py-12 lg:px-16 relative space-y-10 lg:space-y-12">
@@ -103,18 +94,13 @@ export default function ProductsCatalogClient() {
       <div className="bg-white">
         <CatalogToolbar
           onSearch={setSearch}
-          onSort={(v) => setSort(v as "asc" | "desc")}
+          onSort={(v) => setSort(v)}
           onFilter={() => setFilterOpen(true)}
-          filterCount={
-            (settings.categories?.length || 0) +
-            (settings.colors?.length || 0) +
-            (settings.sizes?.length || 0) +
-            (settings.materials?.length || 0) +
-            (settings.minPrice ? 1 : 0) +
-            (settings.maxPrice ? 1 : 0)
-          }
+          filterCount={Object.values(settings).filter(v => Array.isArray(v) ? v.length > 0 : Boolean(v)).length}
           sortValue={sort}
           searchValue={search}
+          pageType="products"
+          searchPlaceholder="Search products..."
         />
       </div>
       <main className="relative">
@@ -125,31 +111,32 @@ export default function ProductsCatalogClient() {
             isLoading={isFetchingNextPage}
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {displayProducts.map((product: Product) => (
+              {displayProducts.map((product: Product, index: number) => (
                 <div key={product._id} className="w-full max-w-sm mx-auto sm:max-w-full">
-                  <UniversalCard type="product" data={product} />
+                  <UniversalCard 
+                    type="product" 
+                    data={product} 
+                    priority={index < 4} // Priority for first 4 images
+                  />
                 </div>
               ))}
             </div>
           </InfiniteScroll>
         </section>
       </main>
+      
+      {/* Filter Modal */}
       <FilterModal
         isOpen={filterOpen}
         onClose={() => setFilterOpen(false)}
         settings={settings}
-        onChange={(newSettings) => setSettings(newSettings as ProductFilterSettings)}
-        onClear={() => {
-          setSettings({
-            categories: [],
-            colors: [],
-            sizes: [],
-            materials: [],
-            minPrice: "",
-            maxPrice: "",
-          });
-          setFilterOpen(false);
-        }}
+        onChange={setSettings}
+        onClear={() => setSettings({
+          categories: [],
+          colors: [],
+          sizes: [],
+          materials: [],
+        })}
         filterType="products"
       />
       {displayProducts.length === 0 && (

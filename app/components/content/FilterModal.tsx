@@ -13,8 +13,6 @@ interface FilterSettings {
   colors?: string[];
   sizes?: string[];
   materials?: string[];
-  minPrice?: string;
-  maxPrice?: string;
   times?: string[];
   difficulties?: string[];
 }
@@ -118,121 +116,106 @@ export default function FilterModal({
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="absolute top-2 right-4 text-2xl text-coral z-10"
+          className="absolute top-4 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-coral hover:bg-coral hover:text-white transition-all duration-200 z-10"
           onClick={handleClose}
           aria-label="Close filter"
           type="button"
         >
-          ×
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
         </button>
 
-        <div className="flex flex-wrap gap-4 h-full md:max-h-[70vh] p-8 overflow-y-auto">
+        <div className="flex flex-wrap gap-6 h-full md:max-h-[70vh] p-8 overflow-y-auto">
           {/* Categories */}
           <div className="min-w-[180px] flex-1">
-            <div className="font-bold mb-2">Category</div>
-            {filterValues.categories.map((cat: string) => (
-              <button
-                key={cat}
-                className={`block w-full text-left px-3 py-2 rounded ${
-                  localSettings.categories?.includes(cat) 
-                    ? "bg-coral text-white" 
-                    : "hover:bg-gray-100"
-                }`}
-                onClick={() => handleToggle("categories", cat)}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* Price filters (only for products) */}
-          {filterType === "products" && (
-            <div className="min-w-[180px] flex-1">
-              <div className="font-bold mb-2">Price</div>
-              <div className="flex flex-col gap-2 mb-4">
-                <div className="flex items-center gap-2">
-                  <label className="text-xs font-medium text-gray-500 min-w-[30px]">Min</label>
-                  <input
-                    type="number"
-                    placeholder="0"
-                    className="border rounded px-2 py-1 w-20"
-                    value={localSettings.minPrice || ""}
-                    onChange={(e) => setLocalSettings({ ...localSettings, minPrice: e.target.value })}
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  <label className="text-xs font-medium text-gray-500 min-w-[30px]">Max</label>
-                  <input
-                    type="number"
-                    placeholder="∞"
-                    className="border rounded px-2 py-1 w-20"
-                    value={localSettings.maxPrice || ""}
-                    onChange={(e) => setLocalSettings({ ...localSettings, maxPrice: e.target.value })}
-                  />
-                </div>
-              </div>
+            <div className="font-bold mb-3 text-charcoal">Category</div>
+            <div className="flex flex-wrap gap-2">
+              {filterValues.categories.map((cat: string) => (
+                <button
+                  key={cat}
+                  className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    localSettings.categories?.includes(cat) 
+                      ? "bg-coral text-white shadow-md" 
+                      : "bg-gray-100 text-charcoal hover:bg-coral/10 hover:border-coral border border-transparent"
+                  }`}
+                  onClick={() => handleToggle("categories", cat)}
+                >
+                  {cat}
+                </button>
+              ))}
             </div>
-          )}
+          </div>
 
           {/* Color filters (only for products) */}
           {filterType === "products" && filterValues.colors && filterValues.colors.length > 0 && (
             <div className="min-w-[140px] flex-1">
-              <div className="font-bold mb-2">Color</div>
-              {filterValues.colors.map((color: string) => (
-                              <button
-                key={color}
-                className={`block w-full text-left px-3 py-2 rounded ${
-                  localSettings.colors?.includes(color) 
-                    ? "bg-coral text-white" 
-                    : "hover:bg-gray-100"
-                }`}
-                onClick={() => handleToggle("colors", color)}
-              >
-                {color}
-              </button>
-              ))}
+              <div className="font-bold mb-3 text-charcoal">Color</div>
+              <div className="flex flex-wrap gap-2">
+                {filterValues.colors.map((color: string) => (
+                  <button
+                    key={color}
+                    className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                      localSettings.colors?.includes(color) 
+                        ? "bg-coral text-white shadow-md" 
+                        : "bg-gray-100 text-charcoal hover:bg-coral/10 hover:border-coral border border-transparent"
+                    }`}
+                    onClick={() => handleToggle("colors", color)}
+                  >
+                    {color}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
           {/* Size filters (only for products) */}
           {filterType === "products" && filterValues.sizes && filterValues.sizes.length > 0 && (
             <div className="min-w-[140px] flex-1">
-              <div className="font-bold mb-2">Size</div>
-              {filterValues.sizes.map((size: string) => (
-                              <button
-                key={size}
-                className={`block w-full text-left px-3 py-2 rounded ${
-                  localSettings.sizes?.includes(size) 
-                    ? "bg-coral text-white" 
-                    : "hover:bg-gray-100"
-                }`}
-                onClick={() => handleToggle("sizes", size)}
-              >
-                {size}
-              </button>
-              ))}
+              <div className="font-bold mb-3 text-charcoal">Size</div>
+              <div className="flex flex-wrap gap-2">
+                {filterValues.sizes.map((size: string) => (
+                  <button
+                    key={size}
+                    className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                      localSettings.sizes?.includes(size) 
+                        ? "bg-coral text-white shadow-md" 
+                        : "bg-gray-100 text-charcoal hover:bg-coral/10 hover:border-coral border border-transparent"
+                    }`}
+                    onClick={() => handleToggle("sizes", size)}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
           {/* Material filters (only for products) */}
           {filterType === "products" && filterValues.materials && filterValues.materials.length > 0 && (
             <div className="min-w-[140px] flex-1">
-              <div className="font-bold mb-2">Material</div>
-              {filterValues.materials.map((material: string) => (
-                              <button
-                key={material}
-                className={`block w-full text-left px-3 py-2 rounded ${
-                  localSettings.materials?.includes(material) 
-                    ? "bg-coral text-white" 
-                    : "hover:bg-gray-100"
-                }`}
-                onClick={() => handleToggle("materials", material)}
-              >
-                {material}
-              </button>
-              ))}
+              <div className="font-bold mb-3 text-charcoal">Material</div>
+              <div className="flex flex-wrap gap-2">
+                {filterValues.materials.map((material: string) => (
+                  <button
+                    key={material}
+                    className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                      localSettings.materials?.includes(material) 
+                        ? "bg-coral text-white shadow-md" 
+                        : "bg-gray-100 text-charcoal hover:bg-coral/10 hover:border-coral border border-transparent"
+                    }`}
+                    onClick={() => handleToggle("materials", material)}
+                  >
+                    {material}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
+
+
+
+
 
           {/* Time filters (only for recipes) */}
           {filterType === "recipes" && filterValues.times && filterValues.times.length > 0 && (
@@ -361,9 +344,9 @@ export default function FilterModal({
         </div>
 
         {/* Clear button */}
-        <div className="flex flex-col md:flex-row w-full items-end px-14 justify-center md:justify-end sticky bottom-0 bg-white py-4 border-t border-gray-100">
+        <div className="flex flex-col md:flex-row w-full items-end px-8 justify-center md:justify-end sticky bottom-0 bg-white py-6 border-t border-gray-100">
           <button
-            className="px-6 py-3 rounded-full bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-colors border border-gray-200"
+            className="px-6 py-3 rounded-full bg-gray-100 text-charcoal font-medium hover:bg-coral hover:text-white transition-all duration-200 border border-gray-200 hover:border-coral"
             onClick={handleClear}
           >
             Clear all filters

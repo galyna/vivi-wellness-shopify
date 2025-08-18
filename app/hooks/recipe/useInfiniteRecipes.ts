@@ -6,7 +6,7 @@ interface UseInfiniteRecipesParams {
   categories?: string[];
   times?: string[];
   difficulties?: string[];
-  sort?: "asc" | "desc";
+  sort?: "title_asc" | "title_desc";
   limit?: number;
 }
 
@@ -28,7 +28,7 @@ export function useInfiniteRecipes(params: UseInfiniteRecipesParams = {}) {
     categories = [],
     times = [],
     difficulties = [],
-    sort = "asc",
+    sort = "title_asc",
     limit = 8
   } = params;
 

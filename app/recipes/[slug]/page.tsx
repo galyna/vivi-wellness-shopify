@@ -1,6 +1,7 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { getRecipeBySlug, getRecipes, getProductsByIds, getArticlesByIds } from "@/lib/sanityApi";
+import { getRecipeBySlug, getRecipes, getArticlesByIds } from "@/lib/sanityApi";
+import { getProductsByIds } from "@/lib/shopify-graphql";
 import { Recipe } from "@/types";
 import Image from "next/image";
 import AskViviButton from "../../components/content/AskViviButton";
@@ -8,7 +9,7 @@ import CardsSection from "@/app/components/sections/CardsSection";
 import { Product, Article } from "@/types";
 
 type CardItem = (Product | Article) & { _id: string; type: "product" | "article" };
-type IdRef = string | { _id: string };
+type ArticleRef = string | { _id: string };
 
 export default async function RecipePage({
   params,
@@ -20,16 +21,17 @@ export default async function RecipePage({
   if (!recipe) return notFound();
 
   // Related products & articles
-  const productIds: string[] = (recipe.productsIds as IdRef[] || []).map((p) => typeof p === 'string' ? p : p._id).filter(Boolean);
-  const articleIds: string[] = (recipe.articlesIds as IdRef[] || []).map((a) => typeof a === 'string' ? a : a._id).filter(Boolean);
+  const productsIds: string[] = (recipe.productsIds || [])
+    .filter(Boolean);
+  const articleIds: string[] = (recipe.articlesIds as ArticleRef[] || []).map((a) => typeof a === 'string' ? a : a._id).filter(Boolean);
 
   const [relatedProducts, relatedArticles] = await Promise.all([
-    getProductsByIds(productIds, 2),
+    getProductsByIds(productsIds,20),
     getArticlesByIds(articleIds, 2),
   ]);
 
   const relatedItems: CardItem[] = [
-    ...relatedProducts.map((p: Product) => ({ ...p, type: "product" as const })),
+    ...(relatedProducts as Array<Product & { type: "product" }>),
     ...relatedArticles.map((a: Article) => ({ ...a, type: "article" as const })),
   ].slice(0, 2);
 

@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import {
   getArticleBySlug,
   getArticles,
-  getProductsByIds,
   getRecipesByIds,
 } from "@/lib/sanityApi";
+import { getProductsByIds } from "@/lib/shopify-graphql";
 import { PortableText } from "@portabletext/react";
 import { Article } from "@/types";
 import Image from "next/image";
@@ -17,7 +17,7 @@ type CardItem = (Product | Recipe) & {
   _id: string;
   type: "product" | "recipe";
 };
-type IdRef = string | { _id: string };
+type ArticleRef = string | { _id: string };
 
 export default async function ArticlePage({
   params,
@@ -29,23 +29,20 @@ export default async function ArticlePage({
   if (!article) return notFound();
 
   // Related products & recipes
-  const productIds: string[] = ((article.productsIds as IdRef[]) || [])
-    .map((p) => (typeof p === "string" ? p : p._id))
-    .filter(Boolean);
-  const recipeIds: string[] = ((article.recipesIds as IdRef[]) || [])
-    .map((r) => (typeof r === "string" ? r : r._id))
+  const productsIds: string[] = (article.productsIds || [])
     .filter(Boolean);
 
+  const recipeIds: string[] = ((article.recipesIds as ArticleRef[]) || [])
+    .map((r) => (typeof r === "string" ? r : r._id))
+    .filter(Boolean);
+  
   const [relatedProducts, relatedRecipes] = await Promise.all([
-    getProductsByIds(productIds, 2),
-    getRecipesByIds(recipeIds, 2),
+    getProductsByIds(productsIds,20),
+    getRecipesByIds(recipeIds, 20),
   ]);
 
   const relatedItems: CardItem[] = [
-    ...relatedProducts.map((p: Product) => ({
-      ...p,
-      type: "product" as const,
-    })),
+    ...(relatedProducts as Array<Product & { type: "product" }>),
     ...relatedRecipes.map((r: Recipe) => ({ ...r, type: "recipe" as const })),
   ].slice(0, 2);
 

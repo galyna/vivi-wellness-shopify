@@ -20,7 +20,9 @@ export function useFilters(type: "articles" | "products" | "recipes") {
   return useQuery({
     queryKey: ["filters", type],
     queryFn: async (): Promise<FilterData> => {
-      const response = await fetch(`/api/filters?type=${type}`);
+      // Use dedicated Shopify filters API for products
+      const endpoint = type === "products" ? "/api/shopify-filters" : `/api/filters?type=${type}`;
+      const response = await fetch(endpoint);
       if (!response.ok) {
         throw new Error("Failed to fetch filters");
       }
