@@ -14,7 +14,7 @@ The project was built as a frontend UI/UX showcase, with a focus on smooth inter
 ![Vivi Wellness Shopify preview](./public/og-preview.png)
 
 ---
-🛠 Tech Stack
+## 🛠 Tech Stack
 
 Framework & Core
 
@@ -70,7 +70,7 @@ ESLint 9
  — linting & code style
 
 
-🎯 Features
+## 🎯 Features
 
 💬 Interactive ChatBot — with predefined buttons and quick replies
 
