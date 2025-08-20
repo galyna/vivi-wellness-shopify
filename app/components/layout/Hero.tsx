@@ -17,6 +17,10 @@ const Hero = async () => {
           loop
           muted
           playsInline
+          preload="auto"
+          poster={hero.image.src}
+          width={600}
+          height={300}
           className="absolute inset-0 w-full h-full object-cover"
         />
       ) : hero?.image ? (
