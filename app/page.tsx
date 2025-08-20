@@ -1,14 +1,16 @@
 import Hero from "./components/layout/Hero";
 import BubbleChat from "./components/chat";
-import { Suspense } from "react";
-import ProductsSection from "./components/sections/ProductsSection";
-import RecipesSection from "./components/sections/RecipesSection";
-import ArticlesSection from "./components/sections/ArticlesSection";
-import InspireHero from "./components/layout/InspireHero";
+import { lazy, Suspense } from "react";
+
 
 function SkeletonSection({ title }: { title: string }) {
   return <div className="min-h-[300px] flex items-center justify-center text-gray-400">{title} loading...</div>;
 }
+
+const ProductsSection = lazy(() => import("./components/sections/ProductsSection"));
+const RecipesSection = lazy(() => import("./components/sections/RecipesSection"));
+const ArticlesSection = lazy(() => import("./components/sections/ArticlesSection"));
+const InspireHero = lazy(() => import("./components/layout/InspireHero"));
 
 export default function HomePage() {
   return (
