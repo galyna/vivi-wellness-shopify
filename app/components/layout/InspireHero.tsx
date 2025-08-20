@@ -18,6 +18,10 @@ const InspireHero = async ({ id }: InspireHeroProps) => {
           autoPlay
           loop
           muted
+          preload="auto"
+          poster={data.image.src}
+          width={600}
+          height={300}
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
         />
