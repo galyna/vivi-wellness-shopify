@@ -1,8 +1,15 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  images: {
-    domains: ['cdn.sanity.io', 'cdn.shopify.com'],
-  },
-};
+   /** @type {import('next').NextConfig} */
+   import withBundleAnalyzer from '@next/bundle-analyzer';
 
-export default nextConfig;
+   const nextConfig = withBundleAnalyzer({
+     enabled: process.env.ANALYZE === 'true',enabled: process.env.ANALYZE === 'true',
+     openAnalyzer: true,
+     generateStatsFile: true,
+     statsFilename: 'stats.json',
+   })({
+     images: {
+       domains: ['cdn.sanity.io', 'cdn.shopify.com'],
+     },
+   });
+
+   export default nextConfig;
