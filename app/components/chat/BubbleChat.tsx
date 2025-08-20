@@ -40,12 +40,10 @@ export default function BubbleChat() {
     <>
       {/* Bubble button */}
       <button
-        className="fixed bottom-6 right-6 z-50 bg-gradient-to-br from-coral to-neon text-white rounded-full w-14 h-14 md:w-16 md:h-16 lg:w-18 lg:h-18 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-white/30 group hover:scale-110"
+        className="fixed bottom-6 right-6 z-50 bg-coral text-white rounded-full w-14 h-14 md:w-16 md:h-16 lg:w-18 lg:h-18 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-white/30 group hover:scale-110"
         onClick={openChat}
         aria-label="Open chat"
         style={{
-          background: 'linear-gradient(45deg, #FFB6A0, #FFA07A, #FFB6A0)',
-          backgroundSize: '200% 200%',
           animation: 'gradientShift 4s ease-in-out infinite'
         }}
       >

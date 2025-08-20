@@ -61,7 +61,7 @@ const Menu = ({ isOpen, onClose }: MenuProps) => {
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-gray-900 text-white transition-colors duration-300 hover:bg-gray-700"
+        className="absolute top-3 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-gray-900 text-white transition-colors duration-300 hover:bg-gray-700"
         aria-label="Close menu"
       >
         <svg
