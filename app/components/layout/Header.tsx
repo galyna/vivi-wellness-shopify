@@ -38,7 +38,7 @@ const Header = () => {
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }
-        backdrop-blur-md bg-mint
+        bg-coral text-white
         ${
           scrolled
             ? "border-b border-gray-200 shadow-md"
@@ -53,7 +53,7 @@ const Header = () => {
         {/* Logo */}
         <Link
           href="/"
-          className="text-2xl font-bold tracking-wide transition-colors duration-300 text-gray-900"
+          className="text-2xl font-bold tracking-wide transition-colors duration-300"
         >
           Vivi
         </Link>
@@ -63,7 +63,7 @@ const Header = () => {
             <Link
               key={href}
               href={href}
-              className={`transition-colors duration-300 hover:underline underline-offset-4 text-gray-900 ${
+              className={`transition-colors duration-300 hover:underline underline-offset-4  ${
                 pathname === href ? "font-bold underline" : ""
               }`}
             >

@@ -20,7 +20,7 @@ export default function HomePage() {
             <ProductsSection />
           </Suspense>
           <Suspense fallback={<SkeletonSection title="Inspire" />}>
-            <InspireHero id="hero-inspire-1" />
+            <InspireHero id="hero-1" />
           </Suspense>
           <Suspense fallback={<SkeletonSection title="Articles" />}>
             <ArticlesSection />

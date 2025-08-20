@@ -4,7 +4,7 @@ import { getCatalogHeroData } from "@/lib/sanityApi";
 import ShowMoreButton from "../content/ShowMoreButton";
 
 // Пример: Hero получает id через пропсы или хардкод
-const HERO_ID = "hero-1"; // или другой id из Sanity
+const HERO_ID = "hero-inspire-1"; // или другой id из Sanity
 
 const Hero = async () => {
   const hero = await getCatalogHeroData(HERO_ID);
